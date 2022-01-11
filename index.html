@@ -43,7 +43,7 @@
 <div class="intrude-less">
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
-			<img src="" class="js-avatar">
+			<img src="/assets/img/居然是力也发夹.jpg" class="js-avatar">
 		</a>
 		<hgroup>
 		  <h1 class="header-author"><a href="/"></a></h1>
@@ -66,8 +66,6 @@
     			
             
     			
-    			<a q-on="click: openSlider(e, 'friends')" href="javascript:void(0)">友链</a>
-    			
             
     			
     			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
@@ -77,13 +75,9 @@
 		<nav class="header-nav">
 			<div class="social">
 				
-					<a class="github" target="_blank" href="#" title="github"><i class="icon-github"></i></a>
+					<a class="github" target="_blank" href="/%E2%80%9Chttps:/github.com/BanalFish?tab=repositories%E2%80%9D" title="github"><i class="icon-github"></i></a>
 		        
-					<a class="weibo" target="_blank" href="#" title="weibo"><i class="icon-weibo"></i></a>
-		        
-					<a class="rss" target="_blank" href="#" title="rss"><i class="icon-rss"></i></a>
-		        
-					<a class="zhihu" target="_blank" href="#" title="zhihu"><i class="icon-zhihu"></i></a>
+					<a class="mail" target="_blank" href="mailto:2310092445@qq.com" title="mail"><i class="icon-mail"></i></a>
 		        
 			</div>
 		</nav>
@@ -101,7 +95,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img src="" class="js-avatar">
+				<img src="/assets/img/居然是力也发夹.jpg" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author js-header-author"></h1>
@@ -118,13 +112,9 @@
 			<nav class="header-nav">
 				<div class="social">
 					
-						<a class="github" target="_blank" href="#" title="github"><i class="icon-github"></i></a>
+						<a class="github" target="_blank" href="/%E2%80%9Chttps:/github.com/BanalFish?tab=repositories%E2%80%9D" title="github"><i class="icon-github"></i></a>
 			        
-						<a class="weibo" target="_blank" href="#" title="weibo"><i class="icon-weibo"></i></a>
-			        
-						<a class="rss" target="_blank" href="#" title="rss"><i class="icon-rss"></i></a>
-			        
-						<a class="zhihu" target="_blank" href="#" title="zhihu"><i class="icon-zhihu"></i></a>
+						<a class="mail" target="_blank" href="mailto:2310092445@qq.com" title="mail"><i class="icon-mail"></i></a>
 			        
 				</div>
 			</nav>
@@ -152,19 +142,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-myArticle" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-CPUnet1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/09/myArticle/">计算机网络交换方式及评价指标</a>
+      <a class="article-title" href="/2022/01/09/CPUnet1/">计算机网络交换方式及评价指标</a>
     </h1>
   
 
         
-        <a href="/2022/01/09/myArticle/" class="archive-article-date">
+        <a href="/2022/01/09/CPUnet1/" class="archive-article-date">
   	<time datetime="2022-01-09T14:22:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-09</time>
 </a>
         
@@ -173,7 +163,8 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="因特网组成"><a href="#因特网组成" class="headerlink" title="因特网组成"></a><strong>因特网组成</strong></h1><h2 id="边缘部分"><a href="#边缘部分" class="headerlink" title="边缘部分"></a>边缘部分</h2><ul>
-<li>直接与用户通信<h2 id="核心部分"><a href="#核心部分" class="headerlink" title="核心部分"></a>核心部分</h2></li>
+<li>直接与用户通信<br>
+## 核心部分</li>
 <li>由大量网络或者路由器组成，为边缘部分提供服务<br></li>
 </ul>
 <h1 id="三种交换方式"><a href="#三种交换方式" class="headerlink" title="三种交换方式"></a><strong>三种交换方式</strong></h1><p>交换就是 按照某种方式动态的分配传输线路的资源</p>
@@ -182,7 +173,7 @@
 
 但是不适合传输计算机资源，因为计算机资源往往突发地出现在通信链路上，当某用户编辑文件时，资源未被利用连接也一直保持，使资源利用率大大下降
 </code></pre>
-<h2 id="分组交换"><a href="#分组交换" class="headerlink" title="分组交换"></a>分组交换</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">   情景：A主机传输数据到B主机</span><br><span class="line"></span><br><span class="line">   A：将报文段拆分成更小的数据段，并加上首部，此时这个新的组合叫做分组，首部叫做包头；然后发送</span><br><span class="line"></span><br><span class="line">路由器：接收分组，比对首部信息，进行查表转发（存储转发）</span><br><span class="line"></span><br><span class="line">B：接收分组，并将首部去掉后的数据段进行组合，还原成初始报文</span><br><span class="line"></span><br><span class="line">A：构造分组，发送分组</span><br><span class="line"></span><br><span class="line">路由器（分组交换机）：缓存分组，转发分组</span><br><span class="line"></span><br><span class="line">B：接收分组，还原报文</span><br></pre></td></tr></table></figure>
+<h2 id="分组交换"><a href="#分组交换" class="headerlink" title="分组交换"></a>分组交换</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">情景：A主机传输数据到B主机</span><br><span class="line"></span><br><span class="line">   A：将报文段拆分成更小的数据段，并加上首部，此时这个新的组合叫做分组，首部叫做包头；然后发送</span><br><span class="line"></span><br><span class="line">路由器：接收分组，比对首部信息，进行查表转发（存储转发）</span><br><span class="line"></span><br><span class="line">B：接收分组，并将首部去掉后的数据段进行组合，还原成初始报文</span><br><span class="line"></span><br><span class="line">A：构造分组，发送分组</span><br><span class="line"></span><br><span class="line">路由器（分组交换机）：缓存分组，转发分组</span><br><span class="line"></span><br><span class="line">B：接收分组，还原报文</span><br></pre></td></tr></table></figure>
 
 <h2 id="报文交换"><a href="#报文交换" class="headerlink" title="报文交换"></a>报文交换</h2><ul>
 <li>是分组交换的前身</li>
@@ -286,10 +277,6 @@ U=D/D0+D  ---&gt; D=D0/(1-U)
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/01/09/myArticle/">展开全文 >></a>
-        </p>
-      
 
       
       <div class="clearfix"></div>
@@ -360,10 +347,6 @@ U=D/D0+D  ---&gt; D=D0/(1-U)
       
       
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/01/09/hello-world/">展开全文 >></a>
-        </p>
       
 
       
@@ -443,8 +426,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
       
     
       
-      
-      
     
       
       
@@ -456,15 +437,13 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'friends')"><a href="javascript:void(0)" q-class="active:friends">友链</a></li>
-      
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
       
         
     </ul>
@@ -532,43 +511,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
 
     
-    	<section class="tools-section tools-section-friends" q-show="friends">
-  		
-        <ul class="search-ul">
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接1</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接2</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接3</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接4</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接5</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接6</a>
-            </li>
-          
-        </ul>
-  		
-    	</section>
-    
 
     
     	<section class="tools-section tools-section-me" q-show="aboutme">
   	  	
-  	  		<div class="aboutme-wrap" id="js-aboutme">很惭愧&lt;br&gt;&lt;br&gt;只做了一点微小的工作&lt;br&gt;谢谢大家</div>
+  	  		<div class="aboutme-wrap" id="js-aboutme">记住每时每刻&lt;br&gt;每分每秒&lt;br&gt;不要忘记过去&lt;br&gt;现在继续创造</div>
   	  	
     	</section>
     
