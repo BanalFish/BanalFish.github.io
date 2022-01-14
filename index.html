@@ -57,7 +57,7 @@
 		  <h1 class="header-author"><a href="/">BanalFish</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">ToyaDesuki</p>
+		<p class="header-subtitle">从所有的黑暗里</p>
 		
 
 		<nav class="header-menu">
@@ -109,7 +109,7 @@
 			  <h1 class="header-author js-header-author">BanalFish</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>ToyaDesuki<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>从所有的黑暗里<i class="icon icon-quo-right"></i></p>
 			
 			
 			
@@ -214,6 +214,10 @@
       
 
       
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/01/14/CPUnet3/">more >></a>
+        </p>
+      
 
       
       <div class="clearfix"></div>
@@ -265,6 +269,7 @@
 <p>在TCP/IP体系结构中，最核心的是IP协议：</p>
 <p><img src="https://s2.loli.net/2022/01/14/q1be954VlgmO7Zw.png" alt="下载1.png"></p>
 <hr>
+<h2 id="计算机网络体系结构分层的必要性"><a href="#计算机网络体系结构分层的必要性" class="headerlink" title="计算机网络体系结构分层的必要性"></a>计算机网络体系结构分层的必要性</h2>
         
           <a class="article-more-a" href="/2022/01/14/CPUnet2/#more">more >></a>
         
@@ -299,6 +304,10 @@
 	</div>
 
 
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/01/14/CPUnet2/">more >></a>
+        </p>
       
 
       
@@ -360,88 +369,9 @@
 但是不适合传输计算机资源，因为计算机资源往往突发地出现在通信链路上，当某用户编辑文件时，资源未被利用连接也一直保持，使资源利用率大大下降
 </code></pre>
 <h2 id="分组交换"><a href="#分组交换" class="headerlink" title="分组交换"></a>分组交换</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">情景：A主机传输数据到B主机</span><br><span class="line"></span><br><span class="line">A：将报文段拆分成更小的数据段，并加上首部，此时这个新的组合叫做分组，首部叫做包头；然后发送</span><br><span class="line"></span><br><span class="line">路由器：接收分组，比对首部信息，进行查表转发（存储转发）</span><br><span class="line"></span><br><span class="line">B：接收分组，并将首部去掉后的数据段进行组合，还原成初始报文</span><br><span class="line"></span><br><span class="line">A：构造分组，发送分组</span><br><span class="line"></span><br><span class="line">路由器（分组交换机）：缓存分组，转发分组</span><br><span class="line"></span><br><span class="line">B：接收分组，还原报文</span><br></pre></td></tr></table></figure>
-
-<h2 id="报文交换"><a href="#报文交换" class="headerlink" title="报文交换"></a>报文交换</h2><ul>
-<li>是分组交换的前身</li>
-</ul>
-<h3 id="优缺点比较"><a href="#优缺点比较" class="headerlink" title="优缺点比较"></a>优缺点比较</h3><table>
-<thead>
-<tr>
-<th>交换方式</th>
-<th>优点</th>
-<th>缺点</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>电路交换</td>
-<td>1. 通信时延小<br>2. 数据有序发送和接收<br>3. 没有冲突<br>4. 实时性强</td>
-<td>1. 建立连接时间长<br>2. 资源利用率低<br>3. 难以规格化（不同规格、速率之间的终端难以进行通信）</td>
-</tr>
-<tr>
-<td>分组交换</td>
-<td>1. 线路利用率高<br>2. 减少了出错概率和重发的数据量<br>3. 无需建立连接<br>4. 简化了存储管理<br>5. 加速传输</td>
-<td>1. 增加了转发时延<br>2. 还原成报文较麻烦<br>3. 可能出现丢包、乱序的现象<br>4. 传输了额外的信息</td>
-</tr>
-<tr>
-<td>报文交换</td>
-<td>1. 无需建立连接<br>2. 动态分配线路<br>3. 提高线路可靠性<br>4. 提高线路利用率</td>
-<td>1. 引起转发时延<br>2. 需要较大的存储缓存<br>3. 传输了额外的信息</td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="网络性能的八大指标"><a href="#网络性能的八大指标" class="headerlink" title="网络性能的八大指标"></a>网络性能的八大指标</h1><table>
-<thead>
-<tr>
-<th>指标名称</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>速率</td>
-<td>也称比特率/数据率</td>
-</tr>
-<tr>
-<td>带宽</td>
-<td>单位时间内最高速率，瞬时</td>
-</tr>
-<tr>
-<td>吞吐量</td>
-<td>单位时间内传输地最多数据量，积分</td>
-</tr>
-<tr>
-<td>时延</td>
-<td>1. 发送时延=分组长度/发送速率  2. 传播时延=信道长度/电磁波传播速率  3. 处理时延</td>
-</tr>
-<tr>
-<td>时延带宽积</td>
-<td>以比特为单位的链路长度</td>
-</tr>
-<tr>
-<td>往返时间</td>
-<td>RTT  —— Round-Trip-Time</td>
-</tr>
-<tr>
-<td>利用率</td>
-<td>信道利用率 、网络利用率</td>
-</tr>
-<tr>
-<td>丢包率</td>
-<td>原因：1. 分组误码   2. 网络拥塞</td>
-</tr>
-<tr>
-<td><br></td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="时延带宽积"><a href="#时延带宽积" class="headerlink" title="时延带宽积"></a>时延带宽积</h3><p>假设<strong>时延为2s</strong>，<strong>带宽为2bit/s</strong>，<strong>时延带宽积=4bit</strong>，即图中第2秒时信道内有4个bit<br><img src="https://api2.mubu.com/v3/document_image/ec1f900c-8e6c-4ea3-a95a-1feec95c649b-15701233.jpg"><br><br></p>
-<h3 id="利用率"><a href="#利用率" class="headerlink" title="利用率"></a>利用率</h3><pre><code>网络空闲时的时延为D0（无数据通过的时间），网络当前时延为D（可能有数据通过的时间）  则
-U=D/D0+D  ---&gt; D=D0/(1-U)
-</code></pre>
-<hr>
-<blockquote>
-<p>图片来自 <a target="_blank" rel="noopener" href="https://blog.csdn.net/ahLOG/article/details/116202211">白芷加茯苓的博客</a></p>
-</blockquote>
-
+        
+          <a class="article-more-a" href="/2022/01/09/CPUnet1/#more">more >></a>
+        
       
 
       
@@ -462,6 +392,10 @@ U=D/D0+D  ---&gt; D=D0/(1-U)
 
       
 
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/01/09/CPUnet1/">more >></a>
+        </p>
       
 
       
