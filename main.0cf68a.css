@@ -320,7 +320,7 @@ body {
 	line-height: 1.5;
 	color: #333;
 	background-color: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), 
-    url('sky-right.jfif') no-repeat 0% 0%/ cover;
+    url('sky.jfif') no-repeat 0% 0%/ cover;
 	min-height: 100%
 }
 
@@ -1599,7 +1599,7 @@ pre .css~* .id,pre .id {
 	margin: 0 30px;
 	padding-right: 60px;
 	border-bottom: 1px solid #eee;
-	background: #fff
+	background:  rgba(255,255,255,.5);
 }
 
 .archives-wrap:first-child {
@@ -1649,14 +1649,22 @@ pre .css~* .id,pre .id {
 	border-bottom: none
 }
 
+/* 丢弃之前的 */
+/*
 .archives .archive-article-title {
-	font-size: 16px;
-	color: #333;
-	transition: color .3s
+    font-size: 16px;
+    color: #333;
+    transition: color .3s
+*/
+/* 修改： */
+/* 分类页面的标题 */
+.archives .archive-article-title {
+    font-size:20px;
+    /* color:#333; */
+    transition:color .3s
 }
-
 .archives .archive-article-title:hover {
-	color: #657b83
+    /* color:#657b83 */
 }
 
 .archives .archive-article-title span {
@@ -2026,7 +2034,7 @@ pre .css~* .id,pre .id {
 }
 
 .article {
-	background: rgba( 255, 255, 255, .5); 
+	background: rgba(255,255,255,.5); 
 	margin: 30px;
 	position: relative;
 	border: 1px solid #ddd;
@@ -2068,7 +2076,7 @@ pre .css~* .id,pre .id {
 }
 
 .article-meta time {
-	color: #aaa
+	color: #2f2d2a
 }
 
 .article-meta time .icon-clock {
@@ -2082,19 +2090,64 @@ pre .css~* .id,pre .id {
 	float: right
 }
 
-.article-more-link a {
-	background: #4d4d4d;
-	color: #fff;
-	font-size: 12px;
-	padding: 5px 8px;
-	line-height: 16px;
-	border-radius: 2px;
-	transition: background .3s
+/* 《展开全文按钮 */
+ .article-more-link a {
+    color:#fff;
+    font-size:12px;
+    padding:5px 8px;
+    line-height:16px;
+    border-radius:2px;
+    /* Prevent highlight colour when element is tapped */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    /* Smooth fonts */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
+/* Shutter In Horizontal ,from : http://ianlunn.github.io/Hover/ */
+.hvr-shutter-in-horizontal {
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    position: relative;
+	/* 在鼠标悬浮时为：蓝色 */
+    background: #2098D1;
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+}
+.hvr-shutter-in-horizontal:before {
+    content:"";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+	/* 在默认情况下为：灰褐色 */
+    background: #4d4d4d;
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    -webkit-transform-origin: 50%;
+    transform-origin: 50%;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}
+.hvr-shutter-in-horizontal:hover, .hvr-shutter-in-horizontal:focus, .hvr-shutter-in-horizontal:active {
+    color: white;
+}
+.hvr-shutter-in-horizontal:hover:before, .hvr-shutter-in-horizontal:focus:before, .hvr-shutter-in-horizontal:active:before {
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+}
+/* 展开全文按钮》 */
 
-.article-more-link a:hover {
-	background: #3c3c3c
-}
 
 .article-more-link a.hidden {
 	visibility: hidden
