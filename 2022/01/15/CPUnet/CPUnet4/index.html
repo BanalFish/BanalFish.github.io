@@ -48,12 +48,16 @@
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
     <div class="left-col" q-class="show:isShow">
       
-<div class="overlay" style="background: #4d4d4d"></div>
+<!-- <div class="overlay" style="background: #00000"> -->
+<!-- 左侧边栏（上半部分）不设置背景颜色 -->
+<div class="overlay" >
 <div class="intrude-less">
 	<header id="header" class="inner">
-		<a href="/" class="profilepic">
-			<img src="/img/居然是力也发夹.jpg" class="js-avatar">
-		</a>
+		
+    		<div id="ds-reset" class="ds-post-self">
+    		<div class="ds-avatar" >
+    		<img src="/img/居然是力也发夹.jpg"></div></div>
+    		
 		
 		
 		<hgroup>
@@ -71,6 +75,19 @@
 				<li><a href="/archives/index.html">归档</a></li>
 	        
 			</ul>
+  			<script>
+        			var menu = document.getElementsByClassName('header-menu')[0];
+        			var lis = menu.children[0].getElementsByTagName('li');
+        			var n = lis.length
+        			var menu_icon = new Array()
+        			//这个menu_icon用来装图标，图标的类名都是下面“fa fa-xxx”，自行添加就行
+        			menu_icon[0]="<i class=\"fa fa-home\" aria-hidden=\"true\"></i> "
+		  			menu_icon[1]="<i class=\"fa fa-book\" aria-hidden=\"true\"></i> "
+        			for (var i = 0; i < n; i++){
+          			var temp = lis[i].children[0].innerHTML;
+          			lis[i].children[0].innerHTML = menu_icon[i] + temp;
+        			}
+			</script>
 		</nav>
 		<nav class="header-smart-menu">
     		
@@ -101,7 +118,7 @@
     <div class="mid-col" q-class="show:isShow,hide:isShow|isFalse">
       
 <nav id="mobile-nav">
-  	<div class="overlay js-overlay" style="background: #4d4d4d"></div>
+  	<div class="overlay js-overlay" style="background: #00000"></div>
 	<div class="btnctn js-mobile-btnctn">
   		<div class="slider-trigger list" q-on="click: openSlider(e)"><i class="icon icon-sort"></i></div>
 	</div>
@@ -342,6 +359,8 @@
     </div>
   </div>
 </footer>
+<!--页面点击小红心-->
+<script type="text/javascript" src="/love.js"></script>
     </div>
     <script>
 	var yiliaConfig = {
@@ -421,10 +440,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Navicat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">体系结构</a>
               </li>
              
@@ -433,15 +448,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Navicat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">心情小记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">idea</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ssm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">心情小记</a>
               </li>
             
             <div class="clearfix"></div>
