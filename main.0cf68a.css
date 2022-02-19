@@ -319,8 +319,11 @@ body {
 	font-family: Helvetica Neue,Helvetica,STHeiTi,Arial,sans-serif;
 	line-height: 1.5;
 	color: #333;
+	background-color: #fff;
+	/*
 	background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), 
     url('sky.jfif') no-repeat 0% 0%/ cover;
+	*/
 	min-height: 100%
 }
 
@@ -1659,9 +1662,9 @@ pre .css~* .id,pre .id {
 /* 修改： */
 /* 分类页面的标题 */
 .archives .archive-article-title {
-    font-size:20px;
+    font-size: 20px;
     /* color:#333; */
-    transition:color .3s
+    transition: color .3s
 }
 .archives .archive-article-title:hover {
     /* color:#657b83 */
@@ -2090,7 +2093,7 @@ pre .css~* .id,pre .id {
 	float: right
 }
 
-/* 《展开全文按钮 */
+/* 展开全文按钮 */
  .article-more-link a {
     color:#fff;
     font-size:12px;
@@ -4113,32 +4116,45 @@ a.pswp__share--download:hover {
 	text-decoration: underline
 }
 
-/*头像旋转*/
-#ds-reset .ds-avatar img{
-width:124px;height:124px; /*图像的长和宽*/
-border:5px solid #fff;
-border-radius: 62px;/*设置图像圆角效果,设置了超过width/2的像素，即为圆形*/
--webkit-border-radius: 62px;/*圆角效果：兼容webkit浏览器*/
--moz-border-radius:62px;
-box-shadow: inset 0 -1px 0 #3333sf;/*设置图像阴影效果*/
--webkit-box-shadow: inset 0 -1px 0 #3333sf;
--webkit-transition: 0.8s;
--webkit-transition: -webkit-transform 0.8s ease-out;
-transition: transform 0.8s ease-out;/*变化时间设置为0.8秒(变化动作即为下面的图像旋转360度）*/
--moz-transition: -moz-transform 0.8s ease-out;
-}
-#ds-reset .ds-avatar img:hover{/*鼠标悬浮在头像时的CSS样式*/
-transform: rotateZ(360deg);/*图像旋转360度*/
--webkit-transform: rotateZ(360deg);
--moz-transform: rotateZ(360deg);
+.declare {
+	background-color: #f0f8ff;
+	margin-top: 2em;
+	border-left: 3px solid #657b83;
+	padding: .5em 1em;
 }
 
-/**头像圆角*/
-#ds-reset .ds-avatar img{
-width:124px;height:124px; /*设置图像的长和宽*/
-border-radius: 62px;/*设置图像圆角效果*/
--webkit-border-radius: 62px;/*圆角效果*/
--moz-border-radius:62px;
-box-shadow: inset 0 -1px 0 #3333sf;/*设置图像阴影效果*/
--webkit-box-shadow: inset 0 -1px 0 #3333sf;
+
+/* 头像旋转 */
+.left-col #header .profilepic_rotate {
+	display: block;
+	border: 3px solid white;
+	border-radius: 300px;
+	width: 128px;
+	height: 128px;
+	margin: 0 auto;
+	position: relative;
+	overflow: hidden;
+	background: #88acdb;
+	-webkit-transition: all .2s ease-in;
+	display: -webkit-box;
+	-webkit-box-orient: horizontal;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	text-align: center
+}
+
+.left-col #header .profilepic_rotate img {
+	border-radius: 300px;
+	opacity: 1;
+    -webkit-transition: all .8s ease-out;
+    
+}
+
+.left-col #header .profilepic_rotate img.show {
+	width: 100%;
+	height: 100%;
+	opacity: 1
+}
+.left-col #header .profilepic_rotate img:hover {
+	transform: rotateZ(360deg);
 }
