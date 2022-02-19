@@ -318,9 +318,7 @@ body {
 	font-size: 14px;
 	font-family: Helvetica Neue,Helvetica,STHeiTi,Arial,sans-serif;
 	line-height: 1.5;
-	color: #333;
-	background-color: #fff;
-	
+	color: #333;	
 	background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), 
     url('sky.jfif') no-repeat 0% 0%/ cover;
 	
@@ -2043,7 +2041,6 @@ pre .css~* .id,pre .id {
 	border: 1px solid #ddd;
 	border-top: 1px solid #fff;
 	border-bottom: 1px solid #fff;
-	background: #fff;
 	transition: all .2s ease-in
 }
 
