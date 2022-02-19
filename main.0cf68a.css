@@ -808,7 +808,7 @@ body {
 
 .left-col {
 	background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-    url('sky-left.jfi') no-repeat 0% 20%/ cover;
+    url('sky-left.jfif') no-repeat 0% 20%/ cover;
 	/*background: #fff;*/
 	width: 300px;
 	position: fixed;
