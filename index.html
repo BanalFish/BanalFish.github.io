@@ -154,6 +154,248 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Java/String" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/22/Java/String/">String Pool</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/22/Java/String/" class="archive-article-date">
+  	<time datetime="2022-02-22T12:23:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="String不可变原因"><a href="#String不可变原因" class="headerlink" title="String不可变原因"></a>String不可变原因</h3><ol>
+<li>String类被final修饰，不可被继承，因此不会有子类重写的可能</li>
+<li>String类中以char数组（Java8，Java9为byte数组）保存数据，同时这个成员变量也以final修饰</li>
+<li>类中没有可以修改数组的方法</li>
+</ol>
+<h3 id="不可变的好处"><a href="#不可变的好处" class="headerlink" title="不可变的好处"></a>不可变的好处</h3><ol>
+<li>缓存哈希值：当hashMap中的键是String类型时，通过哈希函数计算出的hash值不可变，只用计算一次</li>
+<li>String Pool的需要：String Pool的前提就是String不可变，当多个引用指向同一个对象时，如果可变，修改之后会对其他的功能造成影响</li>
+<li>线程安全：由于不可变，所以是线程安全的</li>
+<li>安全：当网络参数是String时，如果可变，服务器就会连接上错误的主机</li>
+</ol>
+<h5 id="什么是哈希表"><a href="#什么是哈希表" class="headerlink" title="什么是哈希表"></a>什么是哈希表</h5><p>是根据key而直接访问在存储位置的数据结构，也就是说，它通过计算一个关于键值的函数，将所需查询的数据映射到表中一个位置来访问记录。这个映射函数称做散列函数，存放记录的数组称做散列表。</p>
+<p>类比电话簿查找号码，名字是key，号码是value，函数关系是“取首字母”。</p>
+<p>现实生活中，有很多非int的关键字，哈希（hash）函数帮助把非int转为int，可以用来做数组的下标。同时hash(int i)还可以对所得的hashCode()返回值进行运算，减小put时产生的冲突</p>
+<h3 id="String-Pool"><a href="#String-Pool" class="headerlink" title="String Pool"></a>String Pool</h3><h4 id="·-两种方式"><a href="#·-两种方式" class="headerlink" title="· 两种方式"></a>· 两种方式</h4><p>创建一个字符串对象有两种方式：</p>
+<ol>
+<li><p>字面值的方式复制，例如</p>
+<blockquote>
+<p>String str1=”aaa”; </p>
+</blockquote>
+</li>
+<li><p>new关键字新建</p>
+<blockquote>
+<p>String str2=new String(“aaa”);</p>
+</blockquote>
+</li>
+</ol>
+<p>使用第一种方式时，JVM会先在字符串池中检查有没有已经存在相同值的对象，有则直接返回，没有则在<strong>池</strong>中创建一个，再返回地址。</p>
+<p>使用第二种方式时，JVM同样检查有没有存在，有则直接在<strong>堆</strong>中创建一个对象再返回，没有则先在<strong>池</strong>中创建后，再在<strong>堆</strong>中创建再返回。</p>
+<h4 id="·-优缺点"><a href="#·-优缺点" class="headerlink" title="· 优缺点"></a>· 优缺点</h4><p>优点：避免了相同内容字符串的创建，节省了内存，提升了性能</p>
+<p>缺点：牺牲了JVM在常量池中遍历对象所需要的时间，不过相对而言时间成本较低</p>
+<h4 id="·-intern-方法"><a href="#·-intern-方法" class="headerlink" title="· intern()方法"></a>· intern()方法</h4><p>intern 方法会从字符串常量池中查询当前字符串是否存在，若不存在就会将当前字符串放入常量池中。<br>根据<a target="_blank" rel="noopener" href="https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html">深入理解intern</a>，个人理解是：jdk6的s.intern()方法是：池中的对象存储的是s的字面值，而在jdk7中，存储的是s的地址。</p>
+<p>猜想：而且，heap区和perm区的地址肯定不一样，不管有没有intern（文中的“所以拿一个 JAVA Heap 区域的对象地址和字符串常量池的对象地址进行比较肯定是不相同的，即使调用String.intern方法也是没有任何关系的。”一句）。</p>
+<p>所以当pool在perm区时，实例的string内容是调用者的字面值，不然无法获取到调用者的内容；而jdk7将pool放到heap区后，实例的string存放地址，由于在同在heap区，所以可以根据地址找到字面值。</p>
+<h3 id="String-Pool在哪里"><a href="#String-Pool在哪里" class="headerlink" title="String Pool在哪里"></a>String Pool在哪里</h3><p>通过上述了解，我想知道JVM具体的内存分布如何 以及 String Pool在哪里</p>
+<p><img src="https://s2.loli.net/2022/02/22/ItSUKXVuDWcREYz.png" alt="image.png"></p>
+<ol>
+<li><p>Heap(堆)存储几乎所有的实例对象，由垃圾收集器自动回收，堆区由各子线程共享使用。通常情况下，它所占用的空间是所有内存区域中最大的，其大小可以动态调整。</p>
+</li>
+<li><p>Method Area(方法区)被所有线程共享，用来存储JVM加载的类信息、常量、静态变量等编译后的代码数据。</p>
+<p> Java6和6之前，常量池存放在方法区(永久代)中<br> Java7，常量池存放在堆中<br> Java8之后，取消了永久代区域，以元空间取代。运行时常量池和静态常量池存放在元空间，字符串常量池依然存放在堆中</p>
+</li>
+</ol>
+<blockquote>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/fangfuhai/p/5500065.html">Java字符串池深度解析</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/101495810">JVM内存模型</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/wanderlustLee/article/details/80762851">JVM中常量池存放在哪里</a><br><a target="_blank" rel="noopener" href="https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html">深入理解intern</a></p>
+</blockquote>
+<blockquote>
+<p>好文顶顶：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44494373/article/details/108660015">Java字符串存储在哪里</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">String Pool</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/02/22/Java/String/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java/基本类型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/22/Java/%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">基本类型</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/22/Java/%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" class="archive-article-date">
+  	<time datetime="2022-02-22T12:19:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Java八种基本类型"><a href="#Java八种基本类型" class="headerlink" title="Java八种基本类型"></a>Java八种基本类型</h3><p>后面的数字代表几个比特</p>
+<p>byte/8<br>char/16<br>short/16<br>int/32<br>float/32<br>double/64<br>long/64<br>boolean/~  </p>
+<p>boolean占多少字节依赖于JVM的具体实现，符合规范的虚拟机是1字节或者4字节：</p>
+<ol>
+<li><p>当Boolean类型数据是数组中的元素时，占一个字节，因为计算机处理数据的最小单位是一字节</p>
+</li>
+<li><p>当Boolean是在Java语言表达式中时，是四字节</p>
+</li>
+</ol>
+<h3 id="缓存池"><a href="#缓存池" class="headerlink" title="缓存池"></a>缓存池</h3><p>new Integer()和Integer.valueOf()的区别在于：</p>
+<ol>
+<li><p>new 会在堆中创建一个新对象</p>
+</li>
+<li><p>.valueOf()会使用缓存池中的对象，多次调用会取得同一个对象的引用。</p>
+<p> 实现为：先判断传参是否在池中存在，存在则直接返回池中对象。<br> Java8中，Integer缓存池的大小为-128~127，但是在jdk1.8及之后，上界可以自定义。</p>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">基本类型</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/02/22/Java/%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-hexo/yilia" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -807,80 +1049,10 @@
 
 
   
-    <article id="post-CPUnet/CPUnet1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/09/CPUnet/CPUnet1/">计算机网络交换方式及评价指标</a>
-    </h1>
-  
-
-        
-        <a href="/2022/01/09/CPUnet/CPUnet1/" class="archive-article-date">
-  	<time datetime="2022-01-09T14:22:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="因特网组成"><a href="#因特网组成" class="headerlink" title="因特网组成"></a><strong>因特网组成</strong></h1>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">计算机网络</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/01/09/CPUnet/CPUnet1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
+    </nav>
   
 
 
@@ -1007,6 +1179,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">String Pool</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">基本类型</a>
               </li>
             
             <div class="clearfix"></div>
