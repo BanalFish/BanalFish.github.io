@@ -23,7 +23,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.loli.net/2022/02/12/VaTgIWuF1beviUB.png">
 <meta property="article:published_time" content="2022-02-08T12:26:51.000Z">
-<meta property="article:modified_time" content="2022-02-19T08:11:53.828Z">
+<meta property="article:modified_time" content="2022-03-03T11:20:02.037Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="idea">
 <meta property="article:tag" content="ssm">
@@ -213,7 +213,7 @@
 <p>  靠人不如靠己，我细细想了想，每次都弹出“登陆成功”，只是跳转有问题，jsp页面的跳转语句window.location.href的写法肯定也没错，那就只能是这个shiro发病了，连我内部的跳转地址都拦！</p>
 <p>  当然不是shiro发病，是我还没学明白shiro/(ㄒoㄒ)/~~</p>
 <p>  <img src="https://s2.loli.net/2022/02/12/VaTgIWuF1beviUB.png" alt="代码.png"></p>
-<p>  这个是LoginController代码图片，注释的是我之前写的，嗯就是shiro没学明白，只把UserRealm和ShiroConfig写好但是这里没改，底下同样得用上Shiro的相关语句来写，才能让Shiro不拦截我内部跳转的地址栏。</p>
+<p>  这个是LoginController代码图片，注释的是我之前写的，嗯就是shiro没学明白，只把UserRealm和ShiroConfig写好但是这里没改，<strong>底下同样得用上Shiro的相关语句来写，才能让Shiro不拦截我内部跳转的地址栏</strong>。</p>
 <p>  不过原理是啥我完全不懂，哈哈(^_−)☆看见有博客说是</p>
 <blockquote>
 <p>每个shiro拦截到的请求，都会根据seesionid创建Subject,清除当前线程的绑定，然后重新绑定的线程中，之后执行过滤器</p>
@@ -247,6 +247,17 @@
 	</div>
 
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -456,10 +467,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Navicat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">计算机网络</a>
               </li>
              
@@ -468,7 +475,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ssm</a>
+                <a href="javascript:void(0)" class="js-tag color2">vscode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">ruoyi</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -480,19 +491,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">心情小记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">yilia</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+                <a href="javascript:void(0)" class="js-tag color4">ssm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -504,7 +503,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Navicat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">心情小记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">基本类型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">yilia</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
             
             <div class="clearfix"></div>

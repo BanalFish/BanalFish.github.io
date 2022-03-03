@@ -12,17 +12,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Category: 计算机网络 | BanalFish游向银河</title>
+  <title>启动若依 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="从所有的黑暗里">
-<meta property="og:type" content="website">
-<meta property="og:title" content="BanalFish游向银河">
-<meta property="og:url" content="http://example.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.html">
+  <meta name="description" content="前言  出于想把暑假时间空出来的原因，于是报名去了老师的项目，第一周是先熟悉若依系统代码，总之先从安装好前后端分离项目、能够正常启动开始吧(￣▽￣)／">
+<meta property="og:type" content="article">
+<meta property="og:title" content="启动若依">
+<meta property="og:url" content="http://example.com/2022/03/03/Idea/ruoyi/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="从所有的黑暗里">
+<meta property="og:description" content="前言  出于想把暑假时间空出来的原因，于是报名去了老师的项目，第一周是先熟悉若依系统代码，总之先从安装好前后端分离项目、能够正常启动开始吧(￣▽￣)／">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-03T11:20:51.000Z">
+<meta property="article:modified_time" content="2022-03-03T11:49:37.940Z">
 <meta property="article:author" content="BanalFish">
-<meta property="article:tag" content="后端">
+<meta property="article:tag" content="idea">
+<meta property="article:tag" content="vscode">
+<meta property="article:tag" content="ruoyi">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
@@ -152,177 +156,210 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Idea/ruoyi" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2022" class="archive-year">2022</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/01/15/CPUnet/CPUnet4/" class="archive-article-date">
-  	<time datetime="2022-01-15T09:14:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-15</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/01/15/CPUnet/CPUnet4/">数据链路层</a>
+    <h1 class="article-title" itemprop="name">
+      启动若依
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2022/03/03/Idea/ruoyi/" class="archive-article-date">
+  	<time datetime="2022-03-03T11:20:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>  出于想把暑假时间空出来的原因，于是报名去了老师的项目，第一周是先熟悉若依系统代码，总之先从安装好前后端分离项目、能够正常启动开始吧(￣▽￣)／</p>
+<span id="more"></span>
+
+<h3 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h3><blockquote>
+<p>操作步骤来自老师发的<a target="_blank" rel="noopener" href="https://mubu.com/doc/1rxbzNg5dOs">Ruoyi前后端分离</a></p>
+</blockquote>
+<p>实际上当时没看群消息的俺不知道有这个链接的存在，于是开始是在自己摸索，期间报了很多错，还改了代码才没报红，但就是运行错误，后来又删又下经过三遍后，我实在太崩溃了，经室友提醒才知道还有这么个链接的存在（汗(￣ω￣;)</p>
+<h3 id="后端报错"><a href="#后端报错" class="headerlink" title="后端报错"></a>后端报错</h3><p>印象最深的报错就是</p>
+<blockquote>
+<p>java.util.concurrent.ExecutionException: org.apache.catalina.LifecycleException: Failed to start component [NonLoginAuthenticator[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]]</p>
+</blockquote>
+<p>最底下是</p>
+<blockquote>
+<p>Description:</p>
+<p>…</p>
+<p>location:</p>
+<p>…</p>
+<p>Action:</p>
+<p>Correct the classpath of your application so that it &gt;contains a single, compatible version of</p>
+</blockquote>
+<p>of后面接的是javax.Servlet啥啥啥，在网上找了很久，大概意思就是jar包冲突，于是去翻了maven包引用的结构图，找了半天也没找到有哪个包冲突；</p>
+<p>还有说是版本不对、去改标签等等等等，试了很多方法都无法解决，我心情崩大溃了，想起之前好多次在网上找不到解决办法，自己瞎捣鼓最后解决的事情，于是我决定自己再去尝试解决（捣鼓）(；￣д￣)</p>
+<p>最后我把<strong>File-&gt;Project Structure-&gt;SDKs里，右边classpath下最底下的tomcat包删了后</strong>，就好了。</p>
+<p>就很emmm不过也确实，报错的具体内容就说Tomcat咋咋咋了，而且由之前搜到的博客说<strong>jar包冲突</strong>，这样也很有道理。</p>
+<h3 id="记忆"><a href="#记忆" class="headerlink" title="记忆"></a>记忆</h3><p>还想起来一个事，昨天安装redis启动后，报错没有密码，兜兜转转又搞了半天，发现我把应该<strong>改密码的文件搞错</strong>了。</p>
+<p>本来应该改redis.windows.conf文件，但是眼花改了redis.windows-service.conf文件。</p>
+<p>所以选择性眼盲这种病是真实存在的，并且有这个事情作为科学例证(・ω・｀ll)</p>
+<h3 id="前端报错"><a href="#前端报错" class="headerlink" title="前端报错"></a>前端报错</h3><p>下载VSCode后，运行</p>
+<blockquote>
+<p>npm install –registry=<a target="_blank" rel="noopener" href="https://registry.npm.taobao.org/">https://registry.npm.taobao.org</a></p>
+</blockquote>
+<p>时，报错找不到package.json文件，于是去搜，自己生成了一个package.json，后来又有脚本无法执行，依旧搜了解决方法。在我以为自己离成功不远时，启动项目后一直是Vue的默认页面，无法进入ruoyi；然后室友过来看说我<strong>打开的文件打开错了，要打开ruoyi下面的ruoyi-ui</strong>，直接开得总的是不对的，果然打开底下的子文件夹后，什么package.json也有了，也不报错了，也成功进入了系统等等不提。</p>
+<p>不仔细看东西真的是俺硬伤(Ｔ▽Ｔ)</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">计算机网络</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/计算机网络//" class="article-tag-list-link color1">计算机网络</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/01/14/CPUnet/CPUnet3/" class="archive-article-date">
-  	<time datetime="2022-01-14T08:32:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/01/14/CPUnet/CPUnet3/">物理层</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">计算机网络</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">物理层</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/计算机网络//" class="article-tag-list-link color1">计算机网络</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/01/14/CPUnet/CPUnet2/" class="archive-article-date">
-  	<time datetime="2022-01-14T03:17:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/01/14/CPUnet/CPUnet2/">计算机网络体系结构</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">计算机网络</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">vscode</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">体系结构</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">ruoyi</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/计算机网络//" class="article-tag-list-link color1">计算机网络</a>
+        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/03/03/Idea/ruoyi/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2022/02/22/Java/String/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">String Pool</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4"><span class="toc-number">2.</span> <span class="toc-text">操作步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF%E6%8A%A5%E9%94%99"><span class="toc-number">3.</span> <span class="toc-text">后端报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%B0%E5%BF%86"><span class="toc-number">4.</span> <span class="toc-text">记忆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E6%8A%A5%E9%94%99"><span class="toc-number">5.</span> <span class="toc-text">前端报错</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -345,10 +382,10 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
-		isCategory: true,
+		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
 		root: "/",

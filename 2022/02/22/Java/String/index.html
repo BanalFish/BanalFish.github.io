@@ -14,16 +14,16 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>String Pool | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="String不可变原因 String类被final修饰，不可被继承，因此不会有子类重写的可能 String类中以char数组（Java8，Java9为byte数组）保存数据，同时这个成员变量也以final修饰 类中没有可以修改数组的方法  不可变的好处 缓存哈希值：当hashMap中的键是String类型时，通过哈希函数计算出的hash值不可变，只用计算一次 String Pool的需要：Stri">
+  <meta name="description" content="String不可变原因">
 <meta property="og:type" content="article">
 <meta property="og:title" content="String Pool">
 <meta property="og:url" content="http://example.com/2022/02/22/Java/String/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="String不可变原因 String类被final修饰，不可被继承，因此不会有子类重写的可能 String类中以char数组（Java8，Java9为byte数组）保存数据，同时这个成员变量也以final修饰 类中没有可以修改数组的方法  不可变的好处 缓存哈希值：当hashMap中的键是String类型时，通过哈希函数计算出的hash值不可变，只用计算一次 String Pool的需要：Stri">
+<meta property="og:description" content="String不可变原因">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.loli.net/2022/02/22/ItSUKXVuDWcREYz.png">
 <meta property="article:published_time" content="2022-02-22T12:23:42.000Z">
-<meta property="article:modified_time" content="2022-02-22T14:51:52.982Z">
+<meta property="article:modified_time" content="2022-02-27T09:22:42.887Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="String Pool">
@@ -177,7 +177,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="String不可变原因"><a href="#String不可变原因" class="headerlink" title="String不可变原因"></a>String不可变原因</h3><ol>
+        <h3 id="String不可变原因"><a href="#String不可变原因" class="headerlink" title="String不可变原因"></a>String不可变原因</h3><span id="more"></span>
+
+<ol>
 <li>String类被final修饰，不可被继承，因此不会有子类重写的可能</li>
 <li>String类中以char数组（Java8，Java9为byte数组）保存数据，同时这个成员变量也以final修饰</li>
 <li>类中没有可以修改数组的方法</li>
@@ -324,6 +326,15 @@
   
 <nav id="article-nav">
   
+    <a href="/2022/03/03/Idea/ruoyi/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          启动若依
+        
+      </div>
+    </a>
+  
   
     <a href="/2022/02/22/Java/%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">基本类型</div>
@@ -461,10 +472,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Navicat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">计算机网络</a>
               </li>
              
@@ -473,7 +480,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ssm</a>
+                <a href="javascript:void(0)" class="js-tag color2">vscode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">ruoyi</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -485,19 +496,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">心情小记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">yilia</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+                <a href="javascript:void(0)" class="js-tag color4">ssm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -509,7 +508,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Navicat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">心情小记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">基本类型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">yilia</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
             
             <div class="clearfix"></div>
