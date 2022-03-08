@@ -12,17 +12,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Tag: Navicat | BanalFish游向银河</title>
+  <title>ssm项目报错 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="从所有的黑暗里">
-<meta property="og:type" content="website">
-<meta property="og:title" content="BanalFish游向银河">
-<meta property="og:url" content="http://example.com/tags/Navicat/index.html">
+  <meta name="description" content="前言  接着在写之前的考试系统代码，目前写到课程管理的增加课程方法，但是之前就一直运行报错，今天下午主要在完善这个功能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ssm项目报错">
+<meta property="og:url" content="http://example.com/2022/03/08/Idea/ssm2/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="从所有的黑暗里">
+<meta property="og:description" content="前言  接着在写之前的考试系统代码，目前写到课程管理的增加课程方法，但是之前就一直运行报错，今天下午主要在完善这个功能。">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-08T10:04:51.000Z">
+<meta property="article:modified_time" content="2022-03-08T10:31:36.890Z">
 <meta property="article:author" content="BanalFish">
-<meta property="article:tag" content="后端">
+<meta property="article:tag" content="idea">
+<meta property="article:tag" content="ssm">
+<meta property="article:tag" content="testsys">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
@@ -152,71 +156,214 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Idea/ssm2" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2022" class="archive-year">2022</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/01/23/Navicat/Navicat1/" class="archive-article-date">
-  	<time datetime="2022-01-23T12:12:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-23</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/01/23/Navicat/Navicat1/">Navicat报错汇总</a>
+    <h1 class="article-title" itemprop="name">
+      ssm项目报错
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2022/03/08/Idea/ssm2/" class="archive-article-date">
+  	<time datetime="2022-03-08T10:04:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>  接着在写之前的考试系统代码，目前写到课程管理的<strong>增加课程</strong>方法，但是之前就一直运行报错，今天下午主要在完善这个功能。</p>
+<span id="more"></span>
+
+<h3 id="前台获取日期数据"><a href="#前台获取日期数据" class="headerlink" title="前台获取日期数据"></a>前台获取日期数据</h3><p>考虑到创建一门新的课程，需要传入“创建日期”，于是最初设想是由前端自动获取传入controller，于是在add.jsp这个页面写了一些script，但是报错400</p>
+<blockquote>
+<p>400: The request sent by the client was syntactically incorrect.</p>
+</blockquote>
+<p>搜到<a href="!https://www.cnblogs.com/xym4869/p/8494981.html">帖子</a>的解释，于是改了半天jsp获取当前时间的方法，还是报错。</p>
+<p>又看了一遍刚刚的博客，发现他的日期是用</p>
+<blockquote>
+<p>input type=”date”</p>
+</blockquote>
+<p>虽然与我最初的设想：系统自动获取不需要手动点击，有些出入，但为了能够跑通，还是使用了这个标签的方法。</p>
+<h3 id="mapper接口写错"><a href="#mapper接口写错" class="headerlink" title="mapper接口写错"></a>mapper接口写错</h3><p>之后每次传新增的课程信息总是会报这个错：</p>
+<blockquote>
+<p>There is no getter for property named ‘course’ in ‘class cn.code.testsys.domain.Course’</p>
+</blockquote>
+<p>搜索的大部分方法都是类的属性名与数据库对应不上，所以更改名称即可解决。</p>
+<p>但是发现我的报错和大部分报错内容不一样，这个报错的大致意思是：属性course不能从Course类中返回，但是这怎么可能呢？我的实体怎么变成了属性呢？</p>
+<p>于是终于再次提炼关键语句搜索，找到了<a href="!https://www.jianshu.com/p/b61d0bc7516e">可以解决的帖子</a></p>
+<p>原因在于缺少@Param注解</p>
+<blockquote>
+<p>@Param注解功能：在方法参数的前面写上@Param(“参数名”),表示给参数命名,名称就是括号中的内容。</p>
+<p>来自<a href="!https://www.cnblogs.com/thomas12112406/p/6217211.html">mybatis中@Param的用法和作用</a></p>
+</blockquote>
+<p>这个时候我反应过来了，由于框架知识已经有部分忘却，于是是照着之前的实训项目写的。当时写的时候发现mapper接口类每一个方法前面都有一个注释，类似</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line">    * 插入课程信息</span><br><span class="line">    * @param course</span><br><span class="line">    */</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我当时觉得底下那个@Param很多余，于是自己写的时候都给删了，还觉得自己真是个小机灵鬼，殊不知这里反咬我一口￣へ￣</p>
+<p>回想前面的帖子，哪次不是由于知识掌握不牢，找好久的错＼(；￢_￢)</p>
+<h3 id="数据库表自增"><a href="#数据库表自增" class="headerlink" title="数据库表自增"></a>数据库表自增</h3><p>来都后面，报错</p>
+<blockquote>
+<p>Field ‘id’ doesn’t have a default value; nested exception is java.sql.SQLException: Field ‘id’ doesn</p>
+</blockquote>
+<p>我一看，哈哈，数据库报错，问题不大(￣▽￣)／</p>
+<p>搜索后原来是数据库表Id没有设置自增，但是我去改的时候，由于外键的原因改起来总是报错，于是只好删了所有的表，重新又设置创建了一遍数据及关系，其间枯燥略去不提(^し^)</p>
+<p>最后Navicat还卡死，电脑键盘无法输入等问题一一解决(ｖ＾＿＾)ｖ</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Navicat</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ssm</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">testsys</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Navicat操作//" class="article-tag-list-link color5">Navicat操作</a>
+        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/03/08/Idea/ssm2/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2022/03/05/Idea/maven404/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">maven404</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E5%8F%B0%E8%8E%B7%E5%8F%96%E6%97%A5%E6%9C%9F%E6%95%B0%E6%8D%AE"><span class="toc-number">2.</span> <span class="toc-text">前台获取日期数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mapper%E6%8E%A5%E5%8F%A3%E5%86%99%E9%94%99"><span class="toc-number">3.</span> <span class="toc-text">mapper接口写错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E8%87%AA%E5%A2%9E"><span class="toc-number">4.</span> <span class="toc-text">数据库表自增</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -239,9 +386,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
