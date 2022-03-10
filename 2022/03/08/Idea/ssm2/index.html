@@ -22,7 +22,7 @@
 <meta property="og:description" content="前言  接着在写之前的考试系统代码，目前写到课程管理的增加课程方法，但是之前就一直运行报错，今天下午主要在完善这个功能。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-08T10:04:51.000Z">
-<meta property="article:modified_time" content="2022-03-10T08:09:10.989Z">
+<meta property="article:modified_time" content="2022-03-10T09:06:58.722Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="idea">
 <meta property="article:tag" content="ssm">
@@ -247,7 +247,7 @@
 <p>最终成功，没有报空。<strong>关于为什么会这样，搜索了@Param的用法，但是没有找到让我信服的解释。</strong></p>
 <h3 id="数据库表自增"><a href="#数据库表自增" class="headerlink" title="数据库表自增"></a>数据库表自增</h3><p>来都后面，报错</p>
 <blockquote>
-<p>Field ‘id’ doesn’t have a default value; nested exception is java.sql.SQLException: Field ‘id’ doesn</p>
+<p>Field ‘id’ doesn’t have a default value; nested exception is java.sql.SQLException: Field ‘id’ doesn’t have a default value</p>
 </blockquote>
 <p>我一看，哈哈，数据库报错，问题不大(￣▽￣)／</p>
 <p>搜索后原来是数据库表Id没有设置自增，但是我去改的时候，由于外键的原因改起来总是报错，于是只好删了所有的表，重新又设置创建了一遍数据及关系，其间枯燥略去不提(^し^)</p>
