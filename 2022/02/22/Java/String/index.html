@@ -23,7 +23,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.loli.net/2022/02/22/ItSUKXVuDWcREYz.png">
 <meta property="article:published_time" content="2022-02-22T12:23:42.000Z">
-<meta property="article:modified_time" content="2022-03-03T11:55:07.129Z">
+<meta property="article:modified_time" content="2022-03-15T08:37:48.240Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="String Pool">
@@ -210,16 +210,30 @@
 <p>使用第二种方式时，JVM同样检查有没有存在，有则直接在<strong>堆</strong>中创建一个对象再返回，没有则先在<strong>池</strong>中创建后，再在<strong>堆</strong>中创建再返回。</p>
 <h4 id="·-优缺点"><a href="#·-优缺点" class="headerlink" title="· 优缺点"></a>· 优缺点</h4><p>优点：避免了相同内容字符串的创建，节省了内存，提升了性能</p>
 <p>缺点：牺牲了JVM在常量池中遍历对象所需要的时间，不过相对而言时间成本较低</p>
-<h4 id="·-intern-方法"><a href="#·-intern-方法" class="headerlink" title="· intern()方法"></a>· intern()方法</h4><p>intern 方法会从字符串常量池中查询当前字符串是否存在，若不存在就会将当前字符串放入常量池中。<br>根据<a target="_blank" rel="noopener" href="https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html">深入理解intern</a>，个人理解是：jdk6的s.intern()方法是：池中的对象存储的是s的字面值，而在jdk7中，存储的是s的地址。</p>
-<p>猜想：而且，heap区和perm区的地址肯定不一样，不管有没有intern（文中的“所以拿一个 JAVA Heap 区域的对象地址和字符串常量池的对象地址进行比较肯定是不相同的，即使调用String.intern方法也是没有任何关系的。”一句）。</p>
-<p>所以当pool在perm区时，实例的string内容是调用者的字面值，不然无法获取到调用者的内容；而jdk7将pool放到heap区后，实例的string存放地址，由于在同在heap区，所以可以根据地址找到字面值。</p>
+<h4 id="·-intern-方法"><a href="#·-intern-方法" class="headerlink" title="· intern()方法"></a>· intern()方法</h4><p>intern 方法会从字符串常量池中<strong>查询</strong>当前字符串是否存在，若不存在就会将当前字符串<strong>放入</strong>常量池中。</p>
+<p>根据<a target="_blank" rel="noopener" href="https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html">深入理解intern</a>，jdk7对字符串常量池做出的改变有：</p>
+<ol>
+<li>将原本放在<strong>永久代</strong>的字符串常量池移到了<strong>堆</strong>中</li>
+<li>当再将字符串放入池中时，<strong>不再新建一个对象保存，而是保存它的地址</strong></li>
+</ol>
+<p>而且，heap区和perm区的地址肯定不一样，不管有没有intern（文中的“所以拿一个 JAVA Heap 区域的对象地址和字符串常量池的对象地址进行比较肯定是不相同的，即使调用String.intern方法也是没有任何关系的。”一句）。</p>
+<blockquote>
+<p>对链接的代码分析见之后的一篇《String的itern方法》</p>
+</blockquote>
 <h3 id="String-Pool在哪里"><a href="#String-Pool在哪里" class="headerlink" title="String Pool在哪里"></a>String Pool在哪里</h3><p>通过上述了解，我想知道JVM具体的内存分布如何 以及 String Pool在哪里</p>
 <p><img src="https://s2.loli.net/2022/02/22/ItSUKXVuDWcREYz.png" alt="image.png"></p>
 <ol>
 <li><p>Heap(堆)存储几乎所有的实例对象，由垃圾收集器自动回收，堆区由各子线程共享使用。通常情况下，它所占用的空间是所有内存区域中最大的，其大小可以动态调整。</p>
 </li>
 <li><p>Method Area(方法区)被所有线程共享，用来存储JVM加载的类信息、常量、静态变量等编译后的代码数据。</p>
-<p> Java6和6之前，常量池存放在方法区(永久代)中<br> Java7，常量池存放在堆中<br> Java8之后，取消了永久代区域，以元空间取代。运行时常量池和静态常量池存放在元空间，字符串常量池依然存放在堆中</p>
+<ul>
+<li><p>Java6和6之前，字符串常量池存放在方法区(永久代)中</p>
+</li>
+<li><p>Java7，字符串常量池存放在堆中</p>
+</li>
+<li><p>Java8之后，取消了永久代区域，取而代之的是元空间。<strong>字符串常量池依然存放在堆</strong>中。运行时常量池和静态变量都存储到了堆中，元空间存储类的元数据，MetaSpace直接在本地内存中（Native memory），这样类的元数据分配只受本地内存大小的限制，OOM问题就不存在了。</p>
+</li>
+</ul>
 </li>
 </ol>
 <blockquote>
@@ -545,6 +559,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">心情小记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">GC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">intern</a>
               </li>
             
             <div class="clearfix"></div>

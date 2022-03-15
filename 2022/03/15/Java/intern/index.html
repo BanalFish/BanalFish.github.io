@@ -12,21 +12,27 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>maven404 | BanalFish游向银河</title>
+  <title>String的itern方法 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言clone了学长搭建的前端代码后，根本没有用过egg框架的我懵了。试着点了启动，但是报Tomcat错误，想起前几天为了启动若依，移除了SDKs下的Tomcat，于是试着启动实训时候的正常项目想找出错误。">
+  <meta name="description" content="前言看了上篇的字符串常量池，对案例代码仍然没有理解地很透彻，找了很多资料后，终于明白，特此记录。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="maven404">
-<meta property="og:url" content="http://example.com/2022/03/05/Idea/maven404/index.html">
+<meta property="og:title" content="String的itern方法">
+<meta property="og:url" content="http://example.com/2022/03/15/Java/intern/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="前言clone了学长搭建的前端代码后，根本没有用过egg框架的我懵了。试着点了启动，但是报Tomcat错误，想起前几天为了启动若依，移除了SDKs下的Tomcat，于是试着启动实训时候的正常项目想找出错误。">
+<meta property="og:description" content="前言看了上篇的字符串常量池，对案例代码仍然没有理解地很透彻，找了很多资料后，终于明白，特此记录。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-03-05T09:01:51.000Z">
-<meta property="article:modified_time" content="2022-03-05T09:05:31.824Z">
+<meta property="og:image" content="https://s2.loli.net/2022/03/15/Hm2TvwJ7gXtIKR9.png">
+<meta property="og:image" content="https://s2.loli.net/2022/03/15/31EeGQNH8IxZCJW.png">
+<meta property="og:image" content="https://s2.loli.net/2022/03/15/TFMgxVfpPwDhiKJ.png">
+<meta property="og:image" content="https://s2.loli.net/2022/03/15/vfiDUjOCSecLgxM.png">
+<meta property="article:published_time" content="2022-03-15T08:35:22.000Z">
+<meta property="article:modified_time" content="2022-03-15T09:07:28.181Z">
 <meta property="article:author" content="BanalFish">
-<meta property="article:tag" content="idea">
-<meta property="article:tag" content="maven">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="String Pool">
+<meta property="article:tag" content="intern">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/03/15/Hm2TvwJ7gXtIKR9.png">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
   
@@ -155,30 +161,67 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Idea/maven404" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Java/intern" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      maven404
+      String的itern方法
     </h1>
   
 
         
-        <a href="/2022/03/05/Idea/maven404/" class="archive-article-date">
-  	<time datetime="2022-03-05T09:01:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-05</time>
+        <a href="/2022/03/15/Java/intern/" class="archive-article-date">
+  	<time datetime="2022-03-15T08:35:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-15</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>clone了学长搭建的前端代码后，根本没有用过egg框架的我懵了。试着点了启动，但是报Tomcat错误，想起前几天为了启动若依，移除了SDKs下的Tomcat，于是试着启动实训时候的正常项目想找出错误。</p>
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>看了上篇的字符串常量池，对案例代码仍然没有理解地很透彻，找了很多资料后，终于明白，特此记录。</p>
 <span id="more"></span>
 
-<h3 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h3><p>启动后报错404，解决方法来自<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41594146/article/details/84034679">IDEA新建Maven项目时,访问页面报404</a></p>
+<p>查询网上的大部分博客时，理解的方式和我本身的需求有很大出入，导致我总是产生很多问题。后来去b站搜了搜，看到一个视频的讲解思路算是与我的想法不谋而合，链接如下。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1WK4y1M77t?from=search&seid=6411553179770675707&spm_id_from=333.337.0.0">阿里面试是真的难，string.intern内存分配讲的透透的</a></p>
+</blockquote>
+<h4 id="分析案例"><a href="#分析案例" class="headerlink" title="分析案例"></a>分析案例</h4><blockquote>
+<p>以下代码部分图片来自<a target="_blank" rel="noopener" href="https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html">深入理解intern</a></p>
+</blockquote>
+<h5 id="第一段代码"><a href="#第一段代码" class="headerlink" title="第一段代码"></a>第一段代码</h5><p><img src="https://s2.loli.net/2022/03/15/Hm2TvwJ7gXtIKR9.png" alt="image.png"></p>
+<p>打印结果是</p>
+<ul>
+<li>jdk6:false false</li>
+<li>jdk7:false true</li>
+</ul>
+<p>这是结合链接自己画的jdk6下的图，主要是加了java实例对象的画法，原先以为一个对象就是一个地址指针，其实不然。</p>
+<blockquote>
+<p>更多可以参看<a href="!https://blog.csdn.net/tc979907461/article/details/106366059">Java对象的内存结构分布简介</a></p>
+</blockquote>
+<p><img src="https://s2.loli.net/2022/03/15/31EeGQNH8IxZCJW.png" alt="image.png"></p>
+<p>这是jdk7下的图。</p>
+<p>理解：</p>
+<pre><code>1. new 一个&quot;1&quot;在堆中，同时常量池中也会有一个指向&quot;1&quot;的指针，但是这两个&quot;1&quot;是不同的对象。所以之后再执行s.intern()的时候发现已经不需要再创建指向&quot;1&quot;的指针。所以s和s2的地址不同。
+2. s3会new两个&quot;1&quot;在堆中，不关注这个，当使用+号拼接后，s3的内容为指向一个内容为&quot;11&quot;的对象，使用s3.intern发现池中没有&quot;11&quot;，于是创建一个指向s3地址的指针。所以s3和s4地址相同。
+</code></pre>
+<p><img src="https://s2.loli.net/2022/03/15/TFMgxVfpPwDhiKJ.png" alt="image.png"></p>
+<h5 id="另一段代码"><a href="#另一段代码" class="headerlink" title="另一段代码"></a>另一段代码</h5><p><img src="https://s2.loli.net/2022/03/15/vfiDUjOCSecLgxM.png" alt="image.png"></p>
+<p>打印结果为：</p>
+<ul>
+<li>jdk6 下false false</li>
+<li>jdk7 下false false</li>
+</ul>
+<p>那么有了之前的理解，就明白了这个结果的由来。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>还是之前的两条：</p>
+<p>jdk7对字符串常量池做出的改变有：</p>
+<ol>
+<li>将原本放在<strong>永久代</strong>的字符串常量池移到了<strong>堆</strong>中</li>
+<li>当再将字符串放入池中时，<strong>不再新建一个对象保存，而是保存它的地址</strong></li>
+</ol>
+<p>之前还在想，如果常量池指向了一个对象的引用，那对象没有了怎么办？不就指向空或异常了吗？后来去看JVM的垃圾回收时，想到这点，应该是这个对象还在被引用，就不会被回收。</p>
 
       
 
@@ -192,11 +235,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">maven</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">String Pool</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">intern</a>
         		</li>
       		
 		</ul>
@@ -208,7 +255,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
+        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
         		</li>
       		
 		</ul>
@@ -263,7 +310,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/03/05/Idea/maven404/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/03/15/Java/intern/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -277,18 +324,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2022/03/08/Idea/ssm2/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          ssm项目报错
-        
-      </div>
-    </a>
   
-  
-    <a href="/2022/03/03/Idea/ruoyi/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">启动若依</div>
+    <a href="/2022/03/15/Java/JVM-GC/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">JVM垃圾回收</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -315,7 +353,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%A5%E9%94%99"><span class="toc-number">2.</span> <span class="toc-text">报错</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E6%A1%88%E4%BE%8B"><span class="toc-number">1.1.</span> <span class="toc-text">分析案例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AE%B5%E4%BB%A3%E7%A0%81"><span class="toc-number">1.1.1.</span> <span class="toc-text">第一段代码</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%A6%E4%B8%80%E6%AE%B5%E4%BB%A3%E7%A0%81"><span class="toc-number">1.1.2.</span> <span class="toc-text">另一段代码</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>

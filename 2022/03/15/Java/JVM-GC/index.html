@@ -12,21 +12,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>maven404 | BanalFish游向银河</title>
+  <title>JVM垃圾回收 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言clone了学长搭建的前端代码后，根本没有用过egg框架的我懵了。试着点了启动，但是报Tomcat错误，想起前几天为了启动若依，移除了SDKs下的Tomcat，于是试着启动实训时候的正常项目想找出错误。">
+  <meta name="description" content="前言上篇了解了JVM后，自然就想知道垃圾回收。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="maven404">
-<meta property="og:url" content="http://example.com/2022/03/05/Idea/maven404/index.html">
+<meta property="og:title" content="JVM垃圾回收">
+<meta property="og:url" content="http://example.com/2022/03/15/Java/JVM-GC/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="前言clone了学长搭建的前端代码后，根本没有用过egg框架的我懵了。试着点了启动，但是报Tomcat错误，想起前几天为了启动若依，移除了SDKs下的Tomcat，于是试着启动实训时候的正常项目想找出错误。">
+<meta property="og:description" content="前言上篇了解了JVM后，自然就想知道垃圾回收。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-03-05T09:01:51.000Z">
-<meta property="article:modified_time" content="2022-03-05T09:05:31.824Z">
+<meta property="og:image" content="https://s2.loli.net/2022/03/14/PSf3nmrVqtyzG8L.png">
+<meta property="article:published_time" content="2022-03-15T02:40:42.000Z">
+<meta property="article:modified_time" content="2022-03-15T02:58:37.756Z">
 <meta property="article:author" content="BanalFish">
-<meta property="article:tag" content="idea">
-<meta property="article:tag" content="maven">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="JVM">
+<meta property="article:tag" content="GC">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/03/14/PSf3nmrVqtyzG8L.png">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
   
@@ -155,30 +158,47 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Idea/maven404" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Java/JVM-GC" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      maven404
+      JVM垃圾回收
     </h1>
   
 
         
-        <a href="/2022/03/05/Idea/maven404/" class="archive-article-date">
-  	<time datetime="2022-03-05T09:01:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-05</time>
+        <a href="/2022/03/15/Java/JVM-GC/" class="archive-article-date">
+  	<time datetime="2022-03-15T02:40:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-15</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>clone了学长搭建的前端代码后，根本没有用过egg框架的我懵了。试着点了启动，但是报Tomcat错误，想起前几天为了启动若依，移除了SDKs下的Tomcat，于是试着启动实训时候的正常项目想找出错误。</p>
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>上篇了解了JVM后，自然就想知道垃圾回收。</p>
 <span id="more"></span>
 
-<h3 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h3><p>启动后报错404，解决方法来自<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41594146/article/details/84034679">IDEA新建Maven项目时,访问页面报404</a></p>
+<h3 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h3><p>看这张图紫色方框里的粉色区域：Heap Area</p>
+<p><img src="https://s2.loli.net/2022/03/14/PSf3nmrVqtyzG8L.png" alt="image.png"></p>
+<p>原理：把对象分为年青代(Young)，年老代(Tenured)、持久代(Perm)，对不同生命周期的对象使用不同的算法。(基于对对象生命周期分析)。</p>
+<p>GC的基本原理：将内存中不再被使用的对象进行回收，GC中用于回收的方法称为收集器，由于GC需要消耗一些资源和时间，Java在对对象的生命周期特征进行分析后，按照新生代、旧生代的方式来对对象进行收集，以尽可能的缩短GC对应用造成的暂停</p>
+<p>（1）对新生代的对象的收集称为minor GC；</p>
+<p>（2）对旧生代的对象的收集称为Full GC；</p>
+<p>（3）程序中主动调用System.gc()强制执行的GC为Full GC。</p>
+<p>不同的对象引用类型， GC会采用不同的方法进行回收，JVM对象的引用分为了四种类型：</p>
+<p>（1）强引用：默认情况下，对象采用的均为强引用（这个对象的实例没有其他对象引用，GC时才会被回收）</p>
+<p>（2）软引用：软引用是Java中提供的一种比较适合于缓存场景的应用（只有在内存不够用的情况下才会被GC）</p>
+<p>（3）弱引用：在GC时一定会被GC回收</p>
+<p>（4）虚引用：由于虚引用只是用来得知对象是否被GC</p>
+<h4 id="Young（年轻代）"><a href="#Young（年轻代）" class="headerlink" title="Young（年轻代）"></a>Young（年轻代）</h4><p>年轻代分三个区。一个Eden区，两个Survivor区。大部分对象在Eden区中生成。当Eden区满时，还存活的对象将被复制到Survivor区（两个中的一个），当这个Survivor区满时，此区的存活对象将被复制到另外一个Survivor区，当这个Survivor去也满了的时候，从第一个Survivor区复制过来的并且此时还存活的对象，将被复制年老区(Tenured。需要注意，Survivor的两个区是对称的，没先后关系，所以同一个区中可能同时存在从Eden复制过来对象，和从前一个Survivor复制过来的对象，而复制到年老区的只有从第一个Survivor去过来的对象。而且，Survivor区总有一个是空的。</p>
+<h4 id="Tenured（年老代）"><a href="#Tenured（年老代）" class="headerlink" title="Tenured（年老代）"></a>Tenured（年老代）</h4><p>年老代存放从年轻代存活的对象。一般来说年老代存放的都是生命期较长的对象。</p>
+<h4 id="Perm（持久代）"><a href="#Perm（持久代）" class="headerlink" title="Perm（持久代）"></a>Perm（持久代）</h4><p>用于存放静态文件，如Java类、方法等。持久代对垃圾回收没有显著影响，但是有些应用可能动态生成或者调用一些class，例如Hibernate等，在这种时候需要设置一个比较大的持久代空间来存放这些运行过程中新增的类。持久代大小通过-XX:MaxPermSize=进行设置。</p>
+<blockquote>
+<p>原理往后内容来自<a href="!https://blog.csdn.net/qq_41701956/article/details/80020103">什么是JVM</a></p>
+</blockquote>
 
       
 
@@ -192,11 +212,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">maven</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">GC</a>
         		</li>
       		
 		</ul>
@@ -208,7 +232,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
+        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
         		</li>
       		
 		</ul>
@@ -263,7 +287,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/03/05/Idea/maven404/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/03/15/Java/JVM-GC/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -277,18 +301,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2022/03/08/Idea/ssm2/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2022/03/15/Java/intern/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          ssm项目报错
+          String的itern方法
         
       </div>
     </a>
   
   
-    <a href="/2022/03/03/Idea/ruoyi/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">启动若依</div>
+    <a href="/2022/03/14/Java/JVM/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">JVM</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -315,7 +339,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%A5%E9%94%99"><span class="toc-number">2.</span> <span class="toc-text">报错</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="toc-number">2.</span> <span class="toc-text">垃圾回收</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Young%EF%BC%88%E5%B9%B4%E8%BD%BB%E4%BB%A3%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">Young（年轻代）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Tenured%EF%BC%88%E5%B9%B4%E8%80%81%E4%BB%A3%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">Tenured（年老代）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Perm%EF%BC%88%E6%8C%81%E4%B9%85%E4%BB%A3%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">Perm（持久代）</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
