@@ -12,17 +12,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Archives: 2022 | BanalFish游向银河</title>
+  <title>反转链表 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="从所有的黑暗里">
-<meta property="og:type" content="website">
-<meta property="og:title" content="BanalFish游向银河">
-<meta property="og:url" content="http://example.com/archives/2022/index.html">
+  <meta name="description" content="题目描述给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。 示例 1：  输入：head &#x3D; [1,2,3,4,5] 输出：[5,4,3,2,1]  提示：  链表中节点的数目范围是 [0, 5000] -5000 &lt;&#x3D; Node.val &lt;&#x3D; 5000">
+<meta property="og:type" content="article">
+<meta property="og:title" content="反转链表">
+<meta property="og:url" content="http://example.com/2022/03/21/LeetCode/reverListNode/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="从所有的黑暗里">
+<meta property="og:description" content="题目描述给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。 示例 1：  输入：head &#x3D; [1,2,3,4,5] 输出：[5,4,3,2,1]  提示：  链表中节点的数目范围是 [0, 5000] -5000 &lt;&#x3D; Node.val &lt;&#x3D; 5000">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-21T07:40:20.000Z">
+<meta property="article:modified_time" content="2022-03-21T08:18:03.778Z">
 <meta property="article:author" content="BanalFish">
-<meta property="article:tag" content="后端">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="LeetCode">
+<meta property="article:tag" content="Easy">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
@@ -152,36 +156,69 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-LeetCode/reverListNode" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      反转链表
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2022" class="archive-year">2022</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/03/21/LeetCode/reverListNode/" class="archive-article-date">
+
+        
+        <a href="/2022/03/21/LeetCode/reverListNode/" class="archive-article-date">
   	<time datetime="2022-03-21T07:40:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-21</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/03/21/LeetCode/reverListNode/">反转链表</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。</p>
+<p>示例 1：</p>
+<blockquote>
+<p>输入：head = [1,2,3,4,5]</p>
+<p>输出：[5,4,3,2,1]</p>
+</blockquote>
+<p>提示：</p>
+<ul>
+<li>链表中节点的数目范围是 [0, 5000]</li>
+<li>-5000 &lt;= Node.val &lt;= 5000</li>
+</ul>
+<span id="more"></span>
 
-        <div class="article-info info-on-right">
-          
+<h3 id="思考解法"><a href="#思考解法" class="headerlink" title="思考解法"></a>思考解法</h3><p>看到题目首先想到的是遍历到尾节点，再操作一番，但是看到底下的进阶说：可以用迭代或者递归的方式。结合之前写合并两链表之和的经验，我对自己的递归技术信心满满。</p>
+<p>…最后没有用递归做出来。怎么总是会返回一个无休无止的环啊？！到底应该怎么做才不返回环呢？我的思想应该是没错的，但是就是代码怎么实现呢？</p>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><p>官方题解的递归方式如下：</p>
+<ol>
+<li>如果传入的节点为空（空链表）或者下一个节点为空，说明已经到了尽头，则返回此节点，记为L<del>n</del></li>
+<li>来到上一个节点L<del>n-1</del>，这个时候的逻辑关系需要L<del>n-1</del>.next.next=L<del>n-1</del>，这一步已经建立起了L<del>n</del>和L<del>n-1</del>的反转，为了防止发生环的情况，需要令L<del>n-1</del>.next=null，然后再次返回本节点</li>
+<li>依此逻辑递归</li>
+</ol>
+<p>看了题解，我意识到了我的错误所在：</p>
+<ol>
+<li>原先一直用了一个指针指向头结点作为传入参数，想以此保存住头指针，不至于在递归中丢失</li>
+<li>但是只需要在每次的递归中新建一个指针接收就好，也就是说每次接收首地址的指针可以一直变化，并且除了最后一个，直接返回这个临时值就好，因为会有人再次去接收</li>
+</ol>
+<h4 id="迭代（双指针）"><a href="#迭代（双指针）" class="headerlink" title="迭代（双指针）"></a>迭代（双指针）</h4><p>迭代思想的题解如下：</p>
+<ul>
+<li>定义两个指针： pre 和 cur ，pre 初始为null；pre 在前 cur 在后（对于旧链表来说，下文同理）</li>
+<li>开始进入循环，直到cur为null</li>
+<li>每次定义一个节点用来暂时保存cur.next，然后放心地令cur.next=pre</li>
+<li>局部反转完成之后，pre 和 cur 同时往后移动一个位置</li>
+<li>再次循环</li>
+<li>最后返回pre</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -201,7 +238,7 @@
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -214,537 +251,116 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/03/21/LeetCode/reverListNode/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/03/17/LeetCode/merge2array/" class="archive-article-date">
-  	<time datetime="2022-03-17T11:49:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-17</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2022/03/17/LeetCode/merge2array/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">合并两个有序数组</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/03/17/LeetCode/merge2array/">合并两个有序数组</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%9D%E8%80%83%E8%A7%A3%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">思考解法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E8%A7%A3"><span class="toc-number">3.</span> <span class="toc-text">题解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%92%E5%BD%92"><span class="toc-number">3.1.</span> <span class="toc-text">递归</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%EF%BC%88%E5%8F%8C%E6%8C%87%E9%92%88%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">迭代（双指针）</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/03/16/LeetCode/noReapeatStr/" class="archive-article-date">
-  	<time datetime="2022-03-16T14:53:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/03/16/LeetCode/noReapeatStr/">两数之和</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Middle</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/03/16/LeetCode/twoNumAdd/" class="archive-article-date">
-  	<time datetime="2022-03-16T10:55:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/03/16/LeetCode/twoNumAdd/">两数相加</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Middle</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/03/15/LeetCode/twoNumSum/" class="archive-article-date">
-  	<time datetime="2022-03-15T11:59:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/03/15/LeetCode/twoNumSum/">两数之和</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/03/15/Java/intern/" class="archive-article-date">
-  	<time datetime="2022-03-15T08:35:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/03/15/Java/intern/">String的itern方法</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">String Pool</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">intern</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/03/15/Java/JVM-GC/" class="archive-article-date">
-  	<time datetime="2022-03-15T02:40:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/03/15/Java/JVM-GC/">JVM垃圾回收</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">GC</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/03/14/Java/JVM/" class="archive-article-date">
-  	<time datetime="2022-03-14T12:31:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/03/14/Java/JVM/">JVM</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/03/12/Idea/swagger/" class="archive-article-date">
-  	<time datetime="2022-03-12T14:07:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-12</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/03/12/Idea/swagger/">ssm+shiro整合swagger</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ssm</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">testsys</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">shiro</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">swagger</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/03/08/Idea/ssm2/" class="archive-article-date">
-  	<time datetime="2022-03-08T10:04:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-08</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/03/08/Idea/ssm2/">ssm项目报错</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ssm</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">testsys</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
   
-    </div></section>
   
 
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/2022/page/2/">2</a><a class="page-number" href="/archives/2022/page/3/">3</a><a class="extend next" rel="next" href="/archives/2022/page/2/">Next&gt;&gt;</a>
-    </nav>
+  
+
+  
+
   
 
 
@@ -768,8 +384,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
