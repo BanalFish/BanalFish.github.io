@@ -280,56 +280,7 @@
         <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你两个按 非递减顺序 排列的整数数组 nums1 和 nums2，另有两个整数 m 和 n ，分别表示 nums1 和 nums2 中的元素数目。</p>
 <p>请你 合并 nums2 到 nums1 中，使合并后的数组同样按 非递减顺序 排列。</p>
 <p>注意：最终，合并后数组不应由函数返回，而是存储在数组 nums1 中。为了应对这种情况，nums1 的初始长度为 m + n，其中前 m 个元素表示应合并的元素，后 n 个元素为 0 ，应忽略。nums2 的长度为 n 。</p>
-<p>示例 1：</p>
-<blockquote>
-<p>输入：nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], &gt;n = 3<br>输出：[1,2,2,3,5,6]<br>解释：需要合并 [1,2,3] 和 [2,5,6] 。<br>合并结果是 [1,2,2,3,5,6] ，其中斜体加粗标注的为 nums1中的元素。</p>
-</blockquote>
-<p>示例 2：</p>
-<blockquote>
-<p>输入：nums1 = [1], m = 1, nums2 = [], n = 0<br>输出：[1]<br>解释：需要合并 [1] 和 [] 。<br>合并结果是 [1] 。</p>
-</blockquote>
-<p>示例 3：</p>
-<blockquote>
-<p>输入：nums1 = [0], m = 0, nums2 = [1], n = 1<br>输出：[1]<br>解释：需要合并的数组是 [] 和 [1] 。<br>合并结果是 [1] 。</p>
-</blockquote>
-<p>注意，因为 m = 0 ，所以 nums1 中没有元素。nums1 中仅存的 0 仅仅是为了确保合并结果可以顺利存放到 nums1 中。
- </p>
-<p>提示：</p>
-<ul>
-<li>nums1.length == m + n</li>
-<li>nums2.length == n</li>
-<li>0 &lt;= m, n &lt;= 200</li>
-<li>1 &lt;= m + n &lt;= 200</li>
-<li>-109 &lt;= nums1[i], nums2[j] &lt;= 109</li>
-</ul>
-<h3 id="思考解法"><a href="#思考解法" class="headerlink" title="思考解法"></a>思考解法</h3><p>练了好几道题了，还是正常的思维解法，没错，就是循环遍历暴力解法。虽然最后做出来了，但是击败率惨不忍睹，去看了官方解法，给出了三种。进行如下说明。</p>
-<h3 id="解法一：直接合并后排序"><a href="#解法一：直接合并后排序" class="headerlink" title="解法一：直接合并后排序"></a>解法一：直接合并后排序</h3><p>直接将nums2放到nums1的尾部，然后利用.sort排序即可。关于.sort方法用的什么排序方法，如下说明：</p>
-<ul>
-<li>数组长度为n，则1 &lt;= n &lt; 47 使用插入排序</li>
-<li>数组长度为n，则47 &lt;= 47 &lt; 286 使用使用快速排序</li>
-<li>数组长度为n，则286 &lt; n 使用归并排序或快速排序（有一定顺序使用归并排序，毫无顺序使用快排）</li>
-</ul>
-<blockquote>
-<p>来自<a href="!https://blog.csdn.net/yuanchangliang/article/details/107755756">Java的Arrays.sort()方法到底用的什么排序算法</a></p>
-</blockquote>
-<h3 id="解法二：双指针"><a href="#解法二：双指针" class="headerlink" title="解法二：双指针"></a>解法二：双指针</h3><p>定义两个指针i、j，分别指向两个数组的起点</p>
-<p>新定义一个大小为两数组大小之和的数组，然后比较i、j指针所指向的值，较小者存入新数组，直到两方都往右走直到尽头</p>
-<p>再把新数组赋值给nums1</p>
-<h3 id="解法三：逆向双指针"><a href="#解法三：逆向双指针" class="headerlink" title="解法三：逆向双指针"></a>解法三：逆向双指针</h3><p>与解法二类似，不过解法三不用创建新数组，注意到nums1的大小已经是两数组之和，于是</p>
-<p>同样定义两个指针i、j，不过是指向两数组的尾部</p>
-<p>取指针指向值的较大者，放入nums1的尾部，并且nums1尾部指向还需一个指针，i、j往左走直到尽头</p>
-<p>这个解法的时间复杂度为O(m+n)，但是空间复杂度为O(1)</p>
-<p>正如评论所说</p>
-<blockquote>
-<p>所有玩家都全力向前冲刺, 却不知道向后才是胜利之门。-《头号玩家》</p>
-</blockquote>
-<h3 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h3><p>我想力扣的难度等级划分不在于题目本身，而在于解法的解释是否容易。</p>
-<p>本来是打算做做排序，结果第一道就把我累得够呛，于是我又换到了Hot100，接着上次的做，没想到接着的一题竟然是找两个非降序数组合并后的中位数…这不是送分题吗？这不是正值考试发现竟然前一天晚上都背过吗？这不是很Easy吗？！</p>
-<p>果然有了前一道的磨练，一遍过了…</p>
-<p>对了，这题难度是困难</p>
-<p>离不离谱吧</p>
-<p>你说呢力扣？</p>
-
+        
       
 
       
@@ -408,7 +359,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/16/LeetCode/noReapeatStr/">两数之和</a>
+      <a class="article-title" href="/2022/03/16/LeetCode/noReapeatStr/">不重复的最长子串</a>
     </h1>
   
 
@@ -1280,6 +1231,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Middle</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">shiro</a>
               </li>
              
@@ -1288,15 +1251,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">String Pool</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">intern</a>
+                <a href="javascript:void(0)" class="js-tag color5">Easy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1308,15 +1263,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color2">String Pool</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Easy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Middle</a>
+                <a href="javascript:void(0)" class="js-tag color2">intern</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1324,7 +1275,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">心情小记</a>
+                <a href="javascript:void(0)" class="js-tag color3">Navicat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1336,11 +1291,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Navicat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color5">心情小记</a>
               </li>
             
             <div class="clearfix"></div>
