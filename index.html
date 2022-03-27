@@ -154,6 +154,117 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-NiuKe/AliTest1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/03/27/NiuKe/AliTest1/">阿里2021笔试第一道</a>
+    </h1>
+  
+
+        
+        <a href="/2022/03/27/NiuKe/AliTest1/" class="archive-article-date">
+  	<time datetime="2022-03-27T09:43:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近也在准备各公司的笔试题，先从阿里做起，不过第一道就想了超级久！还是看了别人的解析这才领悟，现记录如下。</p>
+<h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p><img src="https://s2.loli.net/2022/03/27/bemTP9xD86iX7vs.png" alt="image.png"></p>
+<h3 id="题解——贪心算法"><a href="#题解——贪心算法" class="headerlink" title="题解——贪心算法"></a>题解——贪心算法</h3><p>1.对传入的数据按照二维数组的方式储存，示例如下：</p>
+<p><img src="https://s2.loli.net/2022/03/27/thQCyk4mo7bRxpi.png" alt="image.png"></p>
+<p>2.然后重写比较器，将X属性按照升序排列。需要注意的是：对于相等的X，要将Y降序排列，否则会导致后面的大的Y覆盖末尾前面的小的Y，导致结果出错，就不符合贪心算法的尽量保证末尾元素最小的要求了。</p>
+<p><img src="https://s2.loli.net/2022/03/27/YQ65fPUs1IOznFh.png" alt="image.png"></p>
+<p>3.并新建一个用来存储结果的dp数组。由于最小的Y递增序列长度为1，将第一个（由于升序，肯定会有第一个）放在下标为1的位置，理由是：后续的pos指针从0开始，如果有比第一个的Y还小的组合，则会替换到下标1对应的位置，这样不会指针越界。</p>
+<p><img src="https://s2.loli.net/2022/03/27/wus4BxVeTrRvkyg.png" alt="image.png"></p>
+<p>4.对于dp数组来说，只要当前的Y属性小于下一个要比较的items数组里的Y属性，就将结果+1，并存储到dp里，符合严格递增。</p>
+<p>5.如果dp当前的Y大于了下一个Y，就要在<strong>已经递增</strong>除当前Y本身的dp里的Y序列里找到一个小于下一个Y，并且是序列中最大的Y。如果两个Y对应的X不相等，就将它的下一组位置替换为下一个Y代表的那一组X和Y。</p>
+<p>代码如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	import java.io.*;</span><br><span class="line">	import java.util.*;</span><br><span class="line"></span><br><span class="line">	public class Main&#123;</span><br><span class="line">    //排序器，将X从小到大排序，最关键的一步是将相同的X按Y从大到小排序，因为如果按Y从小到大排序，</span><br><span class="line">    //会导致后面的大的Y覆盖末尾前面的小的Y，这样就不符合贪心算法的尽量保证末尾元素最小的要求了。</span><br><span class="line">    private static Comparator&lt;int[]&gt; comparator = new Comparator&lt;int[]&gt;()&#123;</span><br><span class="line">        @Override</span><br><span class="line">        public int compare(int[] o1,int[] o2)&#123;</span><br><span class="line">            if (o1[0] &gt; o2[0]) return 1;</span><br><span class="line">            else if (o1[0] &lt; o2[0]) return -1;</span><br><span class="line">            else &#123;</span><br><span class="line">                if (o1[1] &gt; o2[1]) return -1;</span><br><span class="line">                else if (o1[1] == o2[1]) return 0;</span><br><span class="line">                else return 1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws IOException&#123;</span><br><span class="line">        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));</span><br><span class="line">        String str = bf.readLine();</span><br><span class="line">        int n = Integer.parseInt(str);</span><br><span class="line">        for (int i = 0;i &lt; n;i++)&#123;</span><br><span class="line">            String str1 = bf.readLine();</span><br><span class="line">            int m = Integer.parseInt(str1);</span><br><span class="line">            String[] str2 = bf.readLine().split(&quot; &quot;);</span><br><span class="line">            String[] str3 = bf.readLine().split(&quot; &quot;);</span><br><span class="line">            int[][] items = new int[m][2];</span><br><span class="line">            for (int j = 0;j &lt; m;j++)&#123;</span><br><span class="line">                items[j] = new int[]&#123;Integer.parseInt(str2[j]),Integer.parseInt(str3[j])&#125;;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            //对数组排序</span><br><span class="line">            Arrays.sort(items,comparator);</span><br><span class="line">            //res保存最长递增子序列的大小。</span><br><span class="line">            int res = 1;</span><br><span class="line">            //用来保存每个长度末尾的Y尽可能小的[x,y]数组。</span><br><span class="line">            int[][] dp = new int[m + 1][2];</span><br><span class="line">            dp[1] = items[0];</span><br><span class="line">            //二分法进行查找此时的Y刚刚好大于哪一个下标的Y，又小于下一个下标的Y，这样更改下一个下标</span><br><span class="line">            //的Y，为此时的Y，就可以保证dp数组保存的是末尾可能的最小的Y。这种方法相对于DP寻找最长</span><br><span class="line">            //递增子序列，更快，时间复杂度为O(nlogn)</span><br><span class="line">            for (int j = 1;j &lt; m;j++)&#123;</span><br><span class="line">                if (dp[res][1] &lt; items[j][1])//对dp当前y排序，是否小于下一个y</span><br><span class="line">                    dp[++res] = items[j];//是就加入dp</span><br><span class="line">                else if (dp[res][1] &gt; items[j][1])&#123;//大于下一个y</span><br><span class="line">                    int l = 1,r = res,pos = 0;//l是起点 r是终点 pos</span><br><span class="line">                    while (l &lt;= r)&#123;//不相交</span><br><span class="line">                        int mid = (l + r) &gt;&gt; 1;</span><br><span class="line">                        if (dp[mid][1] &lt; items[j][1])&#123;//如果中间的小于当前的</span><br><span class="line">                            pos = mid;</span><br><span class="line">                            l = mid + 1;//换到mid往后的区间</span><br><span class="line">                        &#125;else&#123;//如果中间的大于或者等于当前的</span><br><span class="line">                            r = mid - 1;//换到mid往前的区间</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    if (dp[pos][0] != items[j][0])//如果找到的x属性与当前的x属性不相等</span><br><span class="line">                        dp[pos + 1] = items[j];//就把当前的替换为下一个</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(res);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔试</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">阿里</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/笔试//" class="article-tag-list-link color3">笔试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/27/NiuKe/AliTest1/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Interview/interview1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1020,95 +1131,6 @@
 
 
   
-    <article id="post-Java/JVM" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/14/Java/JVM/">JVM</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/14/Java/JVM/" class="archive-article-date">
-  	<time datetime="2022-03-14T12:31:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>看了上篇字符串常量池后，发现对JVM还是不很了解，结合上篇博客后，又学习了一下，特此记录。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/14/Java/JVM/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next&gt;&gt;</a>
@@ -1307,6 +1329,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">面试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">阿里</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
             
             <div class="clearfix"></div>
