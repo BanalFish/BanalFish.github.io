@@ -154,6 +154,112 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Interview/interview1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/03/25/Interview/interview1/">记第一次面试</a>
+    </h1>
+  
+
+        
+        <a href="/2022/03/25/Interview/interview1/" class="archive-article-date">
+  	<time datetime="2022-03-25T07:57:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>三月来临，春招陆续开始，虽然心里很胆怯找工作，但是理智说必须得开始了！于是从投简历开始，于今天下午三点半进行了第一次面试。</p>
+<h3 id="问题复盘"><a href="#问题复盘" class="headerlink" title="问题复盘"></a>问题复盘</h3><h4 id="一：关于项目"><a href="#一：关于项目" class="headerlink" title="一：关于项目"></a>一：关于项目</h4><h5 id="1-第一个项目的某个功能怎么实现的"><a href="#1-第一个项目的某个功能怎么实现的" class="headerlink" title="1. 第一个项目的某个功能怎么实现的"></a>1. 第一个项目的某个功能怎么实现的</h5><p>乍一听到这个问题我有点懵，因为第一个项目有点忘了，得去复习一下项目！</p>
+<h5 id="2-SpringMVC的工作原理"><a href="#2-SpringMVC的工作原理" class="headerlink" title="2. SpringMVC的工作原理"></a>2. SpringMVC的工作原理</h5><p>哈哈！这个我知道！</p>
+<blockquote>
+<ol>
+<li>首先用户发送请求给DispatcherServlet（前端控制器，以下简称DS），DS将请求发送给HandlerMapping（<strong>映射处理器</strong>），</li>
+<li>HandlerMapping将找到合适的处理器（可能会有拦截器）包装成一个对象，返回给DS</li>
+<li>DS收到之后交给HandlerAdapter（<strong>处理器适配器</strong>），它处理完之后返回ModelAndView给DS</li>
+<li>DS将ModelAndView交给视图解析器（ViewResolver），视图解析器将处理页面并返回具体View给DS</li>
+<li>DS将处理结果渲染填充到页面，然后响应用户</li>
+</ol>
+</blockquote>
+<h5 id="3-Shiro的授权过程"><a href="#3-Shiro的授权过程" class="headerlink" title="3.Shiro的授权过程"></a>3.Shiro的授权过程</h5><h5 id="4-JSP闭包-怎么实现的JSP"><a href="#4-JSP闭包-怎么实现的JSP" class="headerlink" title="4.JSP闭包/怎么实现的JSP"></a>4.JSP闭包/怎么实现的JSP</h5><h4 id="二：Java基础"><a href="#二：Java基础" class="headerlink" title="二：Java基础"></a>二：Java基础</h4><h5 id="1-线程有几个状态"><a href="#1-线程有几个状态" class="headerlink" title="1.线程有几个状态"></a>1.线程有几个状态</h5><h5 id="2-了解锁吗"><a href="#2-了解锁吗" class="headerlink" title="2.了解锁吗"></a>2.了解锁吗</h5><h5 id="3-ArrayList和LinkedList了解吗"><a href="#3-ArrayList和LinkedList了解吗" class="headerlink" title="3.ArrayList和LinkedList了解吗"></a>3.ArrayList和LinkedList了解吗</h5><h4 id="三：数据结构与算法"><a href="#三：数据结构与算法" class="headerlink" title="三：数据结构与算法"></a>三：数据结构与算法</h4><p>只问了一个排序算法，然鹅我都忘了，也没答上来</p>
+<h5 id="1-了解归并排序等排序算法吗"><a href="#1-了解归并排序等排序算法吗" class="headerlink" title="1.了解归并排序等排序算法吗"></a>1.了解归并排序等排序算法吗</h5><h4 id="四：计算机网络"><a href="#四：计算机网络" class="headerlink" title="四：计算机网络"></a>四：计算机网络</h4><p>问的是之前认真看过的TCP、UDP，但是也忘了o(╥﹏╥)o</p>
+<h4 id="1-了解TCP、UDP这些吗？"><a href="#1-了解TCP、UDP这些吗？" class="headerlink" title="1.了解TCP、UDP这些吗？"></a>1.了解TCP、UDP这些吗？</h4><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>面试官人很好，我答不上来还说没事没事，可以看出我的回答很不好了，只问了这么点…还有就是每个问题都争取说一点出来嘛！当时的我怎么就开始自暴自弃，锁明明前天晚上还临时抱了下佛脚，一问干脆就说不了解了( Ĭ ^ Ĭ ) 下次一定要多说！话痨一点！</p>
+<p>通过这次面试，感觉到我的Java基础真的很薄弱啊，算法、计网这些也都忘了，这样下去不行啊！</p>
+<p>被网上一些入职后就增删改查的话洗脑了，认为只要会写代码就可以，昨天看了《Thinking in Java》的豆瓣书评，有句话的大概意思就是：只会写代码的话干脆直接去找外包好了，但是基础的这些要懂。是楼主面试百度的时候，面试官说的，不仅对他有很大影响，也让我一下子被震慑到了。</p>
+<p>一定要打牢基础啊！</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/面试//" class="article-tag-list-link color3">面试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/25/Interview/interview1/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java/Exception" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1003,107 +1109,6 @@
 
 
   
-    <article id="post-Idea/swagger" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/12/Idea/swagger/">ssm+shiro整合swagger</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/12/Idea/swagger/" class="archive-article-date">
-  	<time datetime="2022-03-12T14:07:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前段时间因为后端开发都不积极，于是干脆自己就用Jsp写前端页面，也方便自己看代码写的对不对。最终还是用了之前学长提到的swagger，方便前后端分离，但是网上我搜的时候大部分是SpringBoot，没多少ssm相关的，多加摸索，在报错中爬了一天，特此整理一份。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ssm</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">testsys</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">shiro</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">swagger</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/12/Idea/swagger/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next&gt;&gt;</a>
@@ -1298,6 +1303,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">异常</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">面试</a>
               </li>
             
             <div class="clearfix"></div>

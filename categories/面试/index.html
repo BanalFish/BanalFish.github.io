@@ -12,20 +12,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>hexo+yilia博客页面排列混乱 | BanalFish游向银河</title>
+  <title>Category: 面试 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="引言明明是学后端的，我怎么这么热衷美化我的博客啊(ˇωˇ」∠)_">
-<meta property="og:type" content="article">
-<meta property="og:title" content="hexo+yilia博客页面排列混乱">
-<meta property="og:url" content="http://example.com/2022/02/19/hexo/yilia/index.html">
+  <meta name="description" content="从所有的黑暗里">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BanalFish游向银河">
+<meta property="og:url" content="http://example.com/categories/%E9%9D%A2%E8%AF%95/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="引言明明是学后端的，我怎么这么热衷美化我的博客啊(ˇωˇ」∠)_">
+<meta property="og:description" content="从所有的黑暗里">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-02-19T12:09:01.000Z">
-<meta property="article:modified_time" content="2022-02-19T12:37:24.400Z">
 <meta property="article:author" content="BanalFish">
-<meta property="article:tag" content="yilia">
-<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="后端">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
@@ -155,181 +152,75 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-hexo/yilia" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      hexo+yilia博客页面排列混乱
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2022" class="archive-year">2022</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2022/03/25/Interview/interview1/" class="archive-article-date">
+  	<time datetime="2022-03-25T07:57:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-25</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2022/03/25/Interview/interview1/">记第一次面试</a>
     </h1>
   
 
-        
-        <a href="/2022/02/19/hexo/yilia/" class="archive-article-date">
-  	<time datetime="2022-02-19T12:09:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h4><p>明明是学后端的，我怎么这么热衷美化我的博客啊(ˇωˇ」∠)_</p>
-<span id="more"></span>
-
-<h4 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h4><p>看多了别人美腻的博客后，只要在最基础、已经搭建好的博客最初版本上，一点点修改即可。感悟就是一点点来！不要一下子照着别人的修改很多！我昨天就是这样，最后运行出来的结果不仅排序混乱，而且什么也点不了，起初以为是还要点时间加载，今天再去看的时候还是那副鬼样子(#｀皿´)</p>
-<p>于是就开始了找错之旅，网上也没搜到什么，只能自己猜。</p>
-<p>想到昨天动的最多的就是mainxxx.css，于是我找到别人的一个正常的博客，下载了那个人的.css，用DiffMerge对比，改了一些我觉得可能会出错的地方，改了之后没有效果，根本没变回去！</p>
-<p>这个时候我没有接着找错，而是突然想改一下头像旋转问题，于是找到昨天看的别人的博客，又改了mainxxx.css和left-col.ejs文件，可是头像不仅没有旋转反而变成了正方形(▼へ▼メ)</p>
-<p>这个时候我没管了，又跑去东改改西改改了.css然后推送，就在这个时候，我发现cmd面板有个错误一闪而过，我往上翻，翻到了报错原因，竟然说是我left-col出错！岂可修，我就去找了yilia的github源码，把left-col恢复成了最开始，然后推到远端，竟然好了…最开始的排序混乱没了…</p>
-<p>好在之前对比了一下left-col的代码，原因是我改头像翻转的时候的<strong>代码地方没改对，与昨天修改的代码产生了冲突。</strong></p>
-<p>所以啊，以后这种精细活还是得一点点来，每次修改一点就用hexo s 预览一下就很不错，我之前怎么没有想到这个的好！而且这种类型的出的错就很私人，最好是能自己想一下解决思路。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">yilia</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hexo</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/面试//" class="article-tag-list-link color3">面试</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
-      
 
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/02/19/hexo/yilia/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2022/02/22/Java/%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          基本类型
-        
-      </div>
-    </a>
   
   
-    <a href="/2022/02/14/myNote/Valentine'sDay/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">情人节在家的意外收获</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A3%E6%96%87"><span class="toc-number">2.</span> <span class="toc-text">正文</span></a></li></ol>
-                    </div>
-                </span>
-            </div>
-        </div>
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -352,10 +243,10 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
 		isTag: false,
-		isCategory: false,
+		isCategory: true,
 		open_in_new: false,
 		toc_hide_index: true,
 		root: "/",
