@@ -154,6 +154,546 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Java/ArrayList" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/06/Java/ArrayList/">ArrayList部分源码理解及clone方法</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/06/Java/ArrayList/" class="archive-article-date">
+  	<time datetime="2022-04-06T12:12:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="ArrayList部分源码"><a href="#ArrayList部分源码" class="headerlink" title="ArrayList部分源码"></a>ArrayList部分源码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">package java.util;</span><br><span class="line"></span><br><span class="line">import java.util.function.Consumer;</span><br><span class="line">import java.util.function.Predicate;</span><br><span class="line">import java.util.function.UnaryOperator;</span><br><span class="line">import sun.misc.SharedSecrets;</span><br><span class="line"></span><br><span class="line">//继承自AbstractList，实现了List集合，可克隆，序列化</span><br><span class="line">public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt;</span><br><span class="line">       implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">* 序列化Id，保证反序列化时版本一致</span><br><span class="line">*/	</span><br><span class="line">   private static final long serialVersionUID = 8683452581122892189L;</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * Default initial capacity.</span><br><span class="line"> *默认初始大小为10</span><br><span class="line">    */</span><br><span class="line">   private static final int DEFAULT_CAPACITY = 10;</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * Shared empty array instance used for empty instances.</span><br><span class="line"> * 对大小为0的ArrayList有对应的空的数组实例</span><br><span class="line">    */</span><br><span class="line">   private static final Object[] EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * Shared empty array instance used for default sized empty instances. We</span><br><span class="line">    * distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when</span><br><span class="line">    * first element is added.</span><br><span class="line"> *与上面的区分开来</span><br><span class="line">    */</span><br><span class="line">   private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * The array buffer into which the elements of the ArrayList are stored.</span><br><span class="line">    * The capacity of the ArrayList is the length of this array buffer. Any</span><br><span class="line">    * empty ArrayList with elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA</span><br><span class="line">    * will be expanded to DEFAULT_CAPACITY when the first element is added.</span><br><span class="line"> * 数组缓冲区，ArrayList的元素被储存在其中。</span><br><span class="line">    * ArrayList的容量是这个数组缓冲区的长度。</span><br><span class="line">    * 任何空的ArrayList的elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA</span><br><span class="line">    * 将在添加第一个元素时被扩展为DEFAULT_CAPACITY（10）。</span><br><span class="line">    */</span><br><span class="line"></span><br><span class="line">//transient关键字 保证被修饰的不被序列化</span><br><span class="line">   transient Object[] elementData; // non-private to simplify nested class access非私有以简化嵌套类访问</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * The size of the ArrayList (the number of elements it contains).</span><br><span class="line">    * ArrayList的大小</span><br><span class="line">    */</span><br><span class="line">   private int size;</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * Constructs an empty list with the specified initial capacity.</span><br><span class="line">    * 带有指定大小的构造方法</span><br><span class="line">    */</span><br><span class="line">   public ArrayList(int initialCapacity) &#123;</span><br><span class="line">       if (initialCapacity &gt; 0) &#123;</span><br><span class="line">           this.elementData = new Object[initialCapacity];</span><br><span class="line">       &#125; else if (initialCapacity == 0) &#123;</span><br><span class="line">           this.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">       &#125; else &#123;</span><br><span class="line">           throw new IllegalArgumentException(&quot;Illegal Capacity: &quot;+                         initialCapacity);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * Constructs an empty list with an initial capacity of ten.</span><br><span class="line"> * 空参数构造方法，默认大小为10</span><br><span class="line">    */</span><br><span class="line">   public ArrayList() &#123;</span><br><span class="line">       this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * Constructs a list containing the elements of the specified</span><br><span class="line">    * collection, in the order they are returned by the collection&#x27;s</span><br><span class="line">    * iterator.</span><br><span class="line">    * 构建一个包含指定的集合的元素的列表。</span><br><span class="line">    * 集合的元素，按照它们由集合的迭代器返回的顺序。</span><br><span class="line">    */</span><br><span class="line">   public ArrayList(Collection&lt;? extends E&gt; c) &#123;</span><br><span class="line">       Object[] a = c.toArray();</span><br><span class="line">       if ((size = a.length) != 0) &#123;</span><br><span class="line">           if (c.getClass() == ArrayList.class) &#123;</span><br><span class="line">               elementData = a;</span><br><span class="line">           &#125; else &#123;</span><br><span class="line">			//Arrays.copyOf返回的是新数组</span><br><span class="line">               elementData = Arrays.copyOf(a, size, Object[].class);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; else &#123;</span><br><span class="line">           // replace with empty array.</span><br><span class="line">           elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * The maximum size of array to allocate.</span><br><span class="line">    * Some VMs reserve some header words in an array.</span><br><span class="line">    * Attempts to allocate larger arrays may result in</span><br><span class="line">    * OutOfMemoryError: Requested array size exceeds VM limit</span><br><span class="line"> * 最大长度，如果比这个还大可能导致OutOfMemoryError错误</span><br><span class="line">    */</span><br><span class="line">   private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">   private static int hugeCapacity(int minCapacity) &#123;</span><br><span class="line">       if (minCapacity &lt; 0) // overflow</span><br><span class="line">           throw new OutOfMemoryError();</span><br><span class="line">       return (minCapacity &gt; MAX_ARRAY_SIZE) ?</span><br><span class="line">           Integer.MAX_VALUE :</span><br><span class="line">           MAX_ARRAY_SIZE;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">   /**</span><br><span class="line">    * Returns &lt;tt&gt;true&lt;/tt&gt; if this list contains no elements.</span><br><span class="line">    */</span><br><span class="line">   public boolean isEmpty() &#123;</span><br><span class="line">       return size == 0;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public boolean contains(Object o) &#123;</span><br><span class="line">       return indexOf(o) &gt;= 0;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public int indexOf(Object o) &#123;</span><br><span class="line">       if (o == null) &#123;</span><br><span class="line">           for (int i = 0; i &lt; size; i++)</span><br><span class="line">               if (elementData[i]==null)</span><br><span class="line">                   return i;</span><br><span class="line">       &#125; else &#123;</span><br><span class="line">           for (int i = 0; i &lt; size; i++)</span><br><span class="line">               if (o.equals(elementData[i]))</span><br><span class="line">                   return i;</span><br><span class="line">       &#125;</span><br><span class="line">       return -1;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * Returns a shallow copy of this &lt;tt&gt;ArrayList&lt;/tt&gt; instance.  (The</span><br><span class="line">    * elements themselves are not copied.)</span><br><span class="line">    *</span><br><span class="line">    * 返回这个ArrayList的一份浅拷贝，元素没有被copy</span><br><span class="line">    */</span><br><span class="line">   public Object clone() &#123;</span><br><span class="line">       try &#123;</span><br><span class="line">		//调用了Object父类的clone方法，返回的还是元引用地址</span><br><span class="line">		//如果一个类要重写clone方法，则需要implements Cloneable</span><br><span class="line">		//Cloneable接口里面没有任何方法，为没有实现此接口而重写clone方法的类抛出异常</span><br><span class="line">           ArrayList&lt;?&gt; v = (ArrayList&lt;?&gt;) super.clone();</span><br><span class="line">           v.elementData = Arrays.copyOf(elementData, size);</span><br><span class="line">           v.modCount = 0;</span><br><span class="line">           return v;</span><br><span class="line">       &#125; catch (CloneNotSupportedException e) &#123;</span><br><span class="line">           // this shouldn&#x27;t happen, since we are Cloneable</span><br><span class="line">           throw new InternalError(e);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * Returns an array containing all of the elements in this list</span><br><span class="line">    * in proper sequence (from first to last element).</span><br><span class="line">    *</span><br><span class="line">    * &lt;p&gt;The returned array will be &quot;safe&quot; in that no references to it are</span><br><span class="line">    * maintained by this list.  (In other words, this method must allocate</span><br><span class="line">    * a new array).  The caller is thus free to modify the returned array.</span><br><span class="line">    *</span><br><span class="line">    * &lt;p&gt;This method acts as bridge between array-based and collection-based</span><br><span class="line">    * 返回一份从头到尾正确顺序的包含了所有元素数组</span><br><span class="line"> * 返回的数组将是“安全的”，因为此列表不维护对它的引用。（换句话说，此方法必须分配一个新数组）。因此，调用者可以自由修改返回的数组。</span><br><span class="line"> * 这种方法充当了基于数组和基于集合之间的桥梁</span><br><span class="line">    */</span><br><span class="line">   public Object[] toArray() &#123;</span><br><span class="line">       return Arrays.copyOf(elementData, size);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * Removes the first occurrence of the specified element from this list, if it is present.  </span><br><span class="line">    * If the list does not contain the element, it is unchanged.  </span><br><span class="line">    * More formally, removes the element with the lowest index</span><br><span class="line">    * i such that (o==null ;get(i)==null ;o.equals(get(i)))</span><br><span class="line">    * (if such an element exists).  Returns true if this list</span><br><span class="line">    * contained the specified element (or equivalently, if this list</span><br><span class="line">    * changed as a result of the call).</span><br><span class="line">    */</span><br><span class="line">   public boolean remove(Object o) &#123;</span><br><span class="line">       if (o == null) &#123;</span><br><span class="line">           for (int index = 0; index &lt; size; index++)</span><br><span class="line">               if (elementData[index] == null) &#123;</span><br><span class="line">                   fastRemove(index);</span><br><span class="line">                   return true;</span><br><span class="line">               &#125;</span><br><span class="line">       &#125; else &#123;</span><br><span class="line">           for (int index = 0; index &lt; size; index++)</span><br><span class="line">               if (o.equals(elementData[index])) &#123;</span><br><span class="line">                   fastRemove(index);</span><br><span class="line">                   return true;</span><br><span class="line">               &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return false;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   /*</span><br><span class="line">    * Private remove method that skips bounds checking and does not return the value removed.</span><br><span class="line">    * 跳过了下标检查</span><br><span class="line">    */</span><br><span class="line">   private void fastRemove(int index) &#123;</span><br><span class="line">       modCount++;</span><br><span class="line">       int numMoved = size - index - 1;</span><br><span class="line">       if (numMoved &gt; 0)</span><br><span class="line">		//arraycopy是一个static native方法，JVM实现。前面为源，后面为目标</span><br><span class="line">		//删除是复制方法</span><br><span class="line">           System.arraycopy(elementData, index+1, elementData, index, numMoved);</span><br><span class="line">       elementData[--size] = null; // clear to let GC do its work</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   /**</span><br><span class="line">    * Removes all of the elements from this list.  The list will be empty after this call returns.</span><br><span class="line">    */</span><br><span class="line">   public void clear() &#123;</span><br><span class="line">       modCount++;</span><br><span class="line"></span><br><span class="line">       // clear to let GC do its work</span><br><span class="line">       for (int i = 0; i &lt; size; i++)</span><br><span class="line">           elementData[i] = null;</span><br><span class="line"></span><br><span class="line">       size = 0;</span><br><span class="line">   &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="clone方法"><a href="#clone方法" class="headerlink" title="clone方法"></a>clone方法</h3><p>Object作为所有类的父类，clone方法为protected，如果某类想要重写clone方法，需要</p>
+<ol>
+<li>实现cloneable接口，此接口中没有任何方法，仅为不实现此接口却想实现clone方法的类报错而存在</li>
+<li>覆盖clone方法，并且将protected声明为public</li>
+</ol>
+<p>Object类中的<strong>clone方法是会new一个新对象的</strong></p>
+<h4 id="深浅拷贝区别"><a href="#深浅拷贝区别" class="headerlink" title="深浅拷贝区别"></a>深浅拷贝区别</h4><blockquote>
+<p>浅拷贝：被复制对象的所有值属性都含有与原来对象的相同，而所有的<strong>对象引用属性仍然指向原来的对象</strong>。</p>
+<p>深拷贝：在浅拷贝的基础上，所有<strong>引用其他对象的变量也进行了clone</strong>，并指向被复制过的新对象。</p>
+<p>也就是说，一个默认的clone()方法实现机制，仍然是赋值。</p>
+</blockquote>
+<h4 id="不同类型的clone"><a href="#不同类型的clone" class="headerlink" title="不同类型的clone"></a>不同类型的clone</h4><ol>
+<li>在Java中，基本类型自动实现了“深克隆”：当我们执行</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Integer x=new Integer();</span><br></pre></td></tr></table></figure>
+
+<p>时,jvm内部创建一个Integer对象,但当我们进行修改时,jvm并不是直接对原有对象进行修改,而是<strong>创建一个新的Integer对象存储新值</strong>,然后返回这个新值,因此当我们对集合内部的Integer对象修改值时,实际上其指向的对象已经改变,导致发生了类似于深复制的现象、</p>
+<ol start="2">
+<li>对于String，String类型的变量clone后的表现好像也实现了深度clone，但其实只是一个假象。<br>因为执行 clone.name = “new”;语句时，它作用相当于生成了一个新的string类型，然后又赋回给cloned.name。<br>这是因为string被sun公司的工程师写成了一个不可更改的类（immutable class），在所有string类中的函数都不能更改自身的值。</li>
+</ol>
+<p>==&gt; 这告诉我们支持更方便实现克隆的一种途径：<strong>将自己定义的类编写为不可更改</strong>。</p>
+<p>综上两点可以得出：</p>
+<ol>
+<li>Java中的基本类型和String虽然父类都是Object，但是并没有让它们重写clone方法，要实现基本类型的克隆，只需</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">int m=10;</span><br><span class="line">int n=m;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>如果基本类型被修改时，JVM会new一个新对象，并对新对象进行操作并返回这个新对象。究其原因：基本类型和String被设计成<strong>不可变的、线程安全</strong>类。</p>
+<ol start="2">
+<li>对于其他例如自定义的类，重写clone方法也是new一个新对象，但是其中定义的其他引用变量成员，则不会new，而是直接返回这个引用，所以如果想要真正意义上克隆这个引用对象，则这个引用对象类需要实现Cloneable接口并重写clone方法完成深克隆。</li>
+</ol>
+<p>但是这么做如果一层层嵌套下来，就会很麻烦。</p>
+<ol start="3">
+<li>将类及其子类实现序列化接口也是一个实现克隆的可行办法。</li>
+</ol>
+<h4 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h4><ol>
+<li><p>序列化的作用：</p>
+<ul>
+<li>将对象保存在<strong>本地</strong></li>
+<li>实现网络间或者进程间的<strong>通信</strong></li>
+</ul>
+</li>
+<li><p>实现：</p>
+<ul>
+<li>实现Serilizable接口，transient关键字保证被修饰的变量（且只能修饰变量，不能修饰本地变量或者static）不被序列化</li>
+<li>一个静态变量不管是否被transient修饰，均不能被序列化，反序列化后类中static型变量的值为当前JVM中对应static变量的值</li>
+<li>实现Externalizable接口，需要主动调用方法区序列化需要序列化的值</li>
+</ul>
+</li>
+</ol>
+<h3 id="引用-amp-amp-参照"><a href="#引用-amp-amp-参照" class="headerlink" title="引用&amp;&amp;参照"></a>引用&amp;&amp;参照</h3><blockquote>
+<p><a href="!https://www.cnblogs.com/mywy/p/5083095.html">Java的clone机制(及String的特殊性)</a></p>
+<p><a href="!http://www.manongjc.com/detail/24-ryjovstdeshwmtt.html">关于java基础类型Integer String的clone()</a></p>
+<p>好文顶顶：<a href="!https://blog.csdn.net/54powerman/article/details/64920431?locationNum=6&fps=1">java对象拷贝</a><br><a href="!https://www.runoob.com/w3cnote/java-transient-keywords.html">Java transient 关键字</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">基本类型</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/06/Java/ArrayList/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-NiuKe/MeiTuan10-2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/01/NiuKe/MeiTuan10-2/">美团2021笔试十场第二道</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/01/NiuKe/MeiTuan10-2/" class="archive-article-date">
+  	<time datetime="2022-04-01T10:15:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>我们称一个长度为n的序列为正则序列，当且仅当该序列是一个由1~n组成的排列，即该序列由n个正整数组成，取值在[1,n]范围，且不存在重复的数，同时正则序列不要求排序</p>
+<p>有一天小团得到了一个长度为n的任意序列s，他需要在有限次操作内，将这个序列变成一个正则序列，每次操作他可以任选序列中的一个数字，并将该数字加一或者减一。</p>
+<p>请问他最少用多少次操作可以把这个序列变成正则序列？</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔试</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">美团</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/笔试//" class="article-tag-list-link color3">笔试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/01/NiuKe/MeiTuan10-2/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-NiuKe/MeiTuan10-2 - 副本 (2)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/01/NiuKe/MeiTuan10-2%20-%20%E5%89%AF%E6%9C%AC%20(2)/">美团2021笔试十场第二道</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/01/NiuKe/MeiTuan10-2%20-%20%E5%89%AF%E6%9C%AC%20(2)/" class="archive-article-date">
+  	<time datetime="2022-04-01T09:31:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>我们称一个长度为n的序列为正则序列，当且仅当该序列是一个由1~n组成的排列，即该序列由n个正整数组成，取值在[1,n]范围，且不存在重复的数，同时正则序列不要求排序</p>
+<p>有一天小团得到了一个长度为n的任意序列s，他需要在有限次操作内，将这个序列变成一个正则序列，每次操作他可以任选序列中的一个数字，并将该数字加一或者减一。</p>
+<p>请问他最少用多少次操作可以把这个序列变成正则序列？</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔试</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">美团</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/笔试//" class="article-tag-list-link color3">笔试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/01/NiuKe/MeiTuan10-2%20-%20%E5%89%AF%E6%9C%AC%20(2)/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-NiuKe/MeiTuan10-3" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/01/NiuKe/MeiTuan10-3/">美团2021笔试十场第三道</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/01/NiuKe/MeiTuan10-3/" class="archive-article-date">
+  	<time datetime="2022-04-01T09:31:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>小美和小团所在公司的食堂有N张餐桌，从左到右摆成一排，每张餐桌有2张餐椅供至多2人用餐，公司职员排队进入食堂用餐。小美发现职员用餐的一个规律并告诉小团：当男职员进入食堂时，他会优先选择已经坐有1人的餐桌用餐，只有当每张餐桌要么空着要么坐满2人时，他才会考虑空着的餐桌；</p>
+<p>当女职员进入食堂时，她会优先选择未坐人的餐桌用餐，只有当每张餐桌都坐有至少1人时，她才会考虑已经坐有1人的餐桌；</p>
+<p>无论男女，当有多张餐桌供职员选择时，他会选择最靠左的餐桌用餐。现在食堂内已有若干人在用餐，另外M个人正排队进入食堂，小团会根据小美告诉他的规律预测排队的每个人分别会坐哪张餐桌。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔试</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">美团</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/笔试//" class="article-tag-list-link color3">笔试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/01/NiuKe/MeiTuan10-3/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-NiuKe/MeiTuan10-1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/03/28/NiuKe/MeiTuan10-1/">美团2021笔试第一道</a>
+    </h1>
+  
+
+        
+        <a href="/2022/03/28/NiuKe/MeiTuan10-1/" class="archive-article-date">
+  	<time datetime="2022-03-28T13:21:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>某比赛已经进入了淘汰赛阶段,已知共有n名选手参与了此阶段比赛，他们的得分分别是a_1,a_2….a_n,小美作为比赛的裁判希望设定一个分数线m，使得所有分数大于m的选手晋级，其他人淘汰。</p>
+<p>但是为了保护粉丝脆弱的心脏，小美希望晋级和淘汰的人数均在[x,y]之间。</p>
+<p>显然这个m有可能是不存在的，也有可能存在多个m，如果不存在，请你输出-1，如果存在多个，请你输出<strong>符合条件的最低</strong>的分数线。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔试</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">美团</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/笔试//" class="article-tag-list-link color3">笔试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/28/NiuKe/MeiTuan10-1/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-NiuKe/AliTest1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -175,21 +715,8 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近也在准备各公司的笔试题，先从阿里做起，不过第一道就想了超级久！还是看了别人的解析这才领悟，现记录如下。</p>
-<h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p><img src="https://s2.loli.net/2022/03/27/bemTP9xD86iX7vs.png" alt="image.png"></p>
-<h3 id="题解——贪心算法"><a href="#题解——贪心算法" class="headerlink" title="题解——贪心算法"></a>题解——贪心算法</h3><p>1.对传入的数据按照二维数组的方式储存，示例如下：</p>
-<p><img src="https://s2.loli.net/2022/03/27/thQCyk4mo7bRxpi.png" alt="image.png"></p>
-<p>2.然后重写比较器，将X属性按照升序排列。需要注意的是：对于相等的X，要将Y降序排列，否则会导致后面的大的Y覆盖末尾前面的小的Y，导致结果出错，就不符合贪心算法的尽量保证末尾元素最小的要求了。</p>
-<p><img src="https://s2.loli.net/2022/03/27/YQ65fPUs1IOznFh.png" alt="image.png"></p>
-<p>3.并新建一个用来存储结果的dp数组。由于最小的Y递增序列长度为1，将第一个（由于升序，肯定会有第一个）放在下标为1的位置，理由是：后续的pos指针从0开始，如果有比第一个的Y还小的组合，则会替换到下标1对应的位置，这样不会指针越界。</p>
-<p><img src="https://s2.loli.net/2022/03/27/wus4BxVeTrRvkyg.png" alt="image.png"></p>
-<p>4.对于dp数组来说，只要当前的Y属性小于下一个要比较的items数组里的Y属性，就将结果+1，并存储到dp里，符合严格递增。</p>
-<p>5.如果dp当前的Y大于了下一个Y，就要在<strong>已经递增</strong>除当前Y本身的dp里的Y序列里找到一个小于下一个Y，并且是序列中最大的Y。如果两个Y对应的X不相等，就将它的下一组位置替换为下一个Y代表的那一组X和Y。</p>
-<p>代码如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	import java.io.*;</span><br><span class="line">	import java.util.*;</span><br><span class="line"></span><br><span class="line">	public class Main&#123;</span><br><span class="line">    //排序器，将X从小到大排序，最关键的一步是将相同的X按Y从大到小排序，因为如果按Y从小到大排序，</span><br><span class="line">    //会导致后面的大的Y覆盖末尾前面的小的Y，这样就不符合贪心算法的尽量保证末尾元素最小的要求了。</span><br><span class="line">    private static Comparator&lt;int[]&gt; comparator = new Comparator&lt;int[]&gt;()&#123;</span><br><span class="line">        @Override</span><br><span class="line">        public int compare(int[] o1,int[] o2)&#123;</span><br><span class="line">            if (o1[0] &gt; o2[0]) return 1;</span><br><span class="line">            else if (o1[0] &lt; o2[0]) return -1;</span><br><span class="line">            else &#123;</span><br><span class="line">                if (o1[1] &gt; o2[1]) return -1;</span><br><span class="line">                else if (o1[1] == o2[1]) return 0;</span><br><span class="line">                else return 1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws IOException&#123;</span><br><span class="line">        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));</span><br><span class="line">        String str = bf.readLine();</span><br><span class="line">        int n = Integer.parseInt(str);</span><br><span class="line">        for (int i = 0;i &lt; n;i++)&#123;</span><br><span class="line">            String str1 = bf.readLine();</span><br><span class="line">            int m = Integer.parseInt(str1);</span><br><span class="line">            String[] str2 = bf.readLine().split(&quot; &quot;);</span><br><span class="line">            String[] str3 = bf.readLine().split(&quot; &quot;);</span><br><span class="line">            int[][] items = new int[m][2];</span><br><span class="line">            for (int j = 0;j &lt; m;j++)&#123;</span><br><span class="line">                items[j] = new int[]&#123;Integer.parseInt(str2[j]),Integer.parseInt(str3[j])&#125;;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            //对数组排序</span><br><span class="line">            Arrays.sort(items,comparator);</span><br><span class="line">            //res保存最长递增子序列的大小。</span><br><span class="line">            int res = 1;</span><br><span class="line">            //用来保存每个长度末尾的Y尽可能小的[x,y]数组。</span><br><span class="line">            int[][] dp = new int[m + 1][2];</span><br><span class="line">            dp[1] = items[0];</span><br><span class="line">            //二分法进行查找此时的Y刚刚好大于哪一个下标的Y，又小于下一个下标的Y，这样更改下一个下标</span><br><span class="line">            //的Y，为此时的Y，就可以保证dp数组保存的是末尾可能的最小的Y。这种方法相对于DP寻找最长</span><br><span class="line">            //递增子序列，更快，时间复杂度为O(nlogn)</span><br><span class="line">            for (int j = 1;j &lt; m;j++)&#123;</span><br><span class="line">                if (dp[res][1] &lt; items[j][1])//对dp当前y排序，是否小于下一个y</span><br><span class="line">                    dp[++res] = items[j];//是就加入dp</span><br><span class="line">                else if (dp[res][1] &gt; items[j][1])&#123;//大于下一个y</span><br><span class="line">                    int l = 1,r = res,pos = 0;//l是起点 r是终点 pos</span><br><span class="line">                    while (l &lt;= r)&#123;//不相交</span><br><span class="line">                        int mid = (l + r) &gt;&gt; 1;</span><br><span class="line">                        if (dp[mid][1] &lt; items[j][1])&#123;//如果中间的小于当前的</span><br><span class="line">                            pos = mid;</span><br><span class="line">                            l = mid + 1;//换到mid往后的区间</span><br><span class="line">                        &#125;else&#123;//如果中间的大于或者等于当前的</span><br><span class="line">                            r = mid - 1;//换到mid往前的区间</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    if (dp[pos][0] != items[j][0])//如果找到的x属性与当前的x属性不相等</span><br><span class="line">                        dp[pos + 1] = items[j];//就把当前的替换为下一个</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(res);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
+<h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3>
+        
       
 
       
@@ -664,476 +1191,9 @@
 
 
   
-    <article id="post-LeetCode/noReapeatStr" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/16/LeetCode/noReapeatStr/">不重复的最长子串</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/16/LeetCode/noReapeatStr/" class="archive-article-date">
-  	<time datetime="2022-03-16T14:53:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Middle</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/16/LeetCode/noReapeatStr/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/twoNumAdd" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/16/LeetCode/twoNumAdd/">两数相加</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/16/LeetCode/twoNumAdd/" class="archive-article-date">
-  	<time datetime="2022-03-16T10:55:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你两个 非空 的链表，表示两个非负的整数。它们每位数字都是按照 逆序 的方式存储的，并且每个节点只能存储 一位 数字。</p>
-<p>请你将两个数相加，并以相同形式返回一个表示和的链表。</p>
-<p>你可以假设除了数字 0 之外，这两个数都不会以 0 开头。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Middle</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/16/LeetCode/twoNumAdd/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/twoNumSum" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/15/LeetCode/twoNumSum/">两数之和</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/15/LeetCode/twoNumSum/" class="archive-article-date">
-  	<time datetime="2022-03-15T11:59:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/15/LeetCode/twoNumSum/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/intern" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/15/Java/intern/">String的itern方法</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/15/Java/intern/" class="archive-article-date">
-  	<time datetime="2022-03-15T08:35:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>看了上篇的字符串常量池，对案例代码仍然没有理解地很透彻，找了很多资料后，终于明白，特此记录。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">String Pool</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">intern</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/15/Java/intern/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/JVM-GC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/15/Java/JVM-GC/">JVM垃圾回收</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/15/Java/JVM-GC/" class="archive-article-date">
-  	<time datetime="2022-03-15T02:40:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>上篇了解了JVM后，自然就想知道垃圾回收。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">GC</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/15/Java/JVM-GC/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next&gt;&gt;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next&gt;&gt;</a>
     </nav>
   
 
@@ -1341,6 +1401,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">美团</a>
               </li>
             
             <div class="clearfix"></div>
