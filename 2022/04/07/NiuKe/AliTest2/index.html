@@ -12,18 +12,26 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Archives: 2022/4 | BanalFish游向银河</title>
+  <title>阿里2021笔试第二道 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="从所有的黑暗里">
-<meta property="og:type" content="website">
-<meta property="og:title" content="BanalFish游向银河">
-<meta property="og:url" content="http://example.com/archives/2022/04/index.html">
+  <meta name="description" content="阿里笔试是真的难啊！ 题目描述">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里2021笔试第二道">
+<meta property="og:url" content="http://example.com/2022/04/07/NiuKe/AliTest2/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="从所有的黑暗里">
+<meta property="og:description" content="阿里笔试是真的难啊！ 题目描述">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/04/07/ksnqgz7dcxvtUPY.png">
+<meta property="og:image" content="https://s2.loli.net/2022/04/07/JU2bkMcs3yvfrWz.png">
+<meta property="article:published_time" content="2022-04-07T07:57:13.000Z">
+<meta property="article:modified_time" content="2022-04-07T08:07:22.659Z">
 <meta property="article:author" content="BanalFish">
-<meta property="article:tag" content="后端">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="笔试">
+<meta property="article:tag" content="阿里">
+<meta property="article:tag" content="算法">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/04/07/ksnqgz7dcxvtUPY.png">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
   
@@ -152,36 +160,49 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-NiuKe/AliTest2" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2022" class="archive-year">2022</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/04/07/NiuKe/AliTest3/" class="archive-article-date">
-  	<time datetime="2022-04-07T07:57:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-07</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/04/07/NiuKe/AliTest3/">阿里2021笔试第三道</a>
+    <h1 class="article-title" itemprop="name">
+      阿里2021笔试第二道
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2022/04/07/NiuKe/AliTest2/" class="archive-article-date">
+  	<time datetime="2022-04-07T07:57:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>阿里笔试是真的难啊！</p>
+<h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p><img src="https://s2.loli.net/2022/04/07/ksnqgz7dcxvtUPY.png" alt="image.png"></p>
+<span id="more"></span>
+
+<h3 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h3><p>主要在于能否发现规律，贴出牛客网友的答案解析：</p>
+<p><img src="https://s2.loli.net/2022/04/07/JU2bkMcs3yvfrWz.png" alt="image.png"></p>
+<p>我单发现了表达式的规律，却没有深层次地挖掘到斐波那契数列，发现这个规律后，可以用递归求解，也可以循环，这里贴出循环方法的代码。还要注意一点的是：所有运算都要取1e9+7的模，奈何我只想走Math.pow的数学捷径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">res=((int)(Math.pow(A,n)%1000000007-(n*B*Math.pow(A,(n-2)%1000000007))%1000000007))%1000000007;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>看来数学转让计算机计算还是有很多注意的地方啊。</p>
+<p>代码（同样来自上面的网友）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	import java.io.BufferedReader;</span><br><span class="line">	import java.io.InputStreamReader;</span><br><span class="line">	import java.io.IOException;</span><br><span class="line"></span><br><span class="line">	public class Main &#123;</span><br><span class="line">    static final int MOD = 1000000007;</span><br><span class="line">    public static void main(String[] args) throws IOException &#123;</span><br><span class="line">        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));</span><br><span class="line">        int T = Integer.parseInt(br.readLine());</span><br><span class="line">        while(T-- &gt; 0)&#123;</span><br><span class="line">            String[] params = br.readLine().split(&quot; &quot;);</span><br><span class="line">            int A = Integer.parseInt(params[0]);</span><br><span class="line">            int B = Integer.parseInt(params[1]);</span><br><span class="line">            int n = Integer.parseInt(params[2]);</span><br><span class="line">            if(n == 1)&#123;</span><br><span class="line">                System.out.println(A);</span><br><span class="line">            &#125;else if(n == 2)&#123;</span><br><span class="line">                System.out.println(A*A - 2*B);</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">				//dp1是n=0时的结果，dp2是n=1时的结果</span><br><span class="line">                long dp1 = 2L, dp2 = (long)A, dp = 0L;</span><br><span class="line">                for(int i = 2; i &lt;= n; i++)&#123;//循环递归</span><br><span class="line">                    // 注意相减之后可能越界，加上个MOD防止溢出</span><br><span class="line">                    dp = ((A * dp2) % MOD - (B * dp1) % MOD + MOD) % MOD;</span><br><span class="line">                    dp1 = dp2;</span><br><span class="line">                    dp2 = dp;</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(dp);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -205,7 +226,7 @@
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -218,314 +239,126 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/04/07/NiuKe/AliTest2/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/04/07/NiuKe/AliTest2/" class="archive-article-date">
-  	<time datetime="2022-04-07T07:57:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-07</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2022/04/07/NiuKe/AliTest3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          阿里2021笔试第三道
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/04/06/Java/ArrayList/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ArrayList部分源码理解及clone方法</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/04/07/NiuKe/AliTest2/">阿里2021笔试第二道</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔试</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">阿里</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/笔试//" class="article-tag-list-link color3">笔试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">解法</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/04/06/Java/ArrayList/" class="archive-article-date">
-  	<time datetime="2022-04-06T12:12:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/04/06/Java/ArrayList/">ArrayList部分源码理解及clone方法</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">基本类型</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/04/01/NiuKe/MeiTuan10-2/" class="archive-article-date">
-  	<time datetime="2022-04-01T10:15:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-01</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/04/01/NiuKe/MeiTuan10-2/">美团2021笔试十场第二道</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔试</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">美团</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/笔试//" class="article-tag-list-link color3">笔试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/04/01/NiuKe/MeiTuan10-2%20-%20%E5%89%AF%E6%9C%AC%20(2)/" class="archive-article-date">
-  	<time datetime="2022-04-01T09:31:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-01</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/04/01/NiuKe/MeiTuan10-2%20-%20%E5%89%AF%E6%9C%AC%20(2)/">美团2021笔试十场第二道</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔试</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">美团</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/笔试//" class="article-tag-list-link color3">笔试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/04/01/NiuKe/MeiTuan10-3/" class="archive-article-date">
-  	<time datetime="2022-04-01T09:31:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-01</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/04/01/NiuKe/MeiTuan10-3/">美团2021笔试十场第三道</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔试</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">美团</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/笔试//" class="article-tag-list-link color3">笔试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -548,8 +381,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
