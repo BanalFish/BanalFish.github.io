@@ -22,8 +22,11 @@
 <meta property="og:description" content="前言  在写考试系统的时候，又在idea上使用了ssm框架，但是暑假学的，框架怎么配置完全都忘了，把原来的配置复制好了能跑通到一个主页面后，开始着手写具体业务。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.loli.net/2022/02/12/VaTgIWuF1beviUB.png">
+<meta property="og:image" content="https://s2.loli.net/2022/04/08/IzvCeFx2tH9KY6c.png">
+<meta property="og:image" content="https://s2.loli.net/2022/04/08/zIBiJHunvjRhpe6.png">
+<meta property="og:image" content="https://s2.loli.net/2022/04/08/6gjIDi7XxY1HKwo.png">
 <meta property="article:published_time" content="2022-02-08T12:26:51.000Z">
-<meta property="article:modified_time" content="2022-03-08T10:31:32.181Z">
+<meta property="article:modified_time" content="2022-04-08T12:17:04.542Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="idea">
 <meta property="article:tag" content="ssm">
@@ -224,6 +227,12 @@
 </blockquote>
 <p>  好像懂了又好像没懂，等之后再去想吧…本来只打算写几句的，结果没想到这么能写，不去做网络写手可惜了（不是</p>
 <p>  之后懂了要记得来这里粘链接啊！</p>
+<h4 id="2022-04-08"><a href="#2022-04-08" class="headerlink" title="2022-04-08"></a>2022-04-08</h4><p><img src="https://s2.loli.net/2022/04/08/IzvCeFx2tH9KY6c.png" alt="image.png"></p>
+<p>这段代码欲返回user信息给前端，但是只是这样写的话principal会获取不到为null</p>
+<p><img src="https://s2.loli.net/2022/04/08/zIBiJHunvjRhpe6.png" alt="image.png"></p>
+<p><img src="https://s2.loli.net/2022/04/08/6gjIDi7XxY1HKwo.png" alt="image.png"></p>
+<p>加上一个自定义类UserAuthenticationFilter，应该是登陆成功后在其中绑定user信息到了session。不要忘记将这个类注入，不然不会起作用。</p>
+<p>虽然不太清楚原理，但是先写在这里记录一下</p>
 
       
 
@@ -364,7 +373,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%A5%E9%94%99"><span class="toc-number">2.</span> <span class="toc-text">报错</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#day1"><span class="toc-number">2.1.</span> <span class="toc-text">day1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#day2"><span class="toc-number">2.2.</span> <span class="toc-text">day2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#day3"><span class="toc-number">2.3.</span> <span class="toc-text">day3</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%A5%E9%94%99"><span class="toc-number">2.</span> <span class="toc-text">报错</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#day1"><span class="toc-number">2.1.</span> <span class="toc-text">day1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#day2"><span class="toc-number">2.2.</span> <span class="toc-text">day2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#day3"><span class="toc-number">2.3.</span> <span class="toc-text">day3</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2022-04-08"><span class="toc-number">2.4.</span> <span class="toc-text">2022-04-08</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
