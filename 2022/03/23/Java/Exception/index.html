@@ -25,7 +25,7 @@
 <meta property="og:image" content="https://s2.loli.net/2022/03/24/mDHYLVkiwprXW5z.png">
 <meta property="og:image" content="https://s2.loli.net/2022/03/24/kENCZgdQu1vls5o.png">
 <meta property="article:published_time" content="2022-03-23T13:15:33.000Z">
-<meta property="article:modified_time" content="2022-03-24T02:41:47.426Z">
+<meta property="article:modified_time" content="2022-04-10T08:45:15.508Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="异常">
@@ -190,16 +190,20 @@
 
 <p>异常又分为：</p>
 <ul>
-<li>检查性异常</li>
-<li>运行时异常</li>
-<li>错误</li>
+<li><p>检查性异常</p>
+</li>
+<li><p>运行时异常</p>
+</li>
+<li><p>错误</p>
+</li>
+<li><p>检查性异常在编译时不能被简单地忽略</p>
+</li>
+<li><p>运行时异常一般来源于逻辑上的异常，编译时可以被忽略</p>
+</li>
+<li><p>错误不是异常，而是脱离程序员控制的问题。比如栈溢出，这类错误编译时也检查不到</p>
+</li>
 </ul>
-<ul>
-<li>检查性异常在编译时不能被简单地忽略</li>
-<li>运行时异常一般来源于逻辑上的异常，编译时可以被忽略</li>
-<li>错误不是异常，而是脱离程序员控制的问题。比如栈溢出，这类错误编译时也检查不到</li>
-</ul>
-<h3 id="异常的体系结构"><a href="#异常的体系结构" class="headerlink" title="异常的体系结构"></a>异常的体系结构</h3><p>Exception和Error继承自Throwable，Exception常见的有NullPointerException、FileNotFoundException，Error常见的有OutofMemoryError、StackOverFlowError。</p>
+<h3 id="异常的体系结构"><a href="#异常的体系结构" class="headerlink" title="异常的体系结构"></a>异常的体系结构</h3><p>Exception和Error继承自Throwable，<br>Exception常见的有NullPointerException、FileNotFoundException，IndexOutOfBoundsException<br>Error常见的有OutofMemoryError、StackOverFlowError。</p>
 <p><img src="https://s2.loli.net/2022/03/24/BYK1IVowQMZyFJd.png" alt="image.png"></p>
 <ol>
 <li>Error一般是JVM抛出的，大多数与代码编写者的操作无关。一个合理的应用不应该尝试去捕获这些错误，也不应该去处理这些。</li>
@@ -232,7 +236,10 @@
 <li>ArithmeticException（算术异常） </li>
 <li>ClassCastException （类转换异常） </li>
 <li>IllegalArgumentException （非法参数异常） </li>
-<li>IndexOutOfBoundsException （下标越界异常） </li>
+<li>IndexOutOfBoundsException （下标越界异常）<blockquote>
+<p>在做力扣的求最长回文子串时，题解给出的中心扩展方法代码里，如果输入一个字符，会有这个下标越界异常。当时还在想怎么不抛出，原来这个是运行时异常，和错误（Error）一样，不是必须要捕获或抛出。</p>
+</blockquote>
+</li>
 <li>NullPointerException （空指针异常） </li>
 <li>SecurityException （安全异常）</li>
 </ul>
@@ -604,6 +611,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">美团</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Mid</a>
               </li>
             
             <div class="clearfix"></div>
