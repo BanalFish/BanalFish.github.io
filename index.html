@@ -154,6 +154,108 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-LeetCode/str2int" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/12/LeetCode/str2int/">字符串转整数</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/12/LeetCode/str2int/" class="archive-article-date">
+  	<time datetime="2022-04-12T04:11:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p><img src="https://s2.loli.net/2022/04/12/bCrgDLdIB5M9caq.png" alt="image.png"></p>
+<p><img src="https://s2.loli.net/2022/04/12/FW2cEHl6tvfGbSg.png" alt="image.png"></p>
+<h3 id="状态机"><a href="#状态机" class="headerlink" title="状态机"></a>状态机</h3><p>对于每一个字符，我们要对其做的操作就是：使它的状态转换为我们规定的状态。<br>例如：’-‘符号对我们来说：当其在第一位时是符号，在其他位则为无意义符号，此时应当中断识别；又如’ ‘在第一位时，其仍然转为开始状态，其他位则是无意义符号。</p>
+<p>得到下表关系：</p>
+<p><img src="https://s2.loli.net/2022/04/12/KdIVwPHp2gF87mU.png" alt="image.png"></p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import java.io.BufferedReader;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.InputStreamReader;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line">import java.util.Map;</span><br><span class="line"></span><br><span class="line">public class TopInter_8 &#123;</span><br><span class="line">   	public static void main(String[] args) throws IOException &#123;</span><br><span class="line">       BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));</span><br><span class="line">       String s = bf.readLine();</span><br><span class="line">       System.out.println(new TopInter_8().myAtoi(s));</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public int myAtoi(String str) &#123;</span><br><span class="line">	//自定义状态机类</span><br><span class="line">       Automaton automaton = new Automaton();</span><br><span class="line">       int length = str.length();</span><br><span class="line">       for (int i = 0; i &lt; length; ++i) &#123;</span><br><span class="line">           automaton.get(str.charAt(i));//遍历字符</span><br><span class="line">       &#125;</span><br><span class="line">       return (int) (automaton.sign * automaton.ans);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Automaton &#123;</span><br><span class="line">   	public int sign = 1;</span><br><span class="line">   	public long ans = 0;//最终结果</span><br><span class="line">   	private String state = &quot;start&quot;;//初始状态为start</span><br><span class="line">	</span><br><span class="line">	//对上表利用hashmap存储</span><br><span class="line">	//由于这里不在方法内部，所以初始内容应该是这样定义</span><br><span class="line">   	private Map&lt;String, String[]&gt; table = new HashMap&lt;String, String[]&gt;() &#123;&#123;</span><br><span class="line">       put(&quot;start&quot;, new String[]&#123;&quot;start&quot;, &quot;signed&quot;, &quot;in_number&quot;, &quot;end&quot;&#125;);</span><br><span class="line">       put(&quot;signed&quot;, new String[]&#123;&quot;end&quot;, &quot;end&quot;, &quot;in_number&quot;, &quot;end&quot;&#125;);</span><br><span class="line">       put(&quot;in_number&quot;, new String[]&#123;&quot;end&quot;, &quot;end&quot;, &quot;in_number&quot;, &quot;end&quot;&#125;);</span><br><span class="line">       put(&quot;end&quot;, new String[]&#123;&quot;end&quot;, &quot;end&quot;, &quot;end&quot;, &quot;end&quot;&#125;);</span><br><span class="line">   &#125;&#125;;</span><br><span class="line"></span><br><span class="line">   public void get(char c) &#123;</span><br><span class="line">       state = table.get(state)[get_col(c)];//更换状态</span><br><span class="line">       if (&quot;in_number&quot;.equals(state)) &#123;//如果是数字</span><br><span class="line">           ans = ans * 10 + c - &#x27;0&#x27;;//</span><br><span class="line">           ans = sign == 1 ? Math.min(ans, (long) Integer.MAX_VALUE) : Math.min(ans, -(long) Integer.MIN_VALUE);//比较是否超出数据范围</span><br><span class="line">       &#125; else if (&quot;signed&quot;.equals(state)) &#123;</span><br><span class="line">           sign = c == &#x27;+&#x27; ? 1 : -1;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   private int get_col(char c) &#123;//得到列下标</span><br><span class="line">       if (c == &#x27; &#x27;) &#123;</span><br><span class="line">           return 0;</span><br><span class="line">       &#125;</span><br><span class="line">       if (c == &#x27;+&#x27; || c == &#x27;-&#x27;) &#123;</span><br><span class="line">           return 1;</span><br><span class="line">       &#125;</span><br><span class="line">       if (Character.isDigit(c)) &#123;</span><br><span class="line">           return 2;</span><br><span class="line">       &#125;</span><br><span class="line">       return 3;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>很奇怪，我自己看了之后又写的时候，只不过换了一下map的value的顺序，就是没按照答案的列名顺序来，就导致执行为Null了，追踪源码，两个对比情况如图：</p>
+<p><img src="https://s2.loli.net/2022/04/12/QcIFGHoD36qzlh7.png" alt="image.png"></p>
+<p>试了好几遍只要列的顺序不对，就执行为Null，什么毛病<br>搞不懂为什么</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/12/LeetCode/str2int/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-LeetCode/intReverse" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -161,7 +263,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/11/LeetCode/intReverse/">找出最小回文子串</a>
+      <a class="article-title" href="/2022/04/11/LeetCode/intReverse/">整数反转</a>
     </h1>
   
 
@@ -183,6 +285,10 @@
 <p><img src="https://s2.loli.net/2022/04/11/GiBjxZw6sNSA1n4.png" alt="image.png"></p>
 <p>代码如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">   public int reverse(int x) &#123;</span><br><span class="line">       int rev = 0;</span><br><span class="line">       while (x != 0) &#123;</span><br><span class="line">           if (rev &lt; Integer.MIN_VALUE / 10 || rev &gt; Integer.MAX_VALUE / 10) &#123;</span><br><span class="line">               return 0;</span><br><span class="line">           &#125;</span><br><span class="line">           int digit = x % 10;</span><br><span class="line">           x /= 10;</span><br><span class="line">           rev = rev * 10 + digit;</span><br><span class="line">       &#125;</span><br><span class="line">       return rev;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>往后碰到不能超出32位存储范围的，就这样判断：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">if (rev &lt; Integer.MIN_VALUE / 10 || rev &gt; Integer.MAX_VALUE / 10)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
 
 <blockquote>
 <p>图片来自<a href="!https://leetcode-cn.com/problems/reverse-integer/solution/zheng-shu-fan-zhuan-by-leetcode-solution-bccn/">整数反转</a></p>
@@ -1070,112 +1176,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/27/NiuKe/AliTest1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Interview/interview1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/25/Interview/interview1/">记第一次面试</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/25/Interview/interview1/" class="archive-article-date">
-  	<time datetime="2022-03-25T07:57:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>三月来临，春招陆续开始，虽然心里很胆怯找工作，但是理智说必须得开始了！于是从投简历开始，于今天下午三点半进行了第一次面试。</p>
-<h3 id="问题复盘"><a href="#问题复盘" class="headerlink" title="问题复盘"></a>问题复盘</h3><h4 id="一：关于项目"><a href="#一：关于项目" class="headerlink" title="一：关于项目"></a>一：关于项目</h4><h5 id="1-第一个项目的某个功能怎么实现的"><a href="#1-第一个项目的某个功能怎么实现的" class="headerlink" title="1. 第一个项目的某个功能怎么实现的"></a>1. 第一个项目的某个功能怎么实现的</h5><p>乍一听到这个问题我有点懵，因为第一个项目有点忘了，得去复习一下项目！</p>
-<h5 id="2-SpringMVC的工作原理"><a href="#2-SpringMVC的工作原理" class="headerlink" title="2. SpringMVC的工作原理"></a>2. SpringMVC的工作原理</h5><p>哈哈！这个我知道！</p>
-<blockquote>
-<ol>
-<li>首先用户发送请求给DispatcherServlet（前端控制器，以下简称DS），DS将请求发送给HandlerMapping（<strong>映射处理器</strong>），</li>
-<li>HandlerMapping将找到合适的处理器（可能会有拦截器）包装成一个对象，返回给DS</li>
-<li>DS收到之后交给HandlerAdapter（<strong>处理器适配器</strong>），它处理完之后返回ModelAndView给DS</li>
-<li>DS将ModelAndView交给视图解析器（ViewResolver），视图解析器将处理页面并返回具体View给DS</li>
-<li>DS将处理结果渲染填充到页面，然后响应用户</li>
-</ol>
-</blockquote>
-<h5 id="3-Shiro的授权过程"><a href="#3-Shiro的授权过程" class="headerlink" title="3.Shiro的授权过程"></a>3.Shiro的授权过程</h5><h5 id="4-JSP闭包-怎么实现的JSP"><a href="#4-JSP闭包-怎么实现的JSP" class="headerlink" title="4.JSP闭包/怎么实现的JSP"></a>4.JSP闭包/怎么实现的JSP</h5><h4 id="二：Java基础"><a href="#二：Java基础" class="headerlink" title="二：Java基础"></a>二：Java基础</h4><h5 id="1-线程有几个状态"><a href="#1-线程有几个状态" class="headerlink" title="1.线程有几个状态"></a>1.线程有几个状态</h5><h5 id="2-了解锁吗"><a href="#2-了解锁吗" class="headerlink" title="2.了解锁吗"></a>2.了解锁吗</h5><h5 id="3-ArrayList和LinkedList了解吗"><a href="#3-ArrayList和LinkedList了解吗" class="headerlink" title="3.ArrayList和LinkedList了解吗"></a>3.ArrayList和LinkedList了解吗</h5><h4 id="三：数据结构与算法"><a href="#三：数据结构与算法" class="headerlink" title="三：数据结构与算法"></a>三：数据结构与算法</h4><p>只问了一个排序算法，然鹅我都忘了，也没答上来</p>
-<h5 id="1-了解归并排序等排序算法吗"><a href="#1-了解归并排序等排序算法吗" class="headerlink" title="1.了解归并排序等排序算法吗"></a>1.了解归并排序等排序算法吗</h5><h4 id="四：计算机网络"><a href="#四：计算机网络" class="headerlink" title="四：计算机网络"></a>四：计算机网络</h4><p>问的是之前认真看过的TCP、UDP，但是也忘了o(╥﹏╥)o</p>
-<h4 id="1-了解TCP、UDP这些吗？"><a href="#1-了解TCP、UDP这些吗？" class="headerlink" title="1.了解TCP、UDP这些吗？"></a>1.了解TCP、UDP这些吗？</h4><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>面试官人很好，我答不上来还说没事没事，可以看出我的回答很不好了，只问了这么点…还有就是每个问题都争取说一点出来嘛！当时的我怎么就开始自暴自弃，锁明明前天晚上还临时抱了下佛脚，一问干脆就说不了解了( Ĭ ^ Ĭ ) 下次一定要多说！话痨一点！</p>
-<p>通过这次面试，感觉到我的Java基础真的很薄弱啊，算法、计网这些也都忘了，这样下去不行啊！</p>
-<p>被网上一些入职后就增删改查的话洗脑了，认为只要会写代码就可以，昨天看了《Thinking in Java》的豆瓣书评，有句话的大概意思就是：只会写代码的话干脆直接去找外包好了，但是基础的这些要懂。是楼主面试百度的时候，面试官说的，不仅对他有很大影响，也让我一下子被震慑到了。</p>
-<p>一定要打牢基础啊！</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/面试//" class="article-tag-list-link color3">面试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/25/Interview/interview1/">展开全文 >></a>
         </p>
       
 

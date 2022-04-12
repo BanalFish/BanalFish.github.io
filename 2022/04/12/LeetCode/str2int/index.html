@@ -12,25 +12,27 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>整数反转 | BanalFish游向银河</title>
+  <title>字符串转整数 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="题目描述 解法一：字符串反转也是我最开始想到的解法，单独把负数拿出来，取负号之后的子串，进行字符数组的反转，最后转为int类型，如果抛出超出数据范围异常，就catch直接返回0。 123456789101112131415161718192021222324252627282930313233public int reverse(int x) &amp;#123;	&#x2F;&#x2F;绝对值是单个字符       if">
+  <meta name="description" content="题目描述  状态机对于每一个字符，我们要对其做的操作就是：使它的状态转换为我们规定的状态。例如：’-‘符号对我们来说：当其在第一位时是符号，在其他位则为无意义符号，此时应当中断识别；又如’ ‘在第一位时，其仍然转为开始状态，其他位则是无意义符号。 得到下表关系：  代码12345678910111213141516171819202122232425262728293031323334353637">
 <meta property="og:type" content="article">
-<meta property="og:title" content="整数反转">
-<meta property="og:url" content="http://example.com/2022/04/11/LeetCode/intReverse/index.html">
+<meta property="og:title" content="字符串转整数">
+<meta property="og:url" content="http://example.com/2022/04/12/LeetCode/str2int/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="题目描述 解法一：字符串反转也是我最开始想到的解法，单独把负数拿出来，取负号之后的子串，进行字符数组的反转，最后转为int类型，如果抛出超出数据范围异常，就catch直接返回0。 123456789101112131415161718192021222324252627282930313233public int reverse(int x) &amp;#123;	&#x2F;&#x2F;绝对值是单个字符       if">
+<meta property="og:description" content="题目描述  状态机对于每一个字符，我们要对其做的操作就是：使它的状态转换为我们规定的状态。例如：’-‘符号对我们来说：当其在第一位时是符号，在其他位则为无意义符号，此时应当中断识别；又如’ ‘在第一位时，其仍然转为开始状态，其他位则是无意义符号。 得到下表关系：  代码12345678910111213141516171819202122232425262728293031323334353637">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://s2.loli.net/2022/04/11/xpbdwKLiSFnqAcZ.png">
-<meta property="og:image" content="https://s2.loli.net/2022/04/11/GiBjxZw6sNSA1n4.png">
-<meta property="article:published_time" content="2022-04-11T14:03:35.000Z">
-<meta property="article:modified_time" content="2022-04-12T06:58:10.806Z">
+<meta property="og:image" content="https://s2.loli.net/2022/04/12/bCrgDLdIB5M9caq.png">
+<meta property="og:image" content="https://s2.loli.net/2022/04/12/FW2cEHl6tvfGbSg.png">
+<meta property="og:image" content="https://s2.loli.net/2022/04/12/KdIVwPHp2gF87mU.png">
+<meta property="og:image" content="https://s2.loli.net/2022/04/12/QcIFGHoD36qzlh7.png">
+<meta property="article:published_time" content="2022-04-12T04:11:35.000Z">
+<meta property="article:modified_time" content="2022-04-12T06:50:53.053Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="LeetCode">
 <meta property="article:tag" content="Mid">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://s2.loli.net/2022/04/11/xpbdwKLiSFnqAcZ.png">
+<meta name="twitter:image" content="https://s2.loli.net/2022/04/12/bCrgDLdIB5M9caq.png">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
   
@@ -159,43 +161,36 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-LeetCode/intReverse" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-LeetCode/str2int" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      整数反转
+      字符串转整数
     </h1>
   
 
         
-        <a href="/2022/04/11/LeetCode/intReverse/" class="archive-article-date">
-  	<time datetime="2022-04-11T14:03:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-11</time>
+        <a href="/2022/04/12/LeetCode/str2int/" class="archive-article-date">
+  	<time datetime="2022-04-12T04:11:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-12</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p><img src="https://s2.loli.net/2022/04/11/xpbdwKLiSFnqAcZ.png" alt="image.png"></p>
-<h3 id="解法一：字符串反转"><a href="#解法一：字符串反转" class="headerlink" title="解法一：字符串反转"></a>解法一：字符串反转</h3><p>也是我最开始想到的解法，单独把负数拿出来，取负号之后的子串，进行字符数组的反转，最后转为int类型，如果抛出超出数据范围异常，就catch直接返回0。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int reverse(int x) &#123;</span><br><span class="line">	//绝对值是单个字符</span><br><span class="line">       if (x &gt; -10 &amp;&amp; x &lt; 10)</span><br><span class="line">           return x;</span><br><span class="line"></span><br><span class="line">       else &#123;</span><br><span class="line">           String s = String.valueOf(x);</span><br><span class="line">           if (x &lt; 0) &#123;</span><br><span class="line">               s = s.substring(1);</span><br><span class="line">           &#125;</span><br><span class="line">           char[] c = s.toCharArray();</span><br><span class="line">           int j = c.length - 1;//尾</span><br><span class="line">           int i = 0;//起始</span><br><span class="line">           for (; i &lt; j; i++, j--) &#123;</span><br><span class="line">               char temp = c[i];</span><br><span class="line">               c[i] = c[j];</span><br><span class="line">               c[j] = temp;</span><br><span class="line"></span><br><span class="line">           &#125;</span><br><span class="line">           s = String.valueOf(c);</span><br><span class="line"></span><br><span class="line">           try &#123;</span><br><span class="line">               if (x &lt; 0)</span><br><span class="line">                   return -1 * Integer.parseInt(s);</span><br><span class="line">               return Integer.parseInt(s);</span><br><span class="line">           &#125; catch (Exception e) &#123;</span><br><span class="line">               return 0;//超出范围直接返回</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p><img src="https://s2.loli.net/2022/04/12/bCrgDLdIB5M9caq.png" alt="image.png"></p>
+<p><img src="https://s2.loli.net/2022/04/12/FW2cEHl6tvfGbSg.png" alt="image.png"></p>
+<h3 id="状态机"><a href="#状态机" class="headerlink" title="状态机"></a>状态机</h3><p>对于每一个字符，我们要对其做的操作就是：使它的状态转换为我们规定的状态。<br>例如：’-‘符号对我们来说：当其在第一位时是符号，在其他位则为无意义符号，此时应当中断识别；又如’ ‘在第一位时，其仍然转为开始状态，其他位则是无意义符号。</p>
+<p>得到下表关系：</p>
+<p><img src="https://s2.loli.net/2022/04/12/KdIVwPHp2gF87mU.png" alt="image.png"></p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import java.io.BufferedReader;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.InputStreamReader;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line">import java.util.Map;</span><br><span class="line"></span><br><span class="line">public class TopInter_8 &#123;</span><br><span class="line">   	public static void main(String[] args) throws IOException &#123;</span><br><span class="line">       BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));</span><br><span class="line">       String s = bf.readLine();</span><br><span class="line">       System.out.println(new TopInter_8().myAtoi(s));</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public int myAtoi(String str) &#123;</span><br><span class="line">	//自定义状态机类</span><br><span class="line">       Automaton automaton = new Automaton();</span><br><span class="line">       int length = str.length();</span><br><span class="line">       for (int i = 0; i &lt; length; ++i) &#123;</span><br><span class="line">           automaton.get(str.charAt(i));//遍历字符</span><br><span class="line">       &#125;</span><br><span class="line">       return (int) (automaton.sign * automaton.ans);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Automaton &#123;</span><br><span class="line">   	public int sign = 1;</span><br><span class="line">   	public long ans = 0;//最终结果</span><br><span class="line">   	private String state = &quot;start&quot;;//初始状态为start</span><br><span class="line">	</span><br><span class="line">	//对上表利用hashmap存储</span><br><span class="line">	//由于这里不在方法内部，所以初始内容应该是这样定义</span><br><span class="line">   	private Map&lt;String, String[]&gt; table = new HashMap&lt;String, String[]&gt;() &#123;&#123;</span><br><span class="line">       put(&quot;start&quot;, new String[]&#123;&quot;start&quot;, &quot;signed&quot;, &quot;in_number&quot;, &quot;end&quot;&#125;);</span><br><span class="line">       put(&quot;signed&quot;, new String[]&#123;&quot;end&quot;, &quot;end&quot;, &quot;in_number&quot;, &quot;end&quot;&#125;);</span><br><span class="line">       put(&quot;in_number&quot;, new String[]&#123;&quot;end&quot;, &quot;end&quot;, &quot;in_number&quot;, &quot;end&quot;&#125;);</span><br><span class="line">       put(&quot;end&quot;, new String[]&#123;&quot;end&quot;, &quot;end&quot;, &quot;end&quot;, &quot;end&quot;&#125;);</span><br><span class="line">   &#125;&#125;;</span><br><span class="line"></span><br><span class="line">   public void get(char c) &#123;</span><br><span class="line">       state = table.get(state)[get_col(c)];//更换状态</span><br><span class="line">       if (&quot;in_number&quot;.equals(state)) &#123;//如果是数字</span><br><span class="line">           ans = ans * 10 + c - &#x27;0&#x27;;//</span><br><span class="line">           ans = sign == 1 ? Math.min(ans, (long) Integer.MAX_VALUE) : Math.min(ans, -(long) Integer.MIN_VALUE);//比较是否超出数据范围</span><br><span class="line">       &#125; else if (&quot;signed&quot;.equals(state)) &#123;</span><br><span class="line">           sign = c == &#x27;+&#x27; ? 1 : -1;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   private int get_col(char c) &#123;//得到列下标</span><br><span class="line">       if (c == &#x27; &#x27;) &#123;</span><br><span class="line">           return 0;</span><br><span class="line">       &#125;</span><br><span class="line">       if (c == &#x27;+&#x27; || c == &#x27;-&#x27;) &#123;</span><br><span class="line">           return 1;</span><br><span class="line">       &#125;</span><br><span class="line">       if (Character.isDigit(c)) &#123;</span><br><span class="line">           return 2;</span><br><span class="line">       &#125;</span><br><span class="line">       return 3;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h3 id="解法二：数学"><a href="#解法二：数学" class="headerlink" title="解法二：数学"></a>解法二：数学</h3><p>对于一个整数，进行取余后作为最高位，对原来的数/10后再取余，旧余数*10+新余数=要返回的值，如此循环直至最后/10为0。<br>仍然考虑到可能超出类型数据范围的原因，所以这里要加上判断条件，推理如下：</p>
-<p>“注意到。。。必定成立”这段话看了好久，最后理解成rev=INT_MAX，而INT_MAX最高位也才是2，所以digit最高也是2就好。</p>
-<p><img src="https://s2.loli.net/2022/04/11/GiBjxZw6sNSA1n4.png" alt="image.png"></p>
-<p>代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">   public int reverse(int x) &#123;</span><br><span class="line">       int rev = 0;</span><br><span class="line">       while (x != 0) &#123;</span><br><span class="line">           if (rev &lt; Integer.MIN_VALUE / 10 || rev &gt; Integer.MAX_VALUE / 10) &#123;</span><br><span class="line">               return 0;</span><br><span class="line">           &#125;</span><br><span class="line">           int digit = x % 10;</span><br><span class="line">           x /= 10;</span><br><span class="line">           rev = rev * 10 + digit;</span><br><span class="line">       &#125;</span><br><span class="line">       return rev;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>往后碰到不能超出32位存储范围的，就这样判断：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">if (rev &lt; Integer.MIN_VALUE / 10 || rev &gt; Integer.MAX_VALUE / 10)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<blockquote>
-<p>图片来自<a href="!https://leetcode-cn.com/problems/reverse-integer/solution/zheng-shu-fan-zhuan-by-leetcode-solution-bccn/">整数反转</a></p>
-</blockquote>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>很奇怪，我自己看了之后又写的时候，只不过换了一下map的value的顺序，就是没按照答案的列名顺序来，就导致执行为Null了，追踪源码，两个对比情况如图：</p>
+<p><img src="https://s2.loli.net/2022/04/12/QcIFGHoD36qzlh7.png" alt="image.png"></p>
+<p>试了好几遍只要列的顺序不对，就执行为Null，什么毛病<br>搞不懂为什么</p>
 
       
 
@@ -284,7 +279,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/04/11/LeetCode/intReverse/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/04/12/LeetCode/str2int/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -298,18 +293,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2022/04/12/LeetCode/str2int/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          字符串转整数
-        
-      </div>
-    </a>
   
-  
-    <a href="/2022/04/10/LeetCode/maxSubPali/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">找出最小回文子串</div>
+    <a href="/2022/04/11/LeetCode/intReverse/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">整数反转</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -336,7 +322,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E6%B3%95%E4%B8%80%EF%BC%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8F%8D%E8%BD%AC"><span class="toc-number">2.</span> <span class="toc-text">解法一：字符串反转</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E6%B3%95%E4%BA%8C%EF%BC%9A%E6%95%B0%E5%AD%A6"><span class="toc-number">3.</span> <span class="toc-text">解法二：数学</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="toc-number">2.</span> <span class="toc-text">状态机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-number">4.</span> <span class="toc-text">问题</span></a></li></ol>
                     </div>
                 </span>
             </div>
