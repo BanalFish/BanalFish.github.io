@@ -154,6 +154,131 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-LeetCode/RegurMatch" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/14/LeetCode/RegurMatch/">正则匹配</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/14/LeetCode/RegurMatch/" class="archive-article-date">
+  	<time datetime="2022-04-14T07:53:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 ‘.’ 和 ‘*’ 的正则表达式匹配。</p>
+<p>‘.’ 匹配任意单个字符<br>‘*’ 匹配零个或多个前面的那一个元素<br>所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。</p>
+<blockquote>
+<p><a href="!https://leetcode-cn.com/problems/regular-expression-matching/">题目链接</a></p>
+</blockquote>
+<h3 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h3><p>对于s中的前i个字符，都有状态：是否与p中的前j个字符匹配。而判断这种状态为true还是false的关键，就是判断其前面的字符又是否匹配。</p>
+<p>这里的i j意义是动态数组中表示子串长度，又表示了下标，由于下标从0开始，也刚好暗含了字符串为空的情况。</p>
+<p>当它们在s、p中作为下标时，也表示了还未确定状态的下个字符下标。</p>
+<p>对于前面的字符，有三种情况：</p>
+<ol>
+<li>p[j-1]==s[i-1]，即前面的字符相等也不为特殊字符</li>
+<li>p[j-1]与s[i-1]不匹配</li>
+<li>p[j-1]==’.’，则表明与任意字符匹配</li>
+<li>p[j-1]==’*’，是星号则又考虑星号前面的字符，此时将“字符+星号”看做一个整体，不仅要看星号重复前一个字符的次数还要看这个整体是存在0次还是1次：</li>
+</ol>
+<p>2.1 如果星号前面的字符能够与文本串的最后一个<strong>能匹配</strong>（匹配判断方式参见1和3），但是匹配的次数分为0或多次：0次则转换成判断前j个字符的情况则转为判断前j-2个字符的匹配情况；1或多次看前i-1个与前j个的匹配情况，因为第i个与第j个一定相等了。</p>
+<p>2.2 如果星号前面的字符能够与文本串的最后一个<strong>不能匹配</strong>，在这种情况下，仍然考虑判断前j个字符的情况则转为判断前j-2个字符的匹配情况</p>
+<p>在s与p的匹配过程中，核心思想是：对于s中的每个字符，对应的是p中的哪个组合，字符？还是字符+*？所以代码可以用双层嵌套循环。</p>
+<p>由于i j都是看前一个字符是否匹配，所以下标都从1开始</p>
+<p>按照上面的分析：</p>
+<ol>
+<li>第一步：判断i j的前一个字符是否相等，由于相等的条件包含第一、二两种情况，所以判断条件可写为一个，用或关系连接</li>
+<li>第二步：不相等但是p[j-1]为*号，</li>
+<li>2.1：“字符+星号”的这个组合相当于空串，模式串*的前一个字符不能够跟文本串的末位匹配，判断前i个与前j-2个的匹配情况</li>
+<li>2.2：模式串*的前一个字符能够跟文本串的末位匹配，在此情况下，又分为星号与前一个字符匹配0或多次的两种情况。</li>
+</ol>
+<h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><p>试着画了画理解的流程图，这题目真不是人写的</p>
+<p><img src="https://s2.loli.net/2022/04/15/lhaXsKjWHIgfOFU.png" alt="image.png"></p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public boolean isMatch(String s, String p) &#123;</span><br><span class="line"></span><br><span class="line">       char[] cs = s.toCharArray();</span><br><span class="line">       char[] cp = p.toCharArray();</span><br><span class="line"></span><br><span class="line">       // dp[i][j]:表示s的前i个字符，p的前j个字符是否能够匹配</span><br><span class="line">       boolean[][] dp = new boolean[cs.length + 1][cp.length + 1];</span><br><span class="line"></span><br><span class="line">       // 初期值</span><br><span class="line">       // s为空，p为空，能匹配上</span><br><span class="line">       dp[0][0] = true;</span><br><span class="line">       // p为空，s不为空，必为false(boolean数组默认值为false，无需处理)</span><br><span class="line"></span><br><span class="line">       // s为空，p不为空，由于*可以匹配0个字符，所以有可能为true</span><br><span class="line">       for (int j = 1; j &lt;= cp.length; j++) &#123;</span><br><span class="line">           if (cp[j - 1] == &#x27;*&#x27;) &#123;</span><br><span class="line">               dp[0][j] = dp[0][j - 2];</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       // 填格子</span><br><span class="line">       for (int i = 1; i &lt;= cs.length; i++) &#123;</span><br><span class="line">           for (int j = 1; j &lt;= cp.length; j++) &#123;</span><br><span class="line">               // 文本串和模式串末位字符能匹配上</span><br><span class="line">               if (cs[i - 1] == cp[j - 1] || cp[j - 1] == &#x27;.&#x27;) &#123;</span><br><span class="line">                   dp[i][j] = dp[i - 1][j - 1];</span><br><span class="line">               &#125; else if (cp[j - 1] == &#x27;*&#x27;) &#123; // 模式串末位是*</span><br><span class="line">                   // 模式串*的前一个字符能够跟文本串的末位匹配上</span><br><span class="line">                   if (cs[i - 1] == cp[j - 2] || cp[j - 2] == &#x27;.&#x27;) &#123;</span><br><span class="line">                       dp[i][j] = dp[i][j - 2] ||    //匹配0次</span><br><span class="line">                               dp[i - 1][j];     // *匹配1次或多次的情况</span><br><span class="line">                   &#125; else &#123; // 模式串*的前一个字符不能够跟文本串的末位匹配</span><br><span class="line">                       dp[i][j] = dp[i][j - 2];     // *只能匹配0次</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return dp[cs.length][cp.length];</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这也太难了！感觉自己是猪头。</p>
+<p>说归说，这题看完题解的感觉让我想到之前做的最长回文子串，也是动态规划，写这题的时候还想着用递归来写，结果也是没能写出来。</p>
+<p>唉，路漫漫其修远兮，吾将中道崩殂。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Diff</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/14/LeetCode/RegurMatch/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-LeetCode/str2int" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1107,104 +1232,6 @@
 
 
   
-    <article id="post-NiuKe/AliTest1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/27/NiuKe/AliTest1/">阿里2021笔试第一道</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/27/NiuKe/AliTest1/" class="archive-article-date">
-  	<time datetime="2022-03-27T09:43:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近也在准备各公司的笔试题，先从阿里做起，不过第一道就想了超级久！还是看了别人的解析这才领悟，现记录如下。</p>
-<h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔试</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">阿里</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/笔试//" class="article-tag-list-link color3">笔试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/27/NiuKe/AliTest1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next&gt;&gt;</a>
@@ -1423,6 +1450,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Mid</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Diff</a>
               </li>
             
             <div class="clearfix"></div>
