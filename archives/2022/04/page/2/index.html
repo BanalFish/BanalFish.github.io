@@ -12,22 +12,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>腾讯2017暑期实习生编程第三题 | BanalFish游向银河</title>
+  <title>Archives: 2022/4 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="题目描述小Q今天在上厕所时想到了这个问题：有n个数，两两组成二元组，相差最小的有多少对呢？相差最大呢？">
-<meta property="og:type" content="article">
-<meta property="og:title" content="腾讯2017暑期实习生编程第三题">
-<meta property="og:url" content="http://example.com/2022/04/18/NiuKe/txSummer3/index.html">
+  <meta name="description" content="从所有的黑暗里">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BanalFish游向银河">
+<meta property="og:url" content="http://example.com/archives/2022/04/page/2/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="题目描述小Q今天在上厕所时想到了这个问题：有n个数，两两组成二元组，相差最小的有多少对呢？相差最大呢？">
+<meta property="og:description" content="从所有的黑暗里">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-04-18T07:09:35.000Z">
-<meta property="article:modified_time" content="2022-04-18T07:30:14.544Z">
 <meta property="article:author" content="BanalFish">
-<meta property="article:tag" content="Java">
-<meta property="article:tag" content="笔试">
-<meta property="article:tag" content="算法">
-<meta property="article:tag" content="腾讯">
+<meta property="article:tag" content="后端">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
@@ -157,63 +152,36 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-NiuKe/txSummer3" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      腾讯2017暑期实习生编程第三题
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2022" class="archive-year">2022</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2022/04/01/NiuKe/MeiTuan10-3/" class="archive-article-date">
+  	<time datetime="2022-04-01T09:31:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-01</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2022/04/01/NiuKe/MeiTuan10-3/">美团2021笔试十场第三道</a>
     </h1>
   
 
-        
-        <a href="/2022/04/18/NiuKe/txSummer3/" class="archive-article-date">
-  	<time datetime="2022-04-18T07:09:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>小Q今天在上厕所时想到了这个问题：有n个数，两两组成二元组，相差最小的有多少对呢？相差最大呢？</p>
-<span id="more"></span>
-
-<p>输入描述:</p>
-<p> 输入包含多组测试数据。</p>
-<p> 对于每组测试数据：</p>
-<p> N - 本组测试数据有n个数</p>
-<p> a1,a2…an - 需要计算的数据</p>
-<p> 保证:</p>
-<p> 1&lt;=N&lt;=100000,0&lt;=ai&lt;=INT_MAX.</p>
-<p>输出描述:</p>
-<p>对于每组数据，输出两个数，第一个数表示差最小的对数，第二个数表示差最大的对数。</p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>思路：</p>
-<ol>
-<li>对传入数组先排序 </li>
-<li>特殊情况：对于全部相同的数字，最大差和最小差的对数相同，用公式n*(n-1)/2得到结果</li>
-<li>统计数组中每个数字出现的次数</li>
-<li>统计最小差对数：<br> 3.1 有重复的数字，则最小差为0，对于每组重复的数字，用上述公式求和得到结果。<br> 3.2 无重复数字，则遍历数组，相邻两元素差值与最小差比较，并计数。</li>
-<li>统计最大差对数：最大数字的个数*最小数字的个数</li>
-</ol>
-<p>在判断是否有无重复数字时，用的是map.size是否==N做的判断，简单省事，值得学习。</p>
-<p>代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	import java.util.ArrayList;</span><br><span class="line">	import java.util.Arrays;</span><br><span class="line">	import java.util.List;</span><br><span class="line">	import java.util.Map;</span><br><span class="line">	import java.util.Scanner;</span><br><span class="line">	import java.util.TreeMap;</span><br><span class="line"> </span><br><span class="line">	public class Main &#123;</span><br><span class="line"> </span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Scanner sc = new Scanner(System.in);</span><br><span class="line">        while(sc.hasNext())&#123;</span><br><span class="line">            int n = sc.nextInt();</span><br><span class="line">            int[] a = new int[n];</span><br><span class="line">            for(int i=0;i&lt;n;i++)&#123;</span><br><span class="line">                a[i] = sc.nextInt();</span><br><span class="line">            &#125;</span><br><span class="line">             </span><br><span class="line">            Arrays.sort(a);</span><br><span class="line">            //如果数组中的值全相同，直接两两组合</span><br><span class="line">            if(a[0] == a[n-1])&#123;</span><br><span class="line">                int tmp = (n*(n-1))/2;</span><br><span class="line">                System.out.println(tmp + &quot; &quot; + tmp);</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            //map用来统计</span><br><span class="line">            Map&lt;Integer, Integer&gt; map = new TreeMap&lt;Integer, Integer&gt;();</span><br><span class="line">            for(int i=0;i&lt;n;i++)&#123;</span><br><span class="line">                if(map.containsKey(a[i]))</span><br><span class="line">                    map.put(a[i], map.get(a[i])+1);</span><br><span class="line">                else</span><br><span class="line">                    map.put(a[i], 1);</span><br><span class="line">            &#125;</span><br><span class="line">            //求差最小个数</span><br><span class="line">            int minres = 0;</span><br><span class="line">            if(map.size() == n)&#123;</span><br><span class="line">                int min = Math.abs(a[1]-a[0]);</span><br><span class="line">                for(int i=2;i&lt;n;i++)&#123;</span><br><span class="line">                    int tmp = Math.abs(a[i]-a[i-1]);</span><br><span class="line">                    if(tmp == min)</span><br><span class="line">                        minres++;</span><br><span class="line">                    else if(tmp &lt; min)&#123;</span><br><span class="line">                        min = tmp;</span><br><span class="line">                        minres = 1;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                for(Integer key : map.keySet())&#123;</span><br><span class="line">                    int val = map.get(key);</span><br><span class="line">                    if(val &gt; 1)&#123;</span><br><span class="line">                        minres += (val * (val-1))/2;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            //求差最大个数</span><br><span class="line">            int maxres = 0;</span><br><span class="line">            List&lt;Integer&gt; keyset = new ArrayList&lt;Integer&gt;(map.keySet());</span><br><span class="line">            int val1 = map.get(keyset.get(0));</span><br><span class="line">            int val2 = map.get(keyset.get(keyset.size()-1));</span><br><span class="line">            maxres = val1 * val2;</span><br><span class="line">            System.out.println(minres + &quot; &quot; + maxres);         </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="咆哮帝"><a href="#咆哮帝" class="headerlink" title="咆哮帝"></a>咆哮帝</h3><p>上面是别人写的代码，我按照思路自己写了一个，但就是有个用例过不了，搞不明白。起先以为是求差最大个数那里不行，替换成这个之后，用例通过个数直接减少到5个！其他的都没差，除了我用的HashMap，但是TreeMap不就是能排个序吗，我前面数组都已经排过了啊！</p>
-<p>还是怂了，换成TreeMap，还是不过；是我用了Integer数组吗，换成int数组，也不过！我搞不明白，非得把别人的粘过来才算过吗！气死我了！能换的都换了，到底是哪一个用例不过啊！啊？！！</p>
-<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><blockquote>
-<p><a href="!https://www.nowcoder.com/test/question/done?tid=55393914&qid=44804#summary">hofighter的评论解析</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -231,13 +199,13 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">腾讯</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">美团</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -250,125 +218,20 @@
 	</div>
 
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/04/18/NiuKe/txSummer3/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2022/04/19/NiuKe/txSummer1/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          腾讯2017暑期实习生编程第一、二题
-        
-      </div>
-    </a>
   
   
-    <a href="/2022/04/14/LeetCode/RegurMatch/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">正则匹配</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">题解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%92%86%E5%93%AE%E5%B8%9D"><span class="toc-number">3.</span> <span class="toc-text">咆哮帝</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">4.</span> <span class="toc-text">参考链接</span></a></li></ol>
-                    </div>
-                </span>
-            </div>
-        </div>
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
+    
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/archives/2022/04/">&lt;&lt;Prev</a><a class="page-number" href="/archives/2022/04/">1</a><span class="page-number current">2</span>
+    </nav>
   
 
 
@@ -392,8 +255,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
-		isArchive: false,
+		isPost: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
