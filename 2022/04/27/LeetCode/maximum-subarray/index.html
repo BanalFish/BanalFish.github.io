@@ -12,18 +12,25 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>BanalFish游向银河</title>
+  <title>根据最大子数组和看分治法 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="从所有的黑暗里">
-<meta property="og:type" content="website">
-<meta property="og:title" content="BanalFish游向银河">
-<meta property="og:url" content="http://example.com/page/4/index.html">
+  <meta name="description" content="题目描述给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。 子数组 是数组中的一个连续部分。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="根据最大子数组和看分治法">
+<meta property="og:url" content="http://example.com/2022/04/27/LeetCode/maximum-subarray/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="从所有的黑暗里">
+<meta property="og:description" content="题目描述给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。 子数组 是数组中的一个连续部分。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/04/27/6udBQl8GgEU3Lxv.png">
+<meta property="og:image" content="https://s2.loli.net/2022/04/27/78IdkhzfmSFRETY.png">
+<meta property="article:published_time" content="2022-04-27T07:38:56.000Z">
+<meta property="article:modified_time" content="2022-04-27T10:02:16.842Z">
 <meta property="article:author" content="BanalFish">
-<meta property="article:tag" content="后端">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="LeetCode">
+<meta property="article:tag" content="Easy">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/04/27/6udBQl8GgEU3Lxv.png">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
   
@@ -152,30 +159,64 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-Java/JVM-GC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-LeetCode/maximum-subarray" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/15/Java/JVM-GC/">JVM垃圾回收</a>
+    <h1 class="article-title" itemprop="name">
+      根据最大子数组和看分治法
     </h1>
   
 
         
-        <a href="/2022/03/15/Java/JVM-GC/" class="archive-article-date">
-  	<time datetime="2022-03-15T02:40:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-15</time>
+        <a href="/2022/04/27/LeetCode/maximum-subarray/" class="archive-article-date">
+  	<time datetime="2022-04-27T07:38:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>上篇了解了JVM后，自然就想知道垃圾回收。</p>
-        
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</p>
+<p>子数组 是数组中的一个连续部分。</p>
+<span id="more"></span>
+
+<p>示例 1：</p>
+<p>输入：nums = [-2,1,-3,4,-1,2,1,-5,4]<br>输出：6<br>解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。</p>
+<p>提示：<br>1 &lt;= nums.length &lt;= 105<br>-104 &lt;= nums[i] &lt;= 104</p>
+<blockquote>
+<p><a href="!https://leetcode-cn.com/problems/maximum-subarray/">力扣详细题目链接</a></p>
+</blockquote>
+<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>每次最先想到的就是暴力呜呜，但是时间复杂度会是O(n^2)，看到题目说：“进阶：如果你已经实现复杂度为 O(n) 的解法，尝试使用更为精妙的 分治法 求解。”</p>
+<p>我：啊？？</p>
+<p>于是又思考起来O(n)的做法是什么。联想到上次做盛水最多的容器时用到了双指针，但是这个好像用不了：因为上次双指针移动是有邻近的数据比较后再移动两端边界，这次这个边界邻近好像没什么关系。</p>
+<p>又看分治法，想起上次做求最长公共前缀子串时题解有说到分治法，但是印象有点模糊了，于是我想了想：要是最长的子串横跨了中间的分界线怎么办呢？这样一来，左右两边比较没有意义了呀，于是觉得自己应该想错了，遂暴力法解题，不出意料超出时间限制。</p>
+<h3 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h3><p>又是你，动态规划！但是这次的动态规划竟然不用建立二维数组，求子数组最大值，就是看目前的这个子数组加上后一个数的和，与后一个数字谁更大。</p>
+<p>前面累积了那么多数字的和，最后却没有一个数字大，那么之前的努力可以舍弃掉了，以这个新数字作为子数组，再比较子数组与临时存储的结果值谁更大，实时更新结果值，最后返回。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">int res=nums[0];//结果</span><br><span class="line">      int pre=nums[0];//子数组</span><br><span class="line">      for(int i=1;i&lt;nums.length;i++)&#123;</span><br><span class="line">          pre=Math.max(pre+nums[i],nums[i]);</span><br><span class="line">          res=Math.max(pre,res);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      return res;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)，空间复杂度：O(1)</p>
+<h3 id="分治法"><a href="#分治法" class="headerlink" title="分治法"></a>分治法</h3><p>分治法的定义是：将一个大问题分解为若干个小的子问题，逐一解决后将结果集合并。</p>
+<p>对于此题：</p>
+<p>1.将一个大的区间分解为左区间、右区间和中间区间（中间区间可以包含整个最初的区间，也可以只含有一个数），每个区间中又有左区间、右区间和中间区间，如此反复套娃，直到最小的区间只有一个数。</p>
+<p>2.每个区间可以定义有四个属性：区间总和、左区间总和、右区间总和、中间区间最大和。</p>
+<p>3.利用<strong>递归</strong>可以依次求出每个小区间包含的这四个属性值，最后返回我们需要的那个区间的中间区间最大和就可以了。</p>
+<p>计算值的时候也会根据属性分成不同的情况，取每种情况的最大值即可：</p>
+<p><img src="https://s2.loli.net/2022/04/27/6udBQl8GgEU3Lxv.png" alt="image.png"></p>
+<p>最后的结果差不多是个二叉树的形式，也叫做“线段树”：</p>
+<p><img src="https://s2.loli.net/2022/04/27/78IdkhzfmSFRETY.png" alt="image.png"></p>
+<p>线段树是一种二叉搜索树，二叉搜索树就是左子树的所有节点都小于根节点，右子树的所有节点都大于根节点。</p>
+<p>时间复杂度：O(n)，空间复杂度：由于使用递归，为O(logn)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	class Status&#123;//区间</span><br><span class="line">	//四个属性值</span><br><span class="line">    int isum;</span><br><span class="line">    int lSum;</span><br><span class="line">    int rSum;</span><br><span class="line">    int mSum;</span><br><span class="line"></span><br><span class="line">	//构造方法</span><br><span class="line">    public Status(int isum,int lSum,int rSum,int mSum)&#123;</span><br><span class="line">        this.isum=isum;</span><br><span class="line">        this.lSum=lSum;</span><br><span class="line">        this.rSum=rSum;</span><br><span class="line">        this.mSum=mSum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int maxSubArray(int[] nums)&#123;</span><br><span class="line">        return getInfo(nums,0,nums.length-1).mSum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	//返回节点（区间）</span><br><span class="line">    public Status getInfo(int[] a,int l,int r)&#123;</span><br><span class="line">        if(l==r)&#123;</span><br><span class="line">            return new Status(a[l],a[l],a[l],a[l]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int m=(l+r)&gt;&gt;1;//次完美写法，最完美写法应该是l+(r-l)/2</span><br><span class="line">        Status lSub=getInfo(a,l,m);</span><br><span class="line">        Status rSub=getInfo(a,m+1,r);</span><br><span class="line"></span><br><span class="line">        return pushUp(lSub,rSub);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	//将左右节点（区间）更新值</span><br><span class="line">	//是从最后一个非叶子节点开始，往前更新</span><br><span class="line">	//返回这个非叶子节点</span><br><span class="line">    public Status pushUp(Status lSub,Status rSub)&#123;</span><br><span class="line">        int isum=lSub.isum+rSub.isum;</span><br><span class="line">        int lsum=Math.max(lSub.lSum,lSub.isum+rSub.lSum);</span><br><span class="line">        int rsum=Math.max(rSub.rSum,lSub.rSum+rSub.isum);</span><br><span class="line">        int msum=Math.max(Math.max(lSub.mSum,rSub.mSum),lSub.rSum+rSub.lSum);</span><br><span class="line"></span><br><span class="line">        return new Status(isum,lsum,rsum,msum);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><blockquote>
+<p>题解来自<a href="!https://leetcode-cn.com/problems/maximum-subarray/solution/zui-da-zi-xu-he-by-leetcode-solution/">力扣</a></p>
+<p>为什么写成m=(l+r)&gt;&gt;1的原因来自<a href="!https://blog.csdn.net/FlushHip/article/details/82319086">链接</a></p>
+</blockquote>
+<p>力扣你已经连续背刺我两天了呜呜呜┭┮﹏┭┮这简单题一点不简单</p>
+
       
 
       
@@ -192,11 +233,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">GC</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
         		</li>
       		
 		</ul>
@@ -208,7 +249,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题/算法分析//" class="article-tag-list-link color5">算法分析</a>
         		</li>
       		
 		</ul>
@@ -216,16 +261,84 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/15/Java/JVM-GC/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/04/27/LeetCode/maximum-subarray/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2022/05/02/LeetCode/addBinary/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          二进制求和
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/04/26/LeetCode/strStr/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">暴力和KMP实现strStr()函数</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -240,812 +353,32 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/JVM" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/14/Java/JVM/">JVM</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/14/Java/JVM/" class="archive-article-date">
-  	<time datetime="2022-03-14T12:31:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>看了上篇字符串常量池后，发现对JVM还是不很了解，结合上篇博客后，又学习了一下，特此记录。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/14/Java/JVM/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%9D%E8%80%83%E9%A2%98%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">思考题解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="toc-number">3.</span> <span class="toc-text">动态规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%B2%BB%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">分治法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">5.</span> <span class="toc-text">参考链接</span></a></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
-  
-    <article id="post-Idea/swagger" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/12/Idea/swagger/">ssm+shiro整合swagger</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/12/Idea/swagger/" class="archive-article-date">
-  	<time datetime="2022-03-12T14:07:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前段时间因为后端开发都不积极，于是干脆自己就用Jsp写前端页面，也方便自己看代码写的对不对。最终还是用了之前学长提到的swagger，方便前后端分离，但是网上我搜的时候大部分是SpringBoot，没多少ssm相关的，多加摸索，在报错中爬了一天，特此整理一份。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ssm</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">testsys</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">shiro</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">swagger</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/12/Idea/swagger/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Idea/ssm2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/08/Idea/ssm2/">ssm项目报错</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/08/Idea/ssm2/" class="archive-article-date">
-  	<time datetime="2022-03-08T10:04:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>  接着在写之前的考试系统代码，目前写到课程管理的<strong>增加课程</strong>方法，但是之前就一直运行报错，今天下午主要在完善这个功能。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ssm</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">testsys</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/08/Idea/ssm2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Idea/maven404" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/05/Idea/maven404/">maven404</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/05/Idea/maven404/" class="archive-article-date">
-  	<time datetime="2022-03-05T09:01:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>clone了学长搭建的前端代码后，根本没有用过egg框架的我懵了。试着点了启动，但是报Tomcat错误，想起前几天为了启动若依，移除了SDKs下的Tomcat，于是试着启动实训时候的正常项目想找出错误。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">maven</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/05/Idea/maven404/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Idea/ruoyi" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/03/Idea/ruoyi/">启动若依</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/03/Idea/ruoyi/" class="archive-article-date">
-  	<time datetime="2022-03-03T11:20:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>  出于想把暑假时间空出来的原因，于是报名去了老师的项目，第一周是先熟悉若依系统代码，总之先从安装好前后端分离项目、能够正常启动开始吧(￣▽￣)／</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">vscode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">ruoyi</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/03/03/Idea/ruoyi/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/String" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/22/Java/String/">String Pool</a>
-    </h1>
-  
-
-        
-        <a href="/2022/02/22/Java/String/" class="archive-article-date">
-  	<time datetime="2022-02-22T12:23:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="String不可变原因"><a href="#String不可变原因" class="headerlink" title="String不可变原因"></a>String不可变原因</h3>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">String Pool</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/02/22/Java/String/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/基本类型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/22/Java/%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">基本类型</a>
-    </h1>
-  
-
-        
-        <a href="/2022/02/22/Java/%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" class="archive-article-date">
-  	<time datetime="2022-02-22T12:19:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="Java八种基本类型"><a href="#Java八种基本类型" class="headerlink" title="Java八种基本类型"></a>Java八种基本类型</h3>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">基本类型</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/02/22/Java/%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-hexo/yilia" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/19/hexo/yilia/">hexo+yilia博客页面排列混乱</a>
-    </h1>
-  
-
-        
-        <a href="/2022/02/19/hexo/yilia/" class="archive-article-date">
-  	<time datetime="2022-02-19T12:09:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h4><p>明明是学后端的，我怎么这么热衷美化我的博客啊(ˇωˇ」∠)_</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">yilia</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hexo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/02/19/hexo/yilia/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-myNote/Valentine&#39;sDay" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/14/myNote/Valentine'sDay/">情人节在家的意外收获</a>
-    </h1>
-  
-
-        
-        <a href="/2022/02/14/myNote/Valentine'sDay/" class="archive-article-date">
-  	<time datetime="2022-02-14T09:18:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>权且当作日记写下这篇文。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">心情小记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/02/14/myNote/Valentine'sDay/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next&gt;&gt;</a>
-    </nav>
+  
+
+  
+
+  
+
   
 
 
@@ -1068,8 +401,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
