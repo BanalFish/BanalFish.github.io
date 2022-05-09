@@ -22,7 +22,7 @@
 <meta property="og:description" content="参考引用 十大经典排序算法 排序算法之——归并排序和快速排序 图解排序算法(三)之堆排序  冒泡排序1.基本思想：每次遍历数组的时候，相邻两个元素两两比较，如果小于或大于（看情况），就交换两个的位置，交给下一组，最后会有这一趟的最值被交换到最末尾。2.时间复杂度：最佳O(n) 最坏O(n^2) 平均O(n^2)3.空间复杂度：O(1)解释：每一次的遍历会有（n-1）个两数的组合，所以每次比较也会比">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-05-06T07:22:55.000Z">
-<meta property="article:modified_time" content="2022-05-09T02:30:43.133Z">
+<meta property="article:modified_time" content="2022-05-09T07:25:24.085Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="Algprithm">
@@ -182,6 +182,8 @@
 <p><a href="!https://www.cnblogs.com/chengxiao/p/6129630.html">图解排序算法(三)之堆排序</a></p>
 </blockquote>
 <h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>1.基本思想：每次遍历数组的时候，相邻两个元素两两比较，如果小于或大于（看情况），就交换两个的位置，交给下一组，最后会有这一趟的最值被交换到最末尾。<br>2.时间复杂度：最佳O(n) 最坏O(n^2) 平均O(n^2)<br>3.空间复杂度：O(1)<br>解释：每一次的遍历会有（n-1）个两数的组合，所以每次比较也会比较(n-1)次，虽然随着末尾确定的个数的增多，每次遍历时间会减少，但是(n-1)+(n-2)+…+1，根据数学公式，可推出结果为O((n^2)/2)，应该是简记为了O(n^2)。<br>最佳情况是：借助一个标志位，如果交换了则更新，没有则不更新；根据每次的值来判断是否进去循环，将时间复杂度降为O(n)<br>4.原地排序，稳定排序</p>
+<span id="more"></span>
+
 <p>Java代码：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public void bubbleSort(int[] a) &#123;</span><br><span class="line"></span><br><span class="line">       if (a.length == 0)//长度为0的情况</span><br><span class="line">           return;</span><br><span class="line"></span><br><span class="line">       for (int i = 0; i &lt; a.length; i++) &#123;</span><br><span class="line">           //i用来计数，每趟至少有一个当前最大值在最末尾</span><br><span class="line">           for (int j = 0; j &lt; a.length - i - 1; j++) &#123;</span><br><span class="line">               //j用来比较，每趟都从头开始比较，不过总数在逐渐减少</span><br><span class="line">               if (a[j + 1] &lt; a[j]) &#123;//大就交换</span><br><span class="line">                   int temp;</span><br><span class="line">                   temp = a[j];</span><br><span class="line">                   a[j] = a[j + 1];</span><br><span class="line">                   a[j + 1] = temp;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
