@@ -22,7 +22,7 @@
 <meta property="og:description" content="题目描述给定两个整数，被除数 dividend 和除数 divisor。将两数相除，要求不使用乘法、除法和 mod 运算符。 返回被除数 dividend 除以除数 divisor 得到的商。 整数除法的结果应当截去（truncate）其小数部分，例如：truncate(8.345) &#x3D; 8 以及 truncate(-2.7335) &#x3D; -2  题目来自力扣-两数相除">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-05-09T06:49:35.000Z">
-<meta property="article:modified_time" content="2022-05-09T07:22:43.099Z">
+<meta property="article:modified_time" content="2022-05-12T09:49:00.258Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="LeetCode">
@@ -184,7 +184,7 @@
 </blockquote>
 <span id="more"></span>
 
-<h3 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h3><p>这道题意思就是说，一道除法式子形如a/b=c(取整)，表示a中至少包含c个b，当然是对正数来说，负数只是改变了符号，但是可以说本质还是没有变。<br>现在就要思考怎么才能找到c。对于找多少个，怎么快速找，可以想到二分查找，尝试用二分查找思考本题：</p>
+<h3 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h3><p>这道题意思就是说，一道除法式子形如a/b=c(向下取整)，表示a中至少包含c个b，当然是对正数来说，负数只是改变了符号，但是可以说本质还是没有变。<br>现在就要思考怎么才能找到c。对于找多少个，怎么快速找，可以想到二分查找，尝试用二分查找思考本题：</p>
 <p>1.若a&gt;b，则至少包含一个b，c&gt;=1<br>2.若b<em>2后仍然满足a&gt;b，则c&gt;=2<br>3.若接着b</em>2（此时的b值已是最开始的4倍）仍然满足a&gt;b，则c&gt;=4<br>4.如此往复循环，直到某时刻a&lt;b<br>5.由于一直在乘以2倍，所以中间还有若干个b等待找到<br>6.于是令a=a-b,b=b，再回到第一步<br>7.每次的c相加即为最终结果</p>
 <p>写成代码可以用递归：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int divide(int dividend, int divisor) &#123;</span><br><span class="line">       //被除数最小，除数为-1，溢出</span><br><span class="line">       if(divisor==-1&amp;&amp;dividend==Integer.MIN_VALUE)</span><br><span class="line">           return Integer.MAX_VALUE;</span><br><span class="line"></span><br><span class="line">       int sign=1;</span><br><span class="line">       //标志最后的符号为负</span><br><span class="line">       if((dividend&gt;0&amp;&amp;divisor&lt;0)||(dividend&lt;0&amp;&amp;divisor&gt;0))</span><br><span class="line">           sign=-1;</span><br><span class="line">       //对被除数、除数都取负</span><br><span class="line">       int a=dividend&gt;0?-dividend:dividend;</span><br><span class="line">       int b=divisor&gt;0?-divisor:divisor;</span><br><span class="line"></span><br><span class="line">       int ans=div(a,b);</span><br><span class="line">       return sign==-1?-ans:ans;</span><br><span class="line">   &#125;</span><br><span class="line">   int div(int a,int b)&#123;//计算a中至少包含多少个b</span><br><span class="line">       if(a&gt;b)</span><br><span class="line">           return 0;</span><br><span class="line"></span><br><span class="line">       int count=1;//至少为1，前面为0的情况已经排除过</span><br><span class="line">       int tb=b;</span><br><span class="line"></span><br><span class="line">       while(tb+tb&gt;=a&amp;&amp;tb+tb&lt;0)&#123;</span><br><span class="line">		//tb+tb&lt;0保证不会溢出</span><br><span class="line">           //若tb是小于MIN_VALUE一半的数字，则它的两倍会溢出</span><br><span class="line">           tb+=tb;//tb翻转2倍</span><br><span class="line">           count+=count;//计数有多少个tb</span><br><span class="line">       &#125;</span><br><span class="line">       //当tb的两倍大于a时，要看这个差值有多少个b</span><br><span class="line">       return count+div(a-tb,b);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -298,6 +298,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2022/05/12/LeetCode/generate-parentheses/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          括号生成
+        
+      </div>
+    </a>
   
   
     <a href="/2022/05/08/LeetCode/remoNthNode/" id="article-nav-older" class="article-nav-link-wrap">
