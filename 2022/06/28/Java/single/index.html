@@ -14,15 +14,15 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>单例模式 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一、定义全局共用一个实例。当被创建后，一直存在，直到程序结束。 二、分类饿汉式单例模式表示程序一开始就需要有该类的实例，JVM加载时就已经创建了该类的实例，因此不会有多线程的安全问题。 代码表示为： 1234567891011121314	public class SingleTest &amp;#123;		&#x2F;&#x2F;私有 静态 成员变量		private final static SingleTest in">
+  <meta name="description" content="一、定义全局共用一个实例。当被创建后，一直存在，直到程序结束。 二、分类1.饿汉式单例模式表示程序一开始就需要有该类的实例，JVM加载时就已经创建了该类的实例，因此不会有多线程的安全问题。 代码表示为： 1234567891011121314public class SingleTest &amp;#123;	&#x2F;&#x2F;私有 静态 成员变量	private final static SingleTest ins">
 <meta property="og:type" content="article">
 <meta property="og:title" content="单例模式">
 <meta property="og:url" content="http://example.com/2022/06/28/Java/single/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="一、定义全局共用一个实例。当被创建后，一直存在，直到程序结束。 二、分类饿汉式单例模式表示程序一开始就需要有该类的实例，JVM加载时就已经创建了该类的实例，因此不会有多线程的安全问题。 代码表示为： 1234567891011121314	public class SingleTest &amp;#123;		&#x2F;&#x2F;私有 静态 成员变量		private final static SingleTest in">
+<meta property="og:description" content="一、定义全局共用一个实例。当被创建后，一直存在，直到程序结束。 二、分类1.饿汉式单例模式表示程序一开始就需要有该类的实例，JVM加载时就已经创建了该类的实例，因此不会有多线程的安全问题。 代码表示为： 1234567891011121314public class SingleTest &amp;#123;	&#x2F;&#x2F;私有 静态 成员变量	private final static SingleTest ins">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-06-28T02:03:37.000Z">
-<meta property="article:modified_time" content="2022-06-28T09:34:47.602Z">
+<meta property="article:modified_time" content="2022-06-30T02:00:47.340Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="设计模式">
@@ -177,12 +177,12 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h3 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h3><p>全局共用一个实例。当被创建后，一直存在，直到程序结束。</p>
-<h3 id="二、分类"><a href="#二、分类" class="headerlink" title="二、分类"></a>二、分类</h3><h4 id="饿汉式单例模式"><a href="#饿汉式单例模式" class="headerlink" title="饿汉式单例模式"></a>饿汉式单例模式</h4><p>表示程序一开始就需要有该类的实例，JVM加载时就已经创建了该类的实例，因此<strong>不会有多线程的安全问题</strong>。</p>
+<h3 id="二、分类"><a href="#二、分类" class="headerlink" title="二、分类"></a>二、分类</h3><h4 id="1-饿汉式单例模式"><a href="#1-饿汉式单例模式" class="headerlink" title="1.饿汉式单例模式"></a>1.饿汉式单例模式</h4><p>表示程序一开始就需要有该类的实例，JVM加载时就已经创建了该类的实例，因此<strong>不会有多线程的安全问题</strong>。</p>
 <p>代码表示为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	public class SingleTest &#123;</span><br><span class="line"></span><br><span class="line">		//私有 静态 成员变量</span><br><span class="line">		private final static SingleTest instance = new SingleTest();</span><br><span class="line"></span><br><span class="line">		private SingleTest()&#123;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		public static SingleTest newInstance()&#123;</span><br><span class="line">			return instance;</span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SingleTest &#123;</span><br><span class="line"></span><br><span class="line">	//私有 静态 成员变量</span><br><span class="line">	private final static SingleTest instance = new SingleTest();</span><br><span class="line"></span><br><span class="line">	private SingleTest()&#123;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	public static SingleTest newInstance()&#123;</span><br><span class="line">		return instance;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>问题：如果系统运行时都没用到这个实例，这么做就很浪费资源。所以可行的做法是：将<strong>创建实例的动作延迟到需要的时候</strong>。</p>
-<h4 id="懒汉式单例模式"><a href="#懒汉式单例模式" class="headerlink" title="懒汉式单例模式"></a>懒汉式单例模式</h4><p>类中这个成员变量预先声明，但是不主动创建，即不定义。只有需要的时候才进行创建，第一次创建后再也不用创建。</p>
+<h4 id="2-懒汉式单例模式"><a href="#2-懒汉式单例模式" class="headerlink" title="2.懒汉式单例模式"></a>2.懒汉式单例模式</h4><p>类中这个成员变量预先声明，但是不主动创建，即不定义。只有需要的时候才进行创建，第一次创建后再也不用创建。</p>
 <h6 id="step1："><a href="#step1：" class="headerlink" title="step1："></a>step1：</h6><ul>
 <li><p>初始思想：只要判断是不是为null就行了，如果这个变量为Null就创建，不为null就不创建(ﾉ´▽｀)ﾉ♪</p>
 </li>
@@ -195,7 +195,7 @@
 <li>问题：如果有多个线程同时走到if语句，同时判断为null，则会同时进行创建，最终结果有多个实例，与结果违背。</li>
 </ul>
 <h6 id="step2："><a href="#step2：" class="headerlink" title="step2："></a>step2：</h6><ul>
-<li><p>进阶思想：既然会有多个线程进入的风险，那只让一个进入不就行了？<br>「(°ヘ°)</p>
+<li><p>进阶思想：既然会有多个线程进入的风险，那只让一个进入不就行了？「(°ヘ°)</p>
 </li>
 <li><p>代码：</p>
 </li>
@@ -333,7 +333,7 @@
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          不重复的最长子串
+          合并k个升序链表
         
       </div>
     </a>
@@ -367,7 +367,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%AE%9A%E4%B9%89"><span class="toc-number">1.</span> <span class="toc-text">一、定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%88%86%E7%B1%BB"><span class="toc-number">2.</span> <span class="toc-text">二、分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A5%BF%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.1.</span> <span class="toc-text">饿汉式单例模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%87%92%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.2.</span> <span class="toc-text">懒汉式单例模式</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#step1%EF%BC%9A"><span class="toc-number">2.2.0.1.</span> <span class="toc-text">step1：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#step2%EF%BC%9A"><span class="toc-number">2.2.0.2.</span> <span class="toc-text">step2：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#step3%EF%BC%9A"><span class="toc-number">2.2.0.3.</span> <span class="toc-text">step3：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E7%89%88%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">最终版代码：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%96%91%E9%97%AE"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">疑问</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E5%BC%95%E7%94%A8"><span class="toc-number">2.2.1.2.</span> <span class="toc-text">参考引用</span></a></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%AE%9A%E4%B9%89"><span class="toc-number">1.</span> <span class="toc-text">一、定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%88%86%E7%B1%BB"><span class="toc-number">2.</span> <span class="toc-text">二、分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%A5%BF%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.1.</span> <span class="toc-text">1.饿汉式单例模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%87%92%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.2.</span> <span class="toc-text">2.懒汉式单例模式</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#step1%EF%BC%9A"><span class="toc-number">2.2.0.1.</span> <span class="toc-text">step1：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#step2%EF%BC%9A"><span class="toc-number">2.2.0.2.</span> <span class="toc-text">step2：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#step3%EF%BC%9A"><span class="toc-number">2.2.0.3.</span> <span class="toc-text">step3：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E7%89%88%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">最终版代码：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%96%91%E9%97%AE"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">疑问</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E5%BC%95%E7%94%A8"><span class="toc-number">2.2.1.2.</span> <span class="toc-text">参考引用</span></a></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -632,6 +632,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">单例模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">分治</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">优先队列</a>
               </li>
             
             <div class="clearfix"></div>
