@@ -154,6 +154,771 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Spring/SpringIoC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/17/Spring/SpringIoC/">SpringIoC个人总结</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/17/Spring/SpringIoC/" class="archive-article-date">
+  	<time datetime="2022-08-17T11:35:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>此文件本是随便复制的另一个写好的md文件复制而来，没想到打开内容是阿里算法的一道笔记，一看日期，时隔多月，我竟已对当时颇为自得的笔记感到陌生，带着害怕和惶恐迅速删除了。</p>
+<p>算是看了两遍有关《Spring揭秘》有关IOC的内容，但是仍然觉得有一层薄纱隔在我和Spring之间，摸不清抓不着，现写下一点个人小结，希望以后的自己不会惶恐关掉罢。</p>
+<h3 id="什么是IOC"><a href="#什么是IOC" class="headerlink" title="什么是IOC"></a>什么是IOC</h3><p>Spring帮助我们的第一点就是，将 new对象 这个操作包揽下来，再也不用自己去new，只要加上注解@Bean，通知容器去做即可。</p>
+<hr>
+<p>就像社会关系中的人不会是一座孤岛，new完的对象，一般会与其他实例有所关联，除了简单的JavaBean对象，像POJO。<br>所以Spring还会帮助我们绑定不同对象之间的依赖关系，像这样加上@Autowired或者@Resource注解。</p>
+<p>通常有三种<strong>注入方式</strong>，也就是绑定对象与对象之间的依赖关系的方式：</p>
+<p>1.setter<br>2.构造函数<br>3.接口注入</p>
+<p>接口注入的实现显得多此一举，现已不使用，它要求被注入的对象还要再去实现一个接口，在此接口中定义绑定关系的方法。</p>
+<hr>
+<p>那么 <strong>构建对象</strong> 和 <strong>绑定对象之间的依赖关系</strong> 就是我认为IOC的主要工作，这么说好像不太恰当，IOC控制反转应该是一种思想，那就暂且描述为Spring利用IoC帮我们所做的事情吧。</p>
+<hr>
+<p>IOC容器可以分为两类：</p>
+<p>1.BeanFactory<br>2.ApplicationContext</p>
+<p><strong>联系</strong>：ApplicationContext在BeanFactory的基础上构成（前者除了继承BeanFactory，还继承了其他的一些类，这些其他的类使ApplicationContext具有自动识别其他类、国际化支持、容器内事件发布等功能；ApplicationContext这部分没看明白，暂时不多说）</p>
+<p><strong>区别</strong>：</p>
+<p>1.<strong>初始化</strong>：BeanFactory是延迟初始化，ApplicationContext是开始全部完成初始化<br>2.<strong>资源</strong>：BeanFactory所需资源有限，ApplicationContext需要大量资源，因为它一开始全部加载好了</p>
+<blockquote>
+<p>不清楚容器、框架的概念，去看了<a href="!https://blog.csdn.net/zhangyi162/article/details/51393116">关于容器、框架、架构的一些概念（转载）</a></p>
+</blockquote>
+<h3 id="BeanFactory总述"><a href="#BeanFactory总述" class="headerlink" title="BeanFactory总述"></a>BeanFactory总述</h3><p>如果我们要让厨师为我们炒菜，他们不可能凭空造出来我们想要的菜，得给一些必要信息，统一写在纸上是一种可行的办法。<br>这个过程映射到Spring的BeanFactory，于是我们同样得给BeanFactory一些“信息”。</p>
+<ul>
+<li>信息来源：外部配置文件（properties或者xml）</li>
+<li>信息封装：将加载文件得到的信息封装成一个对象（写纸上），即BeanDefinition</li>
+<li>创建对象：BeanDefinitionRegistry负责完成Bean的注册和加载（炒菜）</li>
+<li>返回对象：BeanFactory来返回。想到设计模式中的工厂方法，大多也只是定义一个返回产品的方法，与这里不谋而合。</li>
+</ul>
+<p>创建和返回由两个不同的接口完成后，有一个叫DefaultListableBeanFactory的类继承它们，作为通用的使用类。</p>
+<blockquote>
+<p>关于创建对象这步，BeanDefinitionRegistry会对提供的信息做出额外的修饰吗？暂且按下不表。</p>
+</blockquote>
+<hr>
+<p>现在我们知道需要自己配置一些信息给容器，它才能帮助我们工作，如果容器连根据需求写代码都能完全做到时，我想剩下的内容也没有必要再接着看了。</p>
+<h5 id="xml配置"><a href="#xml配置" class="headerlink" title="xml配置"></a>xml配置</h5><p>首先从单个的bean来看，如果BeanFactory要创建，这里的创建不是指定义一个类对象，而是在堆中为它new出一块内存区域，我们做的事情是根据需要定义好每个类的名称、属性（包括基本类型和引用类型）或者方法等，然后得让容器知道这个类吧，于是给它一个名字叫做id，其所指向的类的类型用class来指明。</p>
+<blockquote>
+<p>除此之外，还可以用name来为bean取别名</p>
+</blockquote>
+<p>如果对于一些bean具有某些共同点，则可以用<beans>标签来统一管理，比如：</p>
+<ul>
+<li>default-lazy-init</li>
+<li>default-aotowired</li>
+<li>default-dependency-check：是否做依赖检查</li>
+<li>default-init-method：指定这些bean相同的初始化回调后的方法</li>
+<li>default-destroy-method：同上，但是是销毁前回调，而不是销毁方法，销毁还能有什么别的吗哈哈哈，如果能被篡改的话要出大问题</li>
+</ul>
+<hr>
+<p>还记得前面所说的IOC容器只做两件事，<strong>构建对象</strong> 和 <strong>绑定对象之间的依赖关系</strong>吗？现在已经通过xml配置了bean如何构建，现在看看通过xml绑定依赖关系。</p>
+<p>依然如前面所说，绑定有三种方式，不过接口注入已经不再使用：</p>
+<p>1.构造方法注入，使用<constructor-arg>表示是构造方法，type指定注入对象的类型；多个对象使用index下标标识</p>
+<p>2.setter方法注入，使用<property>标签，其中使用name指定实例名或者说属性名，以ref来指明是哪个类型</p>
+<p>两者通用的内嵌元素：</p>
+<ul>
+<li>value：其中不可再嵌套其他元素，是最底层的标签；可注入的类型包括String、原始类型及其包装类</li>
+<li>ref：<ul>
+<li>local：一个配置文件</li>
+<li>parent：当前容器的父容器</li>
+<li>bean：通用</li>
+</ul>
+</li>
+</ul>
+<p>那么除了这样明确地指定依赖的对象，容器还提供了<autowire>来指明通过哪种类型来绑定的抽象方法，如可以设置 autowire=byName 来通过 bean的id绑定，设置autowire=byType来通过bean的class绑定。</p>
+<p>除了这样显示的依赖关系，即我们可以先实例化这个类后再去创建它依赖的对象，那么 <depends-on> 就是来描述 先实例化依赖的对象，可能应用的场景有静态代码块初始化、数据库驱动注册等。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOC</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/17/Spring/SpringIoC/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java/逻辑右移" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/15/Java/%E9%80%BB%E8%BE%91%E5%8F%B3%E7%A7%BB/">java中的移位运算符</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/15/Java/%E9%80%BB%E8%BE%91%E5%8F%B3%E7%A7%BB/" class="archive-article-date">
+  	<time datetime="2022-08-15T08:59:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>左移：&lt;&lt;   高位丢弃，低位补0</li>
+<li>算术右移：&gt;&gt;   高位补符号位，低位丢弃</li>
+<li>无符号右移：&gt;&gt;&gt;（也叫逻辑右移）高位补0，低位丢弃</li>
+</ul>
+<p>这三种操作符都只能作用于long、int、short、byte、char这四种基本的整型类型上；<br>编译器对于short、byte、char会将其转为int再进行操作，所以本质这三种操作符只对int、long 有效。</p>
+<p>逻辑右移空位以0补齐，算术右移空位以符号位补齐</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">逻辑右移</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java细节//" class="article-tag-list-link color2">Java细节</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/15/Java/%E9%80%BB%E8%BE%91%E5%8F%B3%E7%A7%BB/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/submissions" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/15/LeetCode/submissions/">整数除法</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/15/LeetCode/submissions/" class="archive-article-date">
+  	<time datetime="2022-08-15T08:32:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定两个整数 a 和 b ，求它们的除法的商 a/b ，要求不得使用乘号 ‘*’、除号 ‘/‘ 以及求余符号 ‘%’ 。</p>
+<p>注意：</p>
+<p>整数除法的结果应当截去（truncate）其小数部分，<br>例如：truncate(8.345) = 8 以及 truncate(-2.7335) = -2<br>假设我们的环境只能存储 32 位有符号整数，<br>其数值范围是 [−2^31, 2^31−1]。本题中，如果除法结果溢出，则返回 2^31 − 1</p>
+<p><a href="!https://leetcode.cn/problems/xoh6Oh">力扣-整数除法</a></p>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int divide(int a, int b) &#123;</span><br><span class="line">	//结果超出正数最大值的情况</span><br><span class="line">       if (a == Integer.MIN_VALUE &amp;&amp; b == -1)</span><br><span class="line">           return Integer.MAX_VALUE;</span><br><span class="line"></span><br><span class="line">	//因为不让用乘法，用异或的方法确定符号</span><br><span class="line">       int sign = (a &gt; 0) ^ (b &gt; 0) ? -1 : 1;</span><br><span class="line">	</span><br><span class="line">	//将 2147483647 转成负数，不会越界；所以都转为负数</span><br><span class="line">       if (a &gt; 0) a = -a;</span><br><span class="line">       if (b &gt; 0) b = -b;</span><br><span class="line">       int res = 0;</span><br><span class="line"></span><br><span class="line">       while (a &lt;= b) &#123;//表示a一直可被除</span><br><span class="line"></span><br><span class="line">		//以2的指数倍探测a中含有多少个b</span><br><span class="line">		//value表示指数增长的除数</span><br><span class="line">           int value = b;</span><br><span class="line">		//暂时记录指数的幂</span><br><span class="line">           int k = 1;</span><br><span class="line"></span><br><span class="line">		//当a比value的2倍小，表示可以增加k值</span><br><span class="line">		//且除数value比最小值的一半要大（负数的情况下）</span><br><span class="line">		//转成正数就是：除数value比最大值2^31的一半要小</span><br><span class="line">		//这样value+value不会溢出</span><br><span class="line">           while ((a &lt;= value + value) &amp;&amp; value &gt;= 0xc0000000) &#123;</span><br><span class="line">               value += value;</span><br><span class="line">               k += k;</span><br><span class="line">           &#125;</span><br><span class="line">           a -= value;//在剩下的部分继续寻找有多少个b</span><br><span class="line">           res += k;</span><br><span class="line">       &#125;</span><br><span class="line">       // 不能使用乘号，所以将乘号换成三目运算符</span><br><span class="line">       return sign == 1 ? res : -res;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用位运算优化"><a href="#使用位运算优化" class="headerlink" title="使用位运算优化"></a>使用位运算优化</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">// 时间复杂度：O(1)</span><br><span class="line">public int divide(int a, int b) &#123;if (a == Integer.MIN_VALUE &amp;&amp; b == -1)</span><br><span class="line">       return Integer.MAX_VALUE;</span><br><span class="line">       int sign = (a &gt; 0) ^ (b &gt; 0) ? -1 : 1;</span><br><span class="line">       a = Math.abs(a);</span><br><span class="line">       b = Math.abs(b);</span><br><span class="line">       int res = 0;</span><br><span class="line">       for (int i = 31; i &gt;= 0; i--) &#123;</span><br><span class="line">           // 首先，右移的话，再怎么着也不会越界</span><br><span class="line">           // 其次，无符号右移的目的是：将 -2147483648 看成 2147483648</span><br><span class="line"></span><br><span class="line">           // 注意，这里不能是 (a &gt;&gt;&gt; i) &gt;= b 而应该是 (a &gt;&gt;&gt; i) - b &gt;= 0</span><br><span class="line">           // 这个也是为了避免 b = -2147483648，如果 b = -2147483648</span><br><span class="line">           // 那么 (a &gt;&gt;&gt; i) &gt;= b 永远为 true，但是 (a &gt;&gt;&gt; i) - b &gt;= 0 为 false</span><br><span class="line">           if ((a &gt;&gt;&gt; i) - b &gt;= 0) &#123; // a &gt;= (b &lt;&lt; i)</span><br><span class="line">               a -= (b &lt;&lt; i);</span><br><span class="line">               //当a=-2147483648 b=1时可以满足第一次就返回；一旦最开始没有进入，则之后再也不可能进入</span><br><span class="line">               //除去特殊情况(a=-2147483648 b=1)下的res的值不会超过2^30</span><br><span class="line">               //由于此时是从最大值向最小缩进，所以判断条件应该写成下面这种形式</span><br><span class="line">               if (res &gt; Integer.MAX_VALUE - (1 &lt;&lt; i)) &#123;</span><br><span class="line">                   return Integer.MIN_VALUE;</span><br><span class="line">               &#125;</span><br><span class="line">               res += (1 &lt;&lt; i);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       // 因为不能使用乘号，所以将乘号换成三目运算符</span><br><span class="line">       return sign == 1 ? res : -res;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>(并没有很理解直接返回最小值的那种特殊情况的判断条件的意思，只能暂时强记硬背)</p>
+<p>对于被除数和除数，要分<br>被除数为最小值时，除数为1和-1的情况：</p>
+<ul>
+<li>对于1，直接返回最小值，也就是底下的特殊情况判断条件</li>
+<li>对于-1，则溢出，直接返回32位能表示的最大值,最开始就返回</li>
+</ul>
+<p>然后底下由大数向小数缩进，找到每次a中含有的最多的b的个数，最后累加的和即为结果。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/15/LeetCode/submissions/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/rotate-array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/08/LeetCode/rotate-array/">两个数组间的距离值</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/08/LeetCode/rotate-array/" class="archive-article-date">
+  	<time datetime="2022-08-08T09:53:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个数组，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。</p>
+<p> <br>示例 1:</p>
+<p>输入: nums = [1,2,3,4,5,6,7], k = 3<br>输出: [5,6,7,1,2,3,4]<br>解释:<br>向右轮转 1 步: [7,1,2,3,4,5,6]<br>向右轮转 2 步: [6,7,1,2,3,4,5]<br>向右轮转 3 步: [5,6,7,1,2,3,4]</p>
+<p>题目来自 <a href="!https://leetcode.cn/problems/rotate-array">力扣-轮转数组</a></p>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>正常思路是另外开辟内存空间来存放数组结果，空间复杂度为O(n)，有空间复杂度为O(1)的更简便的做法：翻转数组</p>
+<p>图解的链接可以看<a href="!https://leetcode.cn/problems/rotate-array/solution/shu-zu-fan-zhuan-xuan-zhuan-shu-zu-by-de-5937/">这个</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">   	public void rotate(int[] nums, int k) &#123;</span><br><span class="line">       	k %= nums.length;</span><br><span class="line">       	reverse(nums, 0, nums.length - 1);</span><br><span class="line">       	reverse(nums, 0, k - 1);</span><br><span class="line">       	reverse(nums, k, nums.length - 1);</span><br><span class="line">   	&#125;</span><br><span class="line">   	public void reverse(int[] nums, int start, int end) &#123;</span><br><span class="line">       	while (start &lt; end) &#123;</span><br><span class="line">           int temp = nums[start];</span><br><span class="line">           nums[start] = nums[end];</span><br><span class="line">           nums[end] = temp;</span><br><span class="line">           start += 1;</span><br><span class="line">           end -= 1;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个的算法思想应该是：一个数组有着某种顺序（不是升序或者降序），当轮转时，就是打乱了它的先后顺序，头到了尾，尾到了头，于是决定先翻转整个数组，然后根据下标再调整回原来的这种顺序规律。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/08/LeetCode/rotate-array/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-ES/ES整合SpringBoot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/03/ES/ES%E6%95%B4%E5%90%88SpringBoot/">SpringBoot整合ES5.2.2版本</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/03/ES/ES%E6%95%B4%E5%90%88SpringBoot/" class="archive-article-date">
+  	<time datetime="2022-08-03T02:52:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>由于业务用的是ES5.2.2的老版本，于是学习ES时也以此版本为标准。</p>
+<p>快速上手操作可看<a href="!https://www.elastic.co/guide/en/elasticsearch/client/java-rest/5.2/_getting_started.html">官方文档链接</a></p>
+<h3 id="导入pom文件依赖"><a href="#导入pom文件依赖" class="headerlink" title="导入pom文件依赖"></a>导入pom文件依赖</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">   	&lt;groupId&gt;org.elasticsearch.client&lt;/groupId&gt;</span><br><span class="line">   	&lt;artifactId&gt;rest&lt;/artifactId&gt;</span><br><span class="line">   	&lt;version&gt;5.2.2&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h3><p>Java连接ES有几种不同的方式，现在网上搜到的大多是RestHighClient，应用于高版本的ES；还有TransportClient，官方表示7.x版本后弃用（好像是），笔者本人测试可以连接成功到本机上的是低版本的RestClient.</p>
+<blockquote>
+<p>反倒是同事发给的代码用的是TransportClient他们可以连接上，但笔者本人连接不上。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">RestClient restClient=RestClient.builder(</span><br><span class="line">              new HttpHost(&quot;localhost&quot;,9200,&quot;http&quot;)</span><br><span class="line">      ).build();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>测试连接</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//测试连接</span><br><span class="line">      String method=&quot;GET&quot;;</span><br><span class="line">      String endpoint=&quot;/dangdang&quot;;//索引名称</span><br><span class="line">      Response response = restClient.performRequest(method, endpoint);</span><br><span class="line">      System.out.println(EntityUtils.toString(response.getEntity()));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">HttpEntity entity = new NStringEntity(</span><br><span class="line">               &quot;&#123;\n&quot; +</span><br><span class="line">                       &quot;    \&quot;user\&quot; : \&quot;kinmochi\&quot;,\n&quot; +</span><br><span class="line">                       &quot;    \&quot;post_date\&quot; : \&quot;2000-11-15T14:12:12\&quot;,\n&quot; +</span><br><span class="line">                       &quot;    \&quot;message\&quot; : \&quot;loliloliloli\&quot;\n&quot; +</span><br><span class="line">                       &quot;&#125;&quot;, ContentType.APPLICATION_JSON);</span><br><span class="line">       Response indexResponse = restClient.performRequest(</span><br><span class="line">               &quot;PUT&quot;,</span><br><span class="line">               &quot;/twitter/tweet/1&quot;,// /索引/文档/id</span><br><span class="line">               Collections.&lt;String, String&gt;emptyMap(),</span><br><span class="line">               entity);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>虽然官方没有如何利用JSON查询（可能是没找到），但是从示例可以推出查询代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Map&lt;String, String&gt; params = Collections.emptyMap();</span><br><span class="line">      String jsonParams=&quot;&#123;\&quot;query\&quot;:&#123;\&quot;bool\&quot;:&#123;\&quot;must\&quot;:[&#123;\&quot;match\&quot;:&#123;\&quot;tags\&quot;:\&quot;2\&quot;&#125;&#125;]&#125;&#125;,\&quot;from\&quot;:0,\&quot;size\&quot;:10&#125;&quot;;//查询条件的JSON语句</span><br><span class="line">      HttpEntity entity = new NStringEntity(jsonParams, ContentType.APPLICATION_JSON);</span><br><span class="line"></span><br><span class="line">      Response response = restClient.performRequest(&quot;GET&quot;, &quot;/test1/person/_search&quot;, params,entity);</span><br><span class="line">//params为空Map</span><br><span class="line">      </span><br><span class="line">      System.out.println(EntityUtils.toString(response.getEntity()));//打印</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="关闭连接"><a href="#关闭连接" class="headerlink" title="关闭连接"></a>关闭连接</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">restClient.close();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>学习一门新技术时，不能保证一开始就找到正确的方法，总是需要经过搜索很多相关资料，最后从中找出最适合自己的机器及需求的方法。</p>
+<p>虽然最后的结果看起来十分简单，但是其中确实报过了很多错，有些错误还不能被搜索就解决，需要自己调试看源码、分析等过程，终于柳暗花明。</p>
+<p>发现ES的一个<br><a href="!https://quanke.gitbooks.io/elasticsearch-java-rest/content/java-low-level-rest-client/getting-started/performing-requests.html">中文手册链接</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ElasticSearch</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">ES5.2.2版本</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/03/ES/ES%E6%95%B4%E5%90%88SpringBoot/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java/自动拆箱可能造成NULL" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/07/22/Java/%E8%87%AA%E5%8A%A8%E6%8B%86%E7%AE%B1%E5%8F%AF%E8%83%BD%E9%80%A0%E6%88%90NULL/">for循环三语句执行顺序</a>
+    </h1>
+  
+
+        
+        <a href="/2022/07/22/Java/%E8%87%AA%E5%8A%A8%E6%8B%86%E7%AE%B1%E5%8F%AF%E8%83%BD%E9%80%A0%E6%88%90NULL/" class="archive-article-date">
+  	<time datetime="2022-07-22T10:12:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>今天在听Redis的时候，那个人说不能直接返回flag，因为自动拆箱可能空指针，当时不太懂于是就去搜了下，总结如下：</p>
+<ul>
+<li>基本类型在转为包装类时，调用了包装类的valueOf()方法</li>
+<li>包装类转为基本类型时，调用xxxValue()方法，此时就有可能抛出空指针异常</li>
+</ul>
+<p>在Java中null是一个特殊的值，可以赋值给任何引用类型，也可以转化为任何引用类型，所以下面的可以正常执行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Integer value1 = (Integer) null;</span><br><span class="line">Double value2 = (Double) null;</span><br><span class="line">Boolean value3 = (Boolean) null;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但是在使用Integer.valueOf(null)时会报空指针异常</p>
+<p>做法： 尽量不要使用包装类，使用时也应该判断空值</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">自动拆箱</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java细节//" class="article-tag-list-link color2">Java细节</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/07/22/Java/%E8%87%AA%E5%8A%A8%E6%8B%86%E7%AE%B1%E5%8F%AF%E8%83%BD%E9%80%A0%E6%88%90NULL/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/find-the-distance-value-between-two-arrays" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/07/15/LeetCode/find-the-distance-value-between-two-arrays/">两个数组间的距离值</a>
+    </h1>
+  
+
+        
+        <a href="/2022/07/15/LeetCode/find-the-distance-value-between-two-arrays/" class="archive-article-date">
+  	<time datetime="2022-07-15T07:57:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你两个整数数组 arr1 ， arr2 和一个整数 d ，请你返回两个数组之间的 距离值 。</p>
+<p>「距离值」 定义为符合此距离要求的元素数目：对于元素 arr1[i] ，不存在任何元素 arr2[j] 满足 |arr1[i]-arr2[j]| &lt;= d 。</p>
+<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>是在官方整理的二分法的每天练习中做到的一道题，但是这道题用二分真的不能太理解啊！！！！什么破题！！！官方题解又是什么辣鸡啊！！！用暴力就好了啊这题！！！二分思想根本不是主干啊！！！总之就是很让我恼火的一道题！！！！！题解也不写了，不愿再看见这道题！！！(╬◣д◢)好好出题！！！好好写题解！！！</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/07/15/LeetCode/find-the-distance-value-between-two-arrays/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Algorithm/Bisection-method" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -175,11 +940,11 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h3 id="二分法"><a href="#二分法" class="headerlink" title="二分法"></a>二分法</h3><p>对于有序的数组，二分法查找可将时间复杂度从O(n)降低为O(log n)</p>
-<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><p>无论哪种情况，为了保证被查找的数组（不太准确的说法）中的每一个数都被拿出来比较，看是否符合条件，所以一个极端条件是循环要能满足：l==r==mid；</p>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><p>无论哪种情况，为了保证被查找的数组（不太准确的说法）中的每一个数都被拿出来比较，看是否符合条件；；</p>
 <ul>
-<li><p>l 代表这段区间的最小，r代表最大，每次更新区间的判断依据是mid；<br>所以每次mid与target比较完后，相当于mid所代表的数可以被忽略了。</p>
+<li><p>l 代表这段区间的最小，r代表最大，每次更新区间的判断依据是mid；。</p>
 </li>
-<li><p>更新r的值，要看最先定义的时候r是否被取到：r=n-1（取到），r=n（没有取到）。<br>如果取到，后面更新时r=mid-1，这样是闭区间的取法<br>如果没取到，后面更新时r=mid，这样是开区间，因为是开区间，如果也取r=mid-1，则不会搜索mid-1所代表的的值。</p>
+<li><p>更新r的值，要看最先定义的时候n是否被取到：r=n-1（取到），r=n（没有取到）。这里取到的意思是我们分析题目时，数组长度n是否被包含在答案中。</p>
 </li>
 </ul>
         
@@ -481,792 +1246,6 @@
 
 
   
-    <article id="post-LeetCode/search-in-rotated-sorted-array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/05/LeetCode/search-in-rotated-sorted-array/">搜索旋转排序数组</a>
-    </h1>
-  
-
-        
-        <a href="/2022/07/05/LeetCode/search-in-rotated-sorted-array/" class="archive-article-date">
-  	<time datetime="2022-07-05T03:36:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>整数数组 nums 按升序排列，数组中的值 互不相同 。</p>
-<p>在传递给函数之前，nums 在预先未知的某个下标 k（0 &lt;= k &lt; nums.length）上进行了 旋转，使数组变为 [nums[k], nums[k+1], …, nums[n-1], nums[0], nums[1], …, nums[k-1]]（下标 从 0 开始 计数）。例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。</p>
-<p>给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。</p>
-<p><strong>你必须设计一个时间复杂度为 O(log n) 的算法解决此问题。</strong></p>
-<p>输入：nums = [4,5,6,7,0,1,2], target = 0<br>输出：4</p>
-<p>输入：nums = [4,5,6,7,0,1,2], target = 3<br>输出：-1</p>
-<p>输入：nums = [1], target = 0<br>输出：-1</p>
-<blockquote>
-<p>题目来自<a href="!https://leetcode.cn/problems/search-in-rotated-sorted-array">力扣</a></p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">二分法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/07/05/LeetCode/search-in-rotated-sorted-array/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/merge-k-sorted-lists" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/06/29/LeetCode/merge-k-sorted-lists/">合并k个升序链表</a>
-    </h1>
-  
-
-        
-        <a href="/2022/06/29/LeetCode/merge-k-sorted-lists/" class="archive-article-date">
-  	<time datetime="2022-06-29T03:33:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个链表数组，每个链表都已经按升序排列。</p>
-<p>请你将所有链表合并到一个升序链表中，返回合并后的链表。</p>
-<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>想到上次合并两个升序链表的方法（双指针），于是想到可以借鉴一下思想。最后经过多次调试后的思想如下（哈哈哈哈感觉自己很容易想乱，还是边调试边找错才做出来的，不过这也说明我的解题思想还有待加强）：</p>
-<p>1.判断特殊情况<br>2.判断数组是不是其中的链表都没有元素<br>3.只要有任意一条有元素就可以往下执行，都没有则退出<br>3.1 有元素则遍历每条链表的第一个元素，找出最小值，链接起来<br>3.2 没有直接退出</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Diff</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">分治</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">优先队列</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/06/29/LeetCode/merge-k-sorted-lists/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/single" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/06/28/Java/single/">单例模式</a>
-    </h1>
-  
-
-        
-        <a href="/2022/06/28/Java/single/" class="archive-article-date">
-  	<time datetime="2022-06-28T02:03:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h3><p>全局共用一个实例。当被创建后，一直存在，直到程序结束。</p>
-<h3 id="二、分类"><a href="#二、分类" class="headerlink" title="二、分类"></a>二、分类</h3><h4 id="1-饿汉式单例模式"><a href="#1-饿汉式单例模式" class="headerlink" title="1.饿汉式单例模式"></a>1.饿汉式单例模式</h4><p>表示程序一开始就需要有该类的实例，JVM加载时就已经创建了该类的实例，因此<strong>不会有多线程的安全问题</strong>。</p>
-<p>代码表示为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SingleTest &#123;</span><br><span class="line"></span><br><span class="line">	//私有 静态 成员变量</span><br><span class="line">	private final static SingleTest instance = new SingleTest();</span><br><span class="line"></span><br><span class="line">	private SingleTest()&#123;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	public static SingleTest newInstance()&#123;</span><br><span class="line">		return instance;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>问题：如果系统运行时都没用到这个实例，这么做就很浪费资源。所以可行的做法是：将<strong>创建实例的动作延迟到需要的时候</strong>。</p>
-<h4 id="2-懒汉式单例模式"><a href="#2-懒汉式单例模式" class="headerlink" title="2.懒汉式单例模式"></a>2.懒汉式单例模式</h4><p>类中这个成员变量预先声明，但是不主动创建，即不定义。只有需要的时候才进行创建，第一次创建后再也不用创建。</p>
-<h6 id="step1："><a href="#step1：" class="headerlink" title="step1："></a>step1：</h6><ul>
-<li><p>初始思想：只要判断是不是为null就行了，如果这个变量为Null就创建，不为null就不创建(ﾉ´▽｀)ﾉ♪</p>
-</li>
-<li><p>代码：</p>
-</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SingleTest2 &#123;</span><br><span class="line"></span><br><span class="line">   private static SingleTest2 instance = null;</span><br><span class="line"></span><br><span class="line">   	private SingleTest2() &#123;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	public static SingleTest2 newInstance() &#123;</span><br><span class="line">       	if (null == instance) &#123;</span><br><span class="line">          		instance = new SingleTest2();</span><br><span class="line">       	&#125;</span><br><span class="line">       	return instance;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>问题：如果有多个线程同时走到if语句，同时判断为null，则会同时进行创建，最终结果有多个实例，与结果违背。</li>
-</ul>
-<h6 id="step2："><a href="#step2：" class="headerlink" title="step2："></a>step2：</h6><ul>
-<li><p>进阶思想：既然会有多个线程进入的风险，那只让一个进入不就行了？「(°ヘ°)</p>
-</li>
-<li><p>代码：</p>
-</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SingleTest2 &#123;</span><br><span class="line"></span><br><span class="line">   private static SingleTest2 instance = null;</span><br><span class="line"></span><br><span class="line">   	private SingleTest2() &#123;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	public synchronized static SingleTest2 newInstance() &#123;</span><br><span class="line">       	if(null==instance)&#123;</span><br><span class="line">			instance = new SingleTest();</span><br><span class="line">		&#125;</span><br><span class="line">		return instance;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>问题：每次要调用时都会进入这个synchronized修饰的方法，而锁的开销很大，效率将会很低下。</li>
-</ul>
-<h6 id="step3："><a href="#step3：" class="headerlink" title="step3："></a>step3：</h6><ul>
-<li>思想：既然每个线程每次都要进synchronized，那可不可以只在特定的时候进入呢？结合前面两种思想：</li>
-</ul>
-<p>1.先判断是否为null<br>2.为null则进入synchronized</p>
-<p>到这里还没有结束，如果此时进入了的线程直接创建，创建完就退出，其他线程仍然可以进入synchronized再创建一个。所以：</p>
-<p>3.再次判断是否为null，为null才创建</p>
-<p>经过两次判断，终于创建了一个实例ヾ(ﾟ∀ﾟゞ)</p>
-<p>虽然叫懒汉但是一点也不懒啊…</p>
-<ul>
-<li>代码：</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static SingleTest2 newInstance() &#123;</span><br><span class="line">       if (null == instance) &#123;</span><br><span class="line">           synchronized (SingleTest2.class) &#123;</span><br><span class="line">               if (null == instance) &#123;</span><br><span class="line">                   instance = new SingleTest2();</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return instance;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h5 id="最终版代码："><a href="#最终版代码：" class="headerlink" title="最终版代码："></a>最终版代码：</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SingleTest2 &#123;</span><br><span class="line">   	//以关键字volatile修饰之后，就会阻止JVM对其相关代码进行指令重排，这样就能够按照既定的顺序指执行。</span><br><span class="line">   	private volatile static SingleTest2 instance = null;</span><br><span class="line"></span><br><span class="line">   	private SingleTest2() &#123;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	public static SingleTest2 newInstance() &#123;</span><br><span class="line">       	if (null == instance) &#123;</span><br><span class="line">           	synchronized (SingleTest2.class) &#123;</span><br><span class="line">               	if (null == instance) &#123;</span><br><span class="line">                   	instance = new SingleTest2(); //非原子操作,可能会出现指令重排优</span><br><span class="line">               	&#125;</span><br><span class="line">           	&#125;</span><br><span class="line">       	&#125;</span><br><span class="line">       	return instance;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h6 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h6><ul>
-<li>synchronized底层原理</li>
-<li>volatile关键字 指令重排</li>
-</ul>
-<h6 id="参考引用"><a href="#参考引用" class="headerlink" title="参考引用"></a>参考引用</h6><blockquote>
-<p><a href="!https://www.cnblogs.com/yuluoxingkong/p/9802418.html#:~:text=%E6%89%80%E8%B0%93%E6%87%92%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%84%8F%E6%80%9D%E5%B0%B1%E6%98%AF%EF%BC%8C%E5%AE%9E%E4%BE%8B%E8%99%BD%E7%84%B6%E4%BD%9C%E4%B8%BA%E8%AF%A5%E7%B1%BB%E7%9A%84%E4%B8%80%E4%B8%AA%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F%EF%BC%8C%E4%BD%86%E6%98%AF%E4%BB%96%E4%B8%8D%E4%B8%BB%E5%8A%A8%E8%BF%9B,%E8%A1%8C%E5%88%9B%E5%BB%BA%EF%BC%8C%E5%A6%82%E6%9E%9C%E4%BD%A0%E4%B8%8D%E4%BD%BF%E7%94%A8%E5%AE%83%E9%82%A3%E4%B9%88%E4%BB%96%E5%B0%86%E4%BC%9A%E6%B0%B8%E8%BF%9C%E4%B8%8D%E8%A2%AB%E5%88%9B%E5%BB%BA%EF%BC%8C%E5%8F%AA%E6%9C%89%E4%BD%A0%E5%9C%A8%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8%E5%AE%83%E7%9A%84%E6%97%B6%E5%80%99%E6%89%8D%E4%BC%9A%E8%A2%AB%E5%88%9B%20%E5%BB%BA%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%BE%97%E5%88%B0%E4%BF%9D%E6%8C%81%EF%BC%9B%E8%AF%B7%E7%9C%8B%E4%B8%8B%E4%B8%80%E6%AE%B5%E4%BB%A3%E7%A0%81">饿汉式单例模式与懒汉式单例模式</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">单例模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/设计模式//" class="article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/06/28/Java/single/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Interview/interview2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/06/07/Interview/interview2/">糟糕的面试</a>
-    </h1>
-  
-
-        
-        <a href="/2022/06/07/Interview/interview2/" class="archive-article-date">
-  	<time datetime="2022-06-07T08:50:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="面试题目"><a href="#面试题目" class="headerlink" title="面试题目"></a>面试题目</h3><p>1.自我介绍<br>1.0英语水平怎么样<br>1.1为什么选Java<br>1.2你觉得自己Java水平怎么样<br>2.考试系统项目介绍<br>3.数据库遵循第几范式<br>4.第一范式<br>4.0单例模式<br>4.0.1懒汉式怎么通过程序代码创建<br>4.1大学生活最难忘的事情（说我太紧张了</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/面试//" class="article-tag-list-link color3">面试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/06/07/Interview/interview2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/integer-to-roman" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/23/LeetCode/integer-to-roman/">整数转罗马数字</a>
-    </h1>
-  
-
-        
-        <a href="/2022/05/23/LeetCode/integer-to-roman/" class="archive-article-date">
-  	<time datetime="2022-05-23T03:18:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>罗马数字包含以下七种字符： I， V， X， L，C，D 和 M。</p>
-<p>字符          数值<br>I             1<br>V             5<br>X             10<br>L             50<br>C             100<br>D             500<br>M             1000</p>
-<p>例如， 罗马数字 2 写做 II ，即为两个并列的 1。12 写做 XII ，即为 X + II 。 27 写做  XXVII, 即为 XX + V + II 。</p>
-<p>通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做 IIII，而是 IV。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为 IX。这个特殊的规则只适用于以下六种情况：</p>
-<p>I 可以放在 V (5) 和 X (10) 的左边，来表示 4 和 9。<br>X 可以放在 L (50) 和 C (100) 的左边，来表示 40 和 90。 <br>C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。<br>给你一个整数，将其转为罗马数字。</p>
-<blockquote>
-<p>题目链接来自<a href="!https://leetcode.cn/problems/integer-to-roman">力扣</a></p>
-</blockquote>
-<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>之前还做过一道罗马数字转整数的，跑题了跑题了。</p>
-<p>上手就是对结果进行分析，这题有点像之前做的关于数字转换的题，就是指用到除号、取余之类的，比如整数反转，不过这题没有取余。</p>
-<p>想了一下，拼接成罗马字符串应该是对出现的1、5、10这样的数字进行计数后<strong>重复排列</strong>。三下五除二，写了第一版代码，但是题目所说的特殊的六种情况并不是只有这六种要单独列举，而是类似942、43这种作为数的一部分的时候也能以特殊形式表现出来。</p>
-<p>我想那难道要单独列两个treeMap出来吗？突然灵光一闪，银瓶乍破水浆迸（不是），我想那不如<strong>合在一起，降序排列</strong>，于是美滋滋地通过了，一看击败百分七…</p>
-<p>我的代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public String intToRoman(int num) &#123;</span><br><span class="line">       StringBuilder res = new StringBuilder();</span><br><span class="line"></span><br><span class="line">       Map map = new TreeMap(new Comparator() &#123;</span><br><span class="line">           @Override</span><br><span class="line">           public int compare(Object o1, Object o2) &#123;</span><br><span class="line">               if ((int) o1 - (int) o2 &gt; 0)</span><br><span class="line">                   return -1;</span><br><span class="line">               else if ((int) o1 - (int) o2 &lt; 0)</span><br><span class="line">                   return 1;</span><br><span class="line">               else</span><br><span class="line">                   return 0;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line"></span><br><span class="line">       map.put(1000, &quot;M&quot;);</span><br><span class="line">       map.put(900, &quot;CM&quot;);</span><br><span class="line">       map.put(500, &quot;D&quot;);</span><br><span class="line">       map.put(400, &quot;CD&quot;);</span><br><span class="line">       map.put(40, &quot;XL&quot;);</span><br><span class="line">       map.put(100, &quot;C&quot;);</span><br><span class="line">       map.put(90, &quot;XC&quot;);</span><br><span class="line">       map.put(50, &quot;L&quot;);</span><br><span class="line">       map.put(10, &quot;X&quot;);</span><br><span class="line">       map.put(9, &quot;IX&quot;);</span><br><span class="line">       map.put(5, &quot;V&quot;);</span><br><span class="line">       map.put(4, &quot;IV&quot;);</span><br><span class="line">       map.put(1, &quot;I&quot;);</span><br><span class="line"></span><br><span class="line">       Set&lt;Map.Entry&lt;Integer, String&gt;&gt; set = map.entrySet();</span><br><span class="line"></span><br><span class="line">       for (Map.Entry&lt;Integer, String&gt; entry : set) &#123;//遍历Entry</span><br><span class="line">           int b = num / entry.getKey();</span><br><span class="line">           res.append(getRes(entry.getValue(), b));</span><br><span class="line">           num = num - entry.getKey() * b;//更新num</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       return res.toString();</span><br><span class="line"></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public String getRes(String after, int index) &#123;//重复排列需要的字符，及重复次数</span><br><span class="line">       StringBuilder builder = new StringBuilder();</span><br><span class="line">       for (int i = 0; i &lt; index; i++) &#123;</span><br><span class="line">           builder.append(after);</span><br><span class="line">       &#125;</span><br><span class="line">       return builder.toString();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>改进：<br>1.TreeMap–&gt;数组<br>可以看到用的是TreeMap，并且还重新写了比较器，因为当时一下子没想到其他的，看了别人的，才知道可以用两个数组，这样也是一一对应，而且顺序固定的。</p>
-<p>网友说这种解法是贪心算法，意思是罗马人为了少表示数字，重复次数超过三就会像4、9这样放在左边的形式来表示。<br>贪心法则：每次尽量用最大的数来表示。<br>想了想第一版代码和第二版代码测试的数字，确实第一版的结果更长。</p>
-<p>网友代码C++：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">   string intToRoman(int num) &#123;</span><br><span class="line">       int values[] = &#123;1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1&#125;;</span><br><span class="line">       string reps[] = &#123;&quot;M&quot;, &quot;CM&quot;, &quot;D&quot;, &quot;CD&quot;, &quot;C&quot;, &quot;XC&quot;, &quot;L&quot;, &quot;XL&quot;, &quot;X&quot;, &quot;IX&quot;, &quot;V&quot;, &quot;IV&quot;, &quot;I&quot;&#125;;</span><br><span class="line"></span><br><span class="line">       string res;</span><br><span class="line">       int </span><br><span class="line">       for (int i = 0; i &lt; 13; i ++ )  //这里不使用图里的count了，一遍一遍来就行了</span><br><span class="line">           while(num &gt;= values[i])</span><br><span class="line">           &#123;</span><br><span class="line">               num -= values[i];</span><br><span class="line">               res += reps[i];</span><br><span class="line">           &#125;</span><br><span class="line">       return res;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>链接来自<a href="!https://leetcode.cn/problems/integer-to-roman/solution/tan-xin-ha-xi-biao-tu-jie-by-ml-zimingmeng/">图解贪心哈希表</a></p>
-</blockquote>
-<h3 id="硬编码"><a href="#硬编码" class="headerlink" title="硬编码"></a>硬编码</h3><p>官方给出的另一种解法是硬编码，列出个十百千的各数字对应的罗马值，然后每次除以、取余得到新数字即可。</p>
-<blockquote>
-<p>解法在<a href="!https://leetcode.cn/problems/integer-to-roman/solution/zheng-shu-zhuan-luo-ma-shu-zi-by-leetcod-75rs/">硬编码</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/23/LeetCode/integer-to-roman/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Interview/index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/20/Interview/index/">MySQL索引笔记</a>
-    </h1>
-  
-
-        
-        <a href="/2022/05/20/Interview/index/" class="archive-article-date">
-  	<time datetime="2022-05-20T07:02:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h3><h5 id="1-什么是索引"><a href="#1-什么是索引" class="headerlink" title="1.什么是索引"></a>1.什么是索引</h5><p>一种帮助MySQL提高查询效率的数据结构</p>
-<p>-索引优点：大大加快数据查询速度</p>
-<p>-索引缺点：<br>1.维护索引需要耗费数据库资源<br>2.索引需要占用磁盘空间<br>3.当对表的数据进行增删改的时候，因为要维护索引，速度会受到影响</p>
-<h5 id="2-索引分类"><a href="#2-索引分类" class="headerlink" title="2.索引分类"></a>2.索引分类</h5><ul>
-<li>a.主键索引：设定为主键后数据库会自动建立索引，innodb为聚簇索引</li>
-<li>b.单值索引：一个索引只包含单个列，一个表可以有多个单列索引</li>
-<li>c.唯一索引：索引值必须唯一，且允许空值</li>
-<li>d.符合索引：一个索引包含多个列</li>
-<li>e.全文索引：类型为FullText，在定义索引的列上支持值的全文查找。MySQL只有MyISAM支持。</li>
-</ul>
-<h5 id="3-普通索引创建方式"><a href="#3-普通索引创建方式" class="headerlink" title="3.普通索引创建方式"></a>3.普通索引创建方式</h5><p>1.建表后创建：</p>
-<blockquote>
-<p>create index name_index on t_user(name)</p>
-</blockquote>
-<p>2.建表时创建</p>
-<blockquote>
-<p>create table t_user(</p>
-<p>id varchar(20) primary key,</p>
-<p>name varchar(20),key(name)) </p>
-</blockquote>
-<h5 id="4-最左前缀原则"><a href="#4-最左前缀原则" class="headerlink" title="4.最左前缀原则"></a>4.最左前缀原则</h5><p>举个例子，有复合索引(name,age,bir)</p>
-<blockquote>
-<p>name bir age 可以利用索引</p>
-<p>name age bir 可以</p>
-<p>age bir      不可以，因为没有name</p>
-<p>bir age name 可以，MySQL会在查询过程中动态调整查询字段顺序以便利用索引</p>
-<p>age bir      不可以，因为没有name</p>
-</blockquote>
-<h5 id="5-B-Tree"><a href="#5-B-Tree" class="headerlink" title="5.B+Tree"></a>5.B+Tree</h5><p>个人理解：<br>B-Tree是，把一些特殊的、可以划分主键集合为若干序列的并且自身存在于集合的主键拿出来，连带着主键拥有的行数据作为非叶子节点，目的是缩小查找范围，像分治法？而这些特殊的主键不仅可以1.直接提供自身信息，2.划分数据范围，3.附带额外的指针，指向被划分的这些数据块。</p>
-<p>但B-Tree缺点是：1.无法高效地进行范围查找，2.磁盘I/O次数多，3.每页存储的数据有限，可能导致树的深度变很大</p>
-<p>B+Tree是，原来那些非叶子节点就不存储数据了，它们的数据会移到叶子节点中存储，而叶子节点页与页的关系是双向链表，范围查找更容易；而且根节点设计成常驻内存，所以最多只需要1-3次磁盘I/O操作；由于非叶子节点不再存储数据，所以可以存储的指向叶子页的指针变多，树的层次一般不会超过4了。</p>
-<h4 id="来源参考"><a href="#来源参考" class="headerlink" title="来源参考"></a>来源参考</h4><blockquote>
-<p><a href="!https://segmentfault.com/a/1190000022792637">B-Tree B+Tree 的 区别</a></p>
-<p>视频：<a href="!https://www.bilibili.com/video/BV19y4y127h4?p=2">这一次彻底搞定MySQL索引</a></p>
-<p>是很通俗易懂的视频，但是关于更多细节下去还得去看看书</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">索引</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/索引//" class="article-tag-list-link color3">索引</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/20/Interview/index/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/zigzag-conversion" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/18/LeetCode/zigzag-conversion/">Z字形变换</a>
-    </h1>
-  
-
-        
-        <a href="/2022/05/18/LeetCode/zigzag-conversion/" class="archive-article-date">
-  	<time datetime="2022-05-18T09:18:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>将一个给定字符串 s 根据给定的行数 numRows ，以从上往下、从左到右进行 Z 字形排列。</p>
-<p>比如输入字符串为 “PAYPALISHIRING” 行数为 3 时，排列如下：</p>
-<p>P   A   H   N<br>A P L S I I G<br>Y   I   R<br>之后，你的输出需要从左往右逐行读取，产生出一个新的字符串，比如：”PAHNAPLSIIGYIR”。</p>
-<blockquote>
-<p>题目来自<a href="!https://leetcode.cn/problems/zigzag-conversion">力扣</a></p>
-</blockquote>
-<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>本来是说弄个二维数组写，太困了没写出来结果。</p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>由于输出的是一个字符串，也就是说那些空格格最后会没有用，不用管中间的字母在第几列，只用关心行数即可：<br><strong>从顶端开始一直向下走，直到遇到规定的numRows，然后转向，如此往复</strong>。</p>
-<p>代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public String convert(String s, int numRows) &#123;</span><br><span class="line">       if (numRows &lt; 2)</span><br><span class="line">           return s;</span><br><span class="line"></span><br><span class="line">       //频繁改变字符串时用StringBuilder</span><br><span class="line">       List&lt;StringBuilder&gt; rows = new ArrayList&lt;StringBuilder&gt;();</span><br><span class="line">       for (int i = 0; i &lt; numRows; i++)</span><br><span class="line">           rows.add(new StringBuilder());</span><br><span class="line"></span><br><span class="line">       int i = 0, flag = -1;//flag是转向标志</span><br><span class="line">       for (char c : s.toCharArray()) &#123;</span><br><span class="line">           rows.get(i).append(c);</span><br><span class="line">           if (i == 0 || i == numRows - 1)//该转向了</span><br><span class="line">               flag = -flag;</span><br><span class="line">           i += flag;//行数增加或减少</span><br><span class="line">       &#125;</span><br><span class="line">       StringBuilder res = new StringBuilder();</span><br><span class="line">       for (StringBuilder row : rows)</span><br><span class="line">           res.append(row);</span><br><span class="line"></span><br><span class="line">       return res.toString();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>不得不说i+=flag这句简直写得太好了！</p>
-<p>上次面试官说看了我博客后，不很敢在博客里面加入太多个人心理活动了555原来真的会去看啊…</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/18/LeetCode/zigzag-conversion/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">Next&gt;&gt;</a>
@@ -1533,6 +1512,38 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">算法思想</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ElasticSearch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">SpringBoot</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">ES5.2.2版本</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">逻辑右移</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">自动拆箱</a>
               </li>
             
             <div class="clearfix"></div>
