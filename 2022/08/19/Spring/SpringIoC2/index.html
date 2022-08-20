@@ -12,17 +12,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>BanalFish游向银河</title>
+  <title>SpringIoC个人总结（二） | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="从所有的黑暗里">
-<meta property="og:type" content="website">
-<meta property="og:title" content="BanalFish游向银河">
-<meta property="og:url" content="http://example.com/page/3/index.html">
+  <meta name="description" content="前言前一篇的个人总结主要有三个部分：  整体介绍了BeanFactory 如何配置Bean 如何配置依赖关系  bean的scope关于scope，就简单地翻译为范围，当容器中的bean不再处于scope规定的范围后，容器就会销毁它。 在2.0之前支持两种：1. prototype   2.singleton2.0之后增加了只支持web的另外三种：request、session、global se">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringIoC个人总结（二）">
+<meta property="og:url" content="http://example.com/2022/08/19/Spring/SpringIoC2/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="从所有的黑暗里">
+<meta property="og:description" content="前言前一篇的个人总结主要有三个部分：  整体介绍了BeanFactory 如何配置Bean 如何配置依赖关系  bean的scope关于scope，就简单地翻译为范围，当容器中的bean不再处于scope规定的范围后，容器就会销毁它。 在2.0之前支持两种：1. prototype   2.singleton2.0之后增加了只支持web的另外三种：request、session、global se">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-19T11:35:13.000Z">
+<meta property="article:modified_time" content="2022-08-19T12:41:33.594Z">
 <meta property="article:author" content="BanalFish">
-<meta property="article:tag" content="后端">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="IOC">
+<meta property="article:tag" content="总结">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
@@ -152,35 +156,61 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-LeetCode/divide-two-integers" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-Spring/SpringIoC2" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/09/LeetCode/divide-two-integers/">两数相除</a>
+    <h1 class="article-title" itemprop="name">
+      SpringIoC个人总结（二）
     </h1>
   
 
         
-        <a href="/2022/05/09/LeetCode/divide-two-integers/" class="archive-article-date">
-  	<time datetime="2022-05-09T06:49:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-09</time>
+        <a href="/2022/08/19/Spring/SpringIoC2/" class="archive-article-date">
+  	<time datetime="2022-08-19T11:35:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-19</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定两个整数，被除数 dividend 和除数 divisor。将两数相除，要求不使用乘法、除法和 mod 运算符。</p>
-<p>返回被除数 dividend 除以除数 divisor 得到的商。</p>
-<p>整数除法的结果应当截去（truncate）其小数部分，例如：truncate(8.345) = 8 以及 truncate(-2.7335) = -2</p>
-<blockquote>
-<p>题目来自<a href="!https://leetcode.cn/problems/divide-two-integers">力扣-两数相除</a></p>
-</blockquote>
-        
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前一篇的个人总结主要有三个部分：</p>
+<ul>
+<li>整体介绍了BeanFactory</li>
+<li>如何配置Bean</li>
+<li>如何配置依赖关系</li>
+</ul>
+<h4 id="bean的scope"><a href="#bean的scope" class="headerlink" title="bean的scope"></a>bean的scope</h4><p>关于scope，就简单地翻译为范围，当容器中的bean不再处于scope规定的范围后，容器就会销毁它。</p>
+<p>在2.0之前支持两种：1. prototype   2.singleton<br>2.0之后增加了只支持web的另外三种：request、session、global session</p>
+<ul>
+<li>singleton：<ul>
+<li>与<strong>单例模式</strong>区分。单例模式是同一个ClassLoader中只有这一个，singleton是容器中只有一个。</li>
+<li>存活时间：直到容器销毁或退出</li>
+</ul>
+</li>
+<li>prototype：<ul>
+<li>每次请求都会返回一个新的，当然也只能返回在这个容器中</li>
+<li>返回后，容器不再拥有该对象的引用，这个对象的销毁由请求方获得</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="bean的scope陷阱"><a href="#bean的scope陷阱" class="headerlink" title="bean的scope陷阱"></a>bean的scope陷阱</h5><p>这个陷阱描述的问题就是：如果想要一个方法每次返回不同的实例，仅将这个实例定义 &lt;scope=”prototype”&gt; 是不可以的。</p>
+<p>假设A第一次请求调用这个方法后，返回第一个实例B（A依赖B），如果再次调用此方法，检测到A所处的容器已有这个B实例，对容器来说这是一样的请求，所以此后返回的是同一个B，这也印证了前面所说的，总之不管是singleton还是prototype，都针对这个容器而言。</p>
+<p>解决办法有三种：</p>
+<p>1.方法注入。在xml中配置 <lockup-method name="方法名" bean="类名">，这个标签的意思是：指定这个方法返回指定的类。</p>
+<p>2.</p>
+<ul>
+<li>使用BeanFactoryAware接口，实现了这个接口的类，都会在实例化时被容器注入一个BeanFactory，而使用BeanFactory的getBean(“类名”)方法，可以每次返回不同的实例</li>
+<li>使用ObjectFactoryCreatingBean接口，这么长的名字不用记，它的出现就是为了隔离客户端对象对BeanFactory的直接使用。在使用这个方法，在类里面也不用直接出现B的类名，而是在xml中配置，这是因为在xml中配置更隐蔽安全吗？</li>
+</ul>
+<p>3.方法替换。如果这个方法不能完成我们的目的，那就换个方法来实现好了！具体做法是拥有替换逻辑的类实现MethodReplacer接口，并在xml中指明被替换的方法被哪个类替换了逻辑。<br>（这个看着和场景问题没什么关系哈哈…）</p>
+<h3 id="工厂方法和FactoryBean"><a href="#工厂方法和FactoryBean" class="headerlink" title="工厂方法和FactoryBean"></a>工厂方法和FactoryBean</h3><p>既然之前一直围绕类与类之间的依赖，但是不要忘了还有一些类依赖一些接口，而编码过程中接口的实现类的创建，按照老规矩，我们依然不想要自己手动去new，如果这个实现类是我们自己开发的，那么可以由容器去帮助我们注入依赖，但是对于第三方库就必须要实例化了，于是FactoryBean这个Bean，注意是个Bean，就是工厂类来帮助我们实现这个功能。</p>
+<p>也即：为了实现接口实现类和接口的解耦</p>
+<p>类别：<br>1.静态工厂方法<br>2.非静态工厂方法<br>3.自定义工厂类：实现FactoryBean接口</p>
+
       
 
       
@@ -193,15 +223,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOC</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
         		</li>
       		
 		</ul>
@@ -213,7 +243,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
         		</li>
       		
 		</ul>
@@ -221,16 +251,75 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/09/LeetCode/divide-two-integers/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/08/19/Spring/SpringIoC2/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2022/08/17/Spring/SpringIoC1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">SpringIoC个人总结（一）</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -245,941 +334,32 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/remoNthNode" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/08/LeetCode/remoNthNode/">删除链表的倒数第N个结点</a>
-    </h1>
-  
-
-        
-        <a href="/2022/05/08/LeetCode/remoNthNode/" class="archive-article-date">
-  	<time datetime="2022-05-08T01:38:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。</p>
-<p>提示：</p>
-<p>链表中结点的数目为 sz<br>1 &lt;= sz &lt;= 30<br>0 &lt;= Node.val &lt;= 100<br>1 &lt;= n &lt;= sz</p>
-<blockquote>
-<p><a href="!https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/">题目详细链接</a></p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">先后指针</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/08/LeetCode/remoNthNode/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#bean%E7%9A%84scope"><span class="toc-number">1.1.</span> <span class="toc-text">bean的scope</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#bean%E7%9A%84scope%E9%99%B7%E9%98%B1"><span class="toc-number">1.1.1.</span> <span class="toc-text">bean的scope陷阱</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E5%92%8CFactoryBean"><span class="toc-number">2.</span> <span class="toc-text">工厂方法和FactoryBean</span></a></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
-  
-    <article id="post-Algorithm/sortAlgorithm" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/06/Algorithm/sortAlgorithm/">排序算法总结</a>
-    </h1>
-  
-
-        
-        <a href="/2022/05/06/Algorithm/sortAlgorithm/" class="archive-article-date">
-  	<time datetime="2022-05-06T07:22:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="参考引用"><a href="#参考引用" class="headerlink" title="参考引用"></a>参考引用</h3><blockquote>
-<p><a href="!https://www.cnblogs.com/guoyaohua/p/8600214.html">十大经典排序算法</a></p>
-<p><a href="!https://zhuanlan.zhihu.com/p/95080265">排序算法之——归并排序和快速排序</a></p>
-<p><a href="!https://www.cnblogs.com/chengxiao/p/6129630.html">图解排序算法(三)之堆排序</a></p>
-</blockquote>
-<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>1.基本思想：每次遍历数组的时候，相邻两个元素两两比较，如果小于或大于（看情况），就交换两个的位置，交给下一组，最后会有这一趟的最值被交换到最末尾。<br>2.时间复杂度：最佳O(n) 最坏O(n^2) 平均O(n^2)<br>3.空间复杂度：O(1)<br>解释：每一次的遍历会有（n-1）个两数的组合，所以每次比较也会比较(n-1)次，虽然随着末尾确定的个数的增多，每次遍历时间会减少，但是(n-1)+(n-2)+…+1，根据数学公式，可推出结果为O((n^2)/2)，应该是简记为了O(n^2)。<br>最佳情况是：借助一个标志位，如果交换了则更新，没有则不更新；根据每次的值来判断是否进去循环，将时间复杂度降为O(n)<br>4.原地排序，稳定排序</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Algprithm</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">排序算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法理解//" class="article-tag-list-link color5">算法理解</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/06/Algorithm/sortAlgorithm/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/3Sum" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/05/LeetCode/3Sum/">三数之和</a>
-    </h1>
-  
-
-        
-        <a href="/2022/05/05/LeetCode/3Sum/" class="archive-article-date">
-  	<time datetime="2022-05-05T02:55:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。</p>
-<p>注意：答案中不可以包含重复的三元组。</p>
-<blockquote>
-<p>题目链接来自<a href="!https://leetcode-cn.com/problems/3sum">力扣三数之和</a></p>
-</blockquote>
-<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>首先最容易想到暴力解法，但是O(n^3)的时间复杂度想都不用想肯定超时，考虑到找两数之和的相反数，那Map匹配？好像时间复杂度也很高，再就是想到了双指针解法，先排序再根据两端之和移动双指针某一端，与双指针离不开的还得有个mid指针，如果双指针之和&lt;=0则mid++，反之mid–。操作老半天后，正感叹自己真是小天才的时候，发现mid指针移动条件不够正确，又对条件细化之后，直接死循环了…我哭了呀</p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>看了看官方题解，嗯…也是<strong>排序加双指针</strong>，但是它是先固定一端，然后移动双指针的范围。</p>
-<blockquote>
-<p>比官方简单易懂、流畅清晰的题解是<a href="!https://leetcode-cn.com/problems/3sum/solution/pai-xu-shuang-zhi-zhen-zhu-xing-jie-shi-python3-by/">这个链接</a></p>
-</blockquote>
-<p>改成Java代码后如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static List&lt;List&lt;Integer&gt;&gt; threeSum(int[] nums) &#123;</span><br><span class="line">       List&lt;List&lt;Integer&gt;&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">       if (nums.length &lt; 3 || nums == null)//判定数组长度是否小于3</span><br><span class="line">           return list;</span><br><span class="line"></span><br><span class="line">       Arrays.sort(nums);//排序</span><br><span class="line"></span><br><span class="line">       for (int i = 0; i &lt; nums.length; i++) &#123;</span><br><span class="line"></span><br><span class="line">           if (nums[i] &gt; 0)//最小数大于0，直接返回</span><br><span class="line">               return list;</span><br><span class="line"></span><br><span class="line">           //第一层，对i去重</span><br><span class="line">           if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1])//从第一个往后若有重复的数字就跳过</span><br><span class="line">               continue;</span><br><span class="line"></span><br><span class="line">           //左右指针</span><br><span class="line">           int l = i + 1;</span><br><span class="line">           int r = nums.length - 1;</span><br><span class="line">           while (l &lt; r) &#123;</span><br><span class="line">               if (nums[i] + nums[l] + nums[r] == 0) &#123;</span><br><span class="line">                   List&lt;Integer&gt; t = new ArrayList&lt;&gt;();</span><br><span class="line">                   t.add(nums[i]);</span><br><span class="line">                   t.add(nums[l]);</span><br><span class="line">                   t.add(nums[r]);</span><br><span class="line">                   list.add(t);</span><br><span class="line">                   //第二层去重，对l</span><br><span class="line">                   while (l &lt; r &amp;&amp; nums[l + 1] == nums[l])</span><br><span class="line">                       l++;</span><br><span class="line">                   //第三层去重，对r</span><br><span class="line">                   while (l &lt; r &amp;&amp; nums[r - 1] == nums[r])</span><br><span class="line">                       r--;</span><br><span class="line">                   //既对没有重复的进行条件改变</span><br><span class="line">                   //也是对重复了的进行+1避免最后一个的重复，因为不重复的第一次已经在上面添加进去了</span><br><span class="line">                   l++;</span><br><span class="line">                   r--;</span><br><span class="line">               &#125; else if (nums[i] + nums[l] + nums[r] &gt; 0)</span><br><span class="line">                   r--;</span><br><span class="line">               else</span><br><span class="line">                   l++;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return list;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>不过它们去重都没有用List的内置算法，而是通过移动指针判断是否与下一个数重复，我想这可能是因为如果用contains判断，每次都还要先new一个新的list，然后再判断是否存在，而内置函数的contains用了循环遍历，这样不仅空间消耗增大，时间消耗应该也不小。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/05/LeetCode/3Sum/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/addBinary" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/02/LeetCode/addBinary/">二进制求和</a>
-    </h1>
-  
-
-        
-        <a href="/2022/05/02/LeetCode/addBinary/" class="archive-article-date">
-  	<time datetime="2022-05-02T02:59:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你两个二进制字符串，返回它们的和（用二进制表示）。</p>
-<p>输入为 非空 字符串且只包含数字 1 和 0。</p>
-<p>提示：</p>
-<p>每个字符串仅由字符 ‘0’ 或 ‘1’ 组成。<br>1 &lt;= a.length, b.length &lt;= 10^4<br>字符串如果不是 “0” ，就都不含前导零。</p>
-<blockquote>
-<p><a href="!https://leetcode-cn.com/problems/add-binary">题目链接</a></p>
-</blockquote>
-<h3 id="思考解法"><a href="#思考解法" class="headerlink" title="思考解法"></a>思考解法</h3><p>被简单迷惑了双眼，发现没有那么简单。想了半天，突然记起来之前做过一道也是求和的题目，就是<a href="!https://leetcode-cn.com/problems/add-two-numbers/">这个链接</a>。<br>看了看以前的题解，可以套到这题上面来，只是十进制变成二进制、链表变字符串的区别，最后成功通过。</p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>不过看了看别人的解法，发现用了StringBuffer或者StringBuilder，这两个函数都有反转字符串的方法，而String没有，难为我还手写了一遍循环来反转String。代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static String addBinary(String a, String b) &#123;</span><br><span class="line">       StringBuilder sbuilder=new StringBuilder();</span><br><span class="line">       int c=0;</span><br><span class="line">       int i=a.length()-1;</span><br><span class="line">       int j=b.length()-1;</span><br><span class="line"></span><br><span class="line">       while(i&gt;=0||j&gt;=0)&#123;</span><br><span class="line">           int temp=(i&gt;=0?a.charAt(i)-&#x27;0&#x27;:&#x27;0&#x27;)+</span><br><span class="line">                   (j&gt;=0?b.charAt(j)-&#x27;0&#x27;:&#x27;0&#x27;)+</span><br><span class="line">                   c;</span><br><span class="line">           c=temp/2;</span><br><span class="line">           sbuilder.append(temp%2);</span><br><span class="line">           i--;</span><br><span class="line">           j--;</span><br><span class="line">       &#125;</span><br><span class="line">       if(c==1)</span><br><span class="line">           sbuilder.append(&quot;1&quot;);</span><br><span class="line"></span><br><span class="line">       return String.valueOf(sbuilder.reverse());</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>1.计算两个数之和时，巧妙地利用了字符对应的ASCII码值的差就是需要的十进制数字，而没有用别的方法强转为int后再进行相加<br>2.用了StringBuilder</p>
-<h5 id="String、StringBuffer和StringBuilder的区别"><a href="#String、StringBuffer和StringBuilder的区别" class="headerlink" title="String、StringBuffer和StringBuilder的区别"></a>String、StringBuffer和StringBuilder的区别</h5><p>1.都是final类，不允许被继承<br>2.String长度不可变，其他两者可变<br>3.Stirng、StringBuffer线程安全，StringBuilder线程不安全</p>
-<p>使用策略：</p>
-<p>1、基本原则：<br>如果要操作少量的数据，用String ；<br>单线程操作大量数据，用StringBuilder ；<br>多线程操作大量数据，用StringBuffer。</p>
-<p>2、不要使用String类的”+”来进行频繁的拼接，因为那样性能极差，应该使用StringBuffer或StringBuilder类，这在Java的优化上是一条比较重要的原则</p>
-<blockquote>
-<p><a href="!https://www.jianshu.com/p/8c724dd28fa4">参考链接</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/02/LeetCode/addBinary/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/maximum-subarray" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/27/LeetCode/maximum-subarray/">根据最大子数组和看分治法</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/27/LeetCode/maximum-subarray/" class="archive-article-date">
-  	<time datetime="2022-04-27T07:38:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</p>
-<p>子数组 是数组中的一个连续部分。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题/算法分析//" class="article-tag-list-link color5">算法分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/27/LeetCode/maximum-subarray/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/strStr" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/26/LeetCode/strStr/">暴力和KMP实现strStr()函数</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/26/LeetCode/strStr/" class="archive-article-date">
-  	<time datetime="2022-04-26T02:41:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>实现 strStr() 函数。</p>
-<p>给你两个字符串 haystack 和 needle ，请你在 haystack 字符串中找出 needle 字符串出现的第一个位置（下标从 0 开始）。如果不存在，则返回  -1 。</p>
-<p>说明：</p>
-<p>当 needle 是空字符串时，我们应当返回什么值呢？这是一个在面试中很好的问题。</p>
-<p>对于本题而言，当 needle 是空字符串时我们应当返回 0 。这与 C 语言的 strstr() 以及 Java 的 indexOf() 定义相符。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题/算法分析//" class="article-tag-list-link color5">算法分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/26/LeetCode/strStr/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/maxPublicPrefix" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/25/LeetCode/maxPublicPrefix/">最长公共前缀</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/25/LeetCode/maxPublicPrefix/" class="archive-article-date">
-  	<time datetime="2022-04-25T03:10:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>编写一个函数来查找字符串数组中的最长公共前缀。</p>
-<p>如果不存在公共前缀，返回空字符串 “”。</p>
-<p>示例 1：</p>
-<p>输入：strs = [“flower”,”flow”,”flight”]<br>输出：”fl”</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/25/LeetCode/maxPublicPrefix/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/isPalindrome" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/24/LeetCode/isPalindrome/">判断回文数</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/24/LeetCode/isPalindrome/" class="archive-article-date">
-  	<time datetime="2022-04-24T02:35:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个整数 x ，如果 x 是一个回文整数，返回 true ；否则，返回 false 。</p>
-<p>回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。</p>
-<blockquote>
-<p><a href="!https://leetcode-cn.com/problems/palindrome-number">题目链接</a></p>
-</blockquote>
-<h3 id="思考解法"><a href="#思考解法" class="headerlink" title="思考解法"></a>思考解法</h3><p>首先想到的还是将数字转为字符串，就在美滋滋写完准备提交时，看见题目底下一行字：<br>进阶：你能不将整数转为字符串来解决这个问题吗？</p>
-<p>我：啊？被你预判到了吗力扣？</p>
-<p>虽然最后还是按字符串解法提交通过了</p>
-<h3 id="反转一半数字"><a href="#反转一半数字" class="headerlink" title="反转一半数字"></a>反转一半数字</h3><p>由于回文串的特性，所以只需将数字的后半段反转与前半段比较是否相等即可。问题变为如何得到后半段的反转数字。</p>
-<p>自然想到余数*10、原数/10等操作：</p>
-<p>1.将原数%10得到余数<br>2.余数*10+原数/10得到后半段反转的数</p>
-<p>如何判断已经反转到一半了：<br>看每次新得到的数和原数的大小即可，如果新数哪次大于等于=原数，说明已经反转一半了。</p>
-<p>最后返回新数是否与原数相等的布尔值就是最终答案。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/24/LeetCode/isPalindrome/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/for" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/22/Java/for/">for循环三语句执行顺序</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/22/Java/for/" class="archive-article-date">
-  	<time datetime="2022-04-22T10:12:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p>假设 a 是一个由线程 1 和线程 2 共享的初始值为 0 的全局变量，则线程 1 和线程 2 同时执行下面的代码，最终 a 的结果不可能是()</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">boolean isOdd = false;</span><br><span class="line">for(int i=1;i&lt;=2;++i)&#123;</span><br><span class="line">   	if(i%2==1)</span><br><span class="line">		isOdd = true;</span><br><span class="line">   	else </span><br><span class="line">		isOdd = false;</span><br><span class="line">   	</span><br><span class="line">	a+=i*(isOdd?1:-1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><a href="!https://www.nowcoder.com/test/question/done?tid=55673140&qid=55070#summary">题目链接</a></p>
-</blockquote>
-<h3 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h3><ol>
-<li>线程1、2不并发，顺序执行，则1线程执行后a=-1，2线程会使用a=-1，最后两者执行过程a=1-&gt;-1-&gt;0-&gt;-2</li>
-<li>线程1、2并发，此时读写完全冲突，类似一个线程起了作用，最后a=-1</li>
-<li>线程1、2部分并发，假设线程1执行完第一次循环，此时a=1；这个时候线程2加入进来，线程1已经不起作用（被线程2覆盖），最后线程2执行两次循环，a=-&gt;2-&gt;0</li>
-</ol>
-<h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p>题目与for循环关系不大，奈何本人写的时候，看到++i 以为是先做了加i操作，再进入的循环体，一直以为整个循环只会执行一次操作，后搜索，for循环三条语句执行顺序如下：</p>
-<ol>
-<li>初始化第一条语句</li>
-<li>判断是否符合第二条的条件</li>
-<li>执行循环体</li>
-<li>执行第三条语句</li>
-<li>判断是否符合第二条的条件</li>
-</ol>
-<p>直到循环结束。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">循环</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java细节//" class="article-tag-list-link color2">Java细节</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/22/Java/for/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next&gt;&gt;</a>
-    </nav>
+  
+
+  
+
+  
+
   
 
 
@@ -1202,8 +382,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
