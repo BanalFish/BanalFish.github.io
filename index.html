@@ -154,6 +154,323 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Java/字符强转为字符串" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/24/Java/%E5%AD%97%E7%AC%A6%E5%BC%BA%E8%BD%AC%E4%B8%BA%E5%AD%97%E7%AC%A6%E4%B8%B2/">char不能使用括号强转为String</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/24/Java/%E5%AD%97%E7%AC%A6%E5%BC%BA%E8%BD%AC%E4%B8%BA%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="archive-article-date">
+  	<time datetime="2022-08-24T07:44:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>今天写的程序遇到一个异常，报500，debug发现有个C cannot cast to String  ，大概是这么句英文。<br>开始我不懂这个C是什么，debug后发现这是我传的’1’，而需要的是String类型，但是通过(String)这种强转的方法是失败的。<br>经过搜索发现没有Java相关的问题，但是有一个C#的相关回答：<a href="!https://zhidao.baidu.com/question/1987818585683447827.html">c#中，char类型为什么 不能强制转换为string类型</a>，网友回答说是</p>
+<blockquote>
+<p>我想是因为某些char是非可见字符，比如表示回车、退格的等等，而string都是可见的，因此开发C#的牛人觉得不是每次都能顺利地转。</p>
+</blockquote>
+<p>嗯，暂且就先这么理解吧。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">String，类型转换</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java细节//" class="article-tag-list-link color2">Java细节</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/24/Java/%E5%AD%97%E7%AC%A6%E5%BC%BA%E8%BD%AC%E4%B8%BA%E5%AD%97%E7%AC%A6%E4%B8%B2/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Spring/SpringAOP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/23/Spring/SpringAOP/">SpringAOP--个人笔记</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/23/Spring/SpringAOP/" class="archive-article-date">
+  	<time datetime="2022-08-23T13:20:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>写到这里的时候我才发现，前面所讲的IoC，不管是new一个实例，也就是@Bean，new自己，还是注入依赖，在自己里面new一个别的对象，其实都是在new。<br>我甚至开始想象Spring在最开始被构想的时候，设计人只想写一个可以帮助我们new的角色，然后又一想，那用的人得给我点信息吧，再一想，既然给了我信息，那我可不可以在new之前还对这些信息做一下包装呢…由此多出许多扩展的“功能”。</p>
+<p>话题回到AOP，它可以看做是与OOP在方向上互相垂直的另一种“OOP”；AOP被翻译为面向切面编程。</p>
+<h3 id="AOP的发展"><a href="#AOP的发展" class="headerlink" title="AOP的发展"></a>AOP的发展</h3><h4 id="第一代"><a href="#第一代" class="headerlink" title="第一代"></a>第一代</h4><p>第一代AOP即静态AOP，采用通过特殊的编译器，将横切逻辑编译并织入到系统的静态类。什么是横切逻辑？横切就是在原本好好的类的随便哪里（当然得根据需要！不是真的随便）砍一刀，逻辑就是那个刀。<br>静态AOP的好处是这个横切逻辑将以Java字节码的形式编译到Java类，JVM可以接着正常运行，缺点很显然就是不灵活啦。比如那个刀和你的肉相处得很愉快了，这下要换个地方可就有点切肤之痛了。</p>
+<hr>
+<h4 id="第二代"><a href="#第二代" class="headerlink" title="第二代"></a>第二代</h4><p>第二代AOP与第一代最大的不同就是AOP的织入过程在系统开始运行之后才开始。有以下四种实现方式：<br>1.动态代理<br>2.动态字节码增强<br>3.自定义类加载器<br>4.AOL扩展（语言扩展）</p>
+<p>Spring使用的是前两种。</p>
+<hr>
+<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>简单提一下涉及到的概念：</p>
+<ul>
+<li>JoinPoint：就是需要添加逻辑的地方，也叫作增强的地方，这些地方可以是方法（正常的或者构造方法）、字段（设置字段）、异常（处理抛出的异常）、类初始化（静态代码块）。</li>
+<li>PointCut：如果说JoinPoint是单个的地方，那PointCut就是对某些JoinPoint的抽象描述，比如小学、初中都叫学校，也是我们增强的地方。(～￣▽￣)～</li>
+<li>Advice：一般有之前（Before）、之后（After）、之前之后（Around），描述的是增强的时间，即什么时候执行横切逻辑</li>
+<li>Aspect：相当于“类”，是对横切逻辑的封装。class不也是一个类中有好多方法，Aspect就是class躺在地上了_(¦3」∠)_</li>
+<li>Weaver：织入器，也就是把Aspect在特定的时间（Advice）织入到某个地方（PointCut）啦</li>
+</ul>
+<hr>
+<h4 id="AOP的实现机制"><a href="#AOP的实现机制" class="headerlink" title="AOP的实现机制"></a>AOP的实现机制</h4><h5 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h5><p><img src="https://s2.loli.net/2022/08/24/sJe9NKh2gRlOFoV.png" alt="image.png"></p>
+<p>这是我画的一个简易图，ISubject是一个接口，SubjectImpl是它的一个实现类，也是我们将要代理的类，也就是说SubjectProxy将会持有这个SubjectImpl，并对其做出一些额外的修饰，使SubjectImpl的方法得到增强。<br>比如SubjectImpl有个需要增强的request方法，为了实现它的代理类，于是我们让它继承自ISubject接口，这个request呢就可以给另一个实现了这个接口的类，让它去做这些额外的动作了。</p>
+<hr>
+<p>但是如果还有其他的类也需要增强request方法呢？为每一个类都创建接口和代理类吗？可以预想到的这么做的后果是代码冗余且设计不合理，这就是静态代理做的事情，灵活的动态代理我总结出可以这么表述：</p>
+<p>原来SubjectProxy的工作有两个：<br>1.拥有旧东西：即把SubjectImpl通过构造方法注入进来<br>2.增加新东西：实现ISubject中定义的方法，在其中进行逻辑增强<br>那么改进后的动态代理也是做这么两件事，只不过换了形式：<br>1.原来的旧东西统一就声明为Object，这样构造方法不再关注具体的类了<br>2.增加新东西之前统一都实现一个接口好了，这个接口叫InvocationHandler，那些个统一的方法也干脆统一名字，就叫invoke好了，实现的这个类也都叫Proxy完事</p>
+<h5 id="动态字节码增强"><a href="#动态字节码增强" class="headerlink" title="动态字节码增强"></a>动态字节码增强</h5><p>这个时候又有一个问题，如果这个类并没有实现这个叫什么，哦对，InvocationHandler接口呢？那么SpringAOP会尝试通过 CGLIB 这个开源的动态字节码库生成类库，为咱们的类生成代理实例，是不是很贴心呢~</p>
+<p>动态字节码生成的原理是：为我们的目标类生成子类，在子类中增强逻辑，要用的时候就用子类岂不也是美事一桩。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/23/Spring/SpringAOP/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java/java双冒号" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/22/Java/java%E5%8F%8C%E5%86%92%E5%8F%B7/">Java双冒号(::)运算符的使用</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/22/Java/java%E5%8F%8C%E5%86%92%E5%8F%B7/" class="archive-article-date">
+  	<time datetime="2022-08-22T08:17:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>看见同事的代码用到了::，不太懂，于是搜索了一番。而且关于List的循环取值，我用的迭代器写法，他用的for增强循环，我一时没想到这个写法，遂去搜了下两者区别，总结一句话：for循环适合访问随机结构，iterator适合访问顺序结构。<br>用iterator的好处是即使后续类型改为Set，代码基本不会变；以现在的业务看应该是不会改类型了，所以他那种写法更好一些。</p>
+<h3 id="lambda表达式和Consumer接口"><a href="#lambda表达式和Consumer接口" class="headerlink" title="lambda表达式和Consumer接口"></a>lambda表达式和Consumer接口</h3><p>函数接口是对 方法作为参数 的优化，Java8以前需要通过匿名内部类来实现方法，再将此方法作为参数传给调用者，函数接口就是对匿名内部类的优化。函数接口的实现可以被转为lambda表达式。</p>
+<h5 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h5><p>Consumer是函数接口（其上有@FunctionalInterface），拥有两个方法：<br>1.accept(T t)：消费一个指定类型的数据<br>2.deafault Consumer<T> andThen(Consumer&lt;? super T&gt; after)<br>这里涉及到一个java8新增的特性，即接口中可以定义一个默认的返回方法。通过观察方法的返回值和参数，发现它们一样，可以实现一个效果：消费数据的时候，首先做一个操作，然后再做一个操作，实现组合。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line">public class Demo01Consumer &#123;</span><br><span class="line">   	public static void main(String[] args) &#123;</span><br><span class="line">       	consumerString(s -&gt; System.out.println(s));</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	private static void consumerString(Consumer&lt;String&gt; function) &#123;</span><br><span class="line">       	function.accept(&quot;Hello&quot;);</span><br><span class="line">   	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在上面的代码中，“consumerString(s -&gt; System.out.println(s));”这一句相当于有一个匿名内部类实现了Consumer接口（因为consumerString这个方法定义的参数类型就是Consumer这个函数接口）的accept方法，因为底下是个defalut已经定义，不实现accept就没有别的可以实现的了。</p>
+<p>然后具体的方法实现调用了accept方法，并传入了一个“Hello”作为入参，这里开始的时候我感觉Java好智能，可以自动识别“Hello”作为参数，仔细一想，应该在是检查了Consumer<String>的String类型是否与入参的类型一致，并且上面也只定义了一个s，智能说到底也是人定义的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line">public class Demo02Consumer &#123;</span><br><span class="line">   public static void main(String[] args) &#123;</span><br><span class="line">       consumerString(</span><br><span class="line">               // toUpperCase()方法，将字符串转换为大写</span><br><span class="line">               s -&gt; System.out.println(s.toUpperCase()),</span><br><span class="line">               // toLowerCase()方法，将字符串转换为小写</span><br><span class="line">               s -&gt; System.out.println(s.toLowerCase())</span><br><span class="line">       );</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   private static void consumerString(Consumer&lt;String&gt; one, Consumer&lt;String&gt; two) &#123;</span><br><span class="line">       one.andThen(two).accept(&quot;Hello&quot;);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>再看上面的代码，“one.andThen(two).accept(“Hello”);”意思就是以Hello为参数先执行one的动作，再执行two的动作。下面是andThen方法源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">default Consumer&lt;T&gt; andThen(Consumer&lt;? super T&gt; after) &#123;</span><br><span class="line">       Objects.requireNonNull(after);</span><br><span class="line">       return (T t) -&gt; &#123; accept(t); after.accept(t); &#125;;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>一直没想明白的是.accept()方法为什么写在最后，那这样调用这个方法的到底是谁？<br>one.andThen(two)返回的是一个 以T类型的参数t，去做accept(t); after.accept(t); 这么些个动作的函数式接口，也就是Consumer本身；<br>然后这个接口再调用t，也就是”Hello”去执行其中的动作，也就是accept(“Hello”) 和 after.accept(“Hello”)，<br>那么这些又是谁调用的呢？当然是one，接着就是输出全为大写的字符串、输出全为小写的字符串，最后完成。</p>
+<h3 id="双冒号"><a href="#双冒号" class="headerlink" title="双冒号"></a>双冒号</h3><blockquote>
+<p>java8允许我们使用lambda表达式创建匿名方法。<br>但有时lambda表达式除了调用现有方法之外什么也不做。<br>在这些情况下，通过<strong>名称引用</strong>现有的<strong>方法</strong>，通常能更直白的表现出方法的调用过程。对于已经存在的且具有方法名称的方法，它其实是简洁且易于读取的一种lambda表达式，或者说是对lambda表达式的一种进一步简化。</p>
+</blockquote>
+<blockquote>
+<p>来自<a href="!https://blog.csdn.net/aigoV/article/details/102586953">Java8新特性2：方法引用–深入理解双冒号::的使用</a></p>
+</blockquote>
+<p>这里的简化表现形式 在于对参数省略，着重表现出的是调用者和被调用的方法。有四种方法引用：<br>1.类名::方法名<br>2.实例名::方法名<br>3.特定类型::方法名(引用特定类型的任意对象的实例方法)<br>4.类名：new（构造函数的引用）</p>
+<p>对于3，结合这篇文章<a href="!https://blog.csdn.net/weixin_42740530/article/details/104655470">JAVA 8 ‘::’ 关键字，带你深入了解它！</a>的意思应该是调用这个方法的是参数。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>主要是理解方法作为参数、这种形式的简化表达的含义。</p>
+<p>（哈哈哈哈发现每次复制for循环那篇笔记都是在22号</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">lambda</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java8新特性//" class="article-tag-list-link color4">Java8新特性</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/22/Java/java%E5%8F%8C%E5%86%92%E5%8F%B7/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Spring/SpringIoC_BeanFactory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -161,7 +478,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/21/Spring/SpringIoC_BeanFactory/">SpringIoC个人总结（二）</a>
+      <a class="article-title" href="/2022/08/21/Spring/SpringIoC_BeanFactory/">SpringIoC--BeanFactory</a>
     </h1>
   
 
@@ -175,9 +492,10 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前面大致理清了IOC容器的职责和如何使用xml配置后，接下来是原理部分。</p>
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3><p>BeanFactory大体来说可以分为 <strong>容器启动阶段</strong> 和 <strong>Bean实例化阶段</strong>。</p>
+<h3 id="BeanFactory综述"><a href="#BeanFactory综述" class="headerlink" title="BeanFactory综述"></a>BeanFactory综述</h3><p>BeanFactory大体来说可以分为 <strong>容器启动阶段</strong> 和 <strong>Bean实例化阶段</strong>。</p>
 <p>容器启动阶段又可以按顺序如下排列：<br>1.加载配置<br>2.分析配置信息<br>3.装配到BeanDefinition<br>4.其他后操作</p>
 <p>启动阶段就是把Bean的配置信息从xml文件中读取、分析出来再包装成BeanDefinition的过程，前期工作准备好后，就可以开始实例化：<br>1.实例化对象<br>2.装配依赖<br>3.生命周期回调<br>4.对象其他处理<br>5.注册回调接口</p>
+<hr>
 <h4 id="启动阶段"><a href="#启动阶段" class="headerlink" title="启动阶段"></a>启动阶段</h4><p>如果想在容器实例化对象之前做出修改应该怎么办？Spring提供了一个接口：BeanFactoryPostProcessor，允许在实例化之前，对BeanDefinition做出最后的修改，它的实现类有：<br>1.PropertyPlaceholderConfigurer<br>2.PropertyOverrideConfigurer</p>
 <p>看第一个的名字就可以猜到是通过占位的方式完成，在xml中使用如${}的方式占位，第一阶段加载完所有配置信息时还只是以占位符的形式存在；之后它被应用的时候，才去properties里面加载信息替换原来占位符的值。同时它还可以检查Java的System类中的properties，如果在properties文件中找不到相应配置项，那么它就会去System的Properties中查找。</p>
 <p>PropertyOverrideConfigurer看名字猜到应该是重写了什么，实际上也就是覆盖了原来xml中bean定义的property信息。</p>
@@ -185,6 +503,7 @@
 <hr>
 <p>1.PropertyPlaceholderConfigurer（通过占位符提前占领位置，而后从properties文件中读取真正的值）<br>2.PropertyOverrideConfigurer（properties文件的值替换掉xml的值）<br>3.CustomerEditConfigurer（将具有转换职能的类注册到容器）</p>
 <p>启动阶段做的就是加载配置-&gt;分析配置信息-&gt;包装成BeanDefinition-&gt;修改值</p>
+<hr>
 <h4 id="实例化阶段"><a href="#实例化阶段" class="headerlink" title="实例化阶段"></a>实例化阶段</h4><p>分为以下几个步骤：<br>1.实例化Bean对象<br>2.设置对象属性<br>3.检查Aware相关接口并设置响应的依赖</p>
 <p>4.BeanPostProcessor前置处理<br>5.检查是否是InitializingBean以决定是否调用afterPropertieSet方法<br>6.检查是否配置有自定义的init-method<br>7.BeanPostProcessor后置处理</p>
 <p>8.注册必要的Destruction相关的回调接口<br>9.使用ing<br>10.是否实现DisposableBean接口<br>11.是否配置自定义的destroy方法</p>
@@ -207,6 +526,7 @@
 <p>SpringAOP使用BeanPostProcessor的场景是为对象生成相应的代理对象。</p>
 <h5 id="InitializingBean和init-method"><a href="#InitializingBean和init-method" class="headerlink" title="InitializingBean和init-method"></a>InitializingBean和init-method</h5><p>（包含步骤5、6）<br>适用于一些对象实例化之后还不能马上使用的情况，后续处理可在InitializingBean接口定义中的afterPropertieSet方法中接着实现。<br>比起这种具有侵入性的实现接口的方式，init-method则通过配置在bean中的方式，使其减弱这种侵入感。</p>
 <h5 id="Disposable和destroy-method"><a href="#Disposable和destroy-method" class="headerlink" title="Disposable和destroy-method"></a>Disposable和destroy-method</h5><p>（包含步骤10、11）<br>同上面类似，应用与在销毁前还有一些动作需要执行</p>
+<hr>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>Q:BeanFactory如何创建出一个实例？</p>
 <ul>
 <li>容器启动（读取配置文件-&gt;分析信息-&gt;装配到Definition（此时可以对值做出最后的修改））</li>
@@ -990,299 +1310,6 @@
 
 
   
-    <article id="post-Java/自动拆箱可能造成NULL" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/22/Java/%E8%87%AA%E5%8A%A8%E6%8B%86%E7%AE%B1%E5%8F%AF%E8%83%BD%E9%80%A0%E6%88%90NULL/">for循环三语句执行顺序</a>
-    </h1>
-  
-
-        
-        <a href="/2022/07/22/Java/%E8%87%AA%E5%8A%A8%E6%8B%86%E7%AE%B1%E5%8F%AF%E8%83%BD%E9%80%A0%E6%88%90NULL/" class="archive-article-date">
-  	<time datetime="2022-07-22T10:12:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>今天在听Redis的时候，那个人说不能直接返回flag，因为自动拆箱可能空指针，当时不太懂于是就去搜了下，总结如下：</p>
-<ul>
-<li>基本类型在转为包装类时，调用了包装类的valueOf()方法</li>
-<li>包装类转为基本类型时，调用xxxValue()方法，此时就有可能抛出空指针异常</li>
-</ul>
-<p>在Java中null是一个特殊的值，可以赋值给任何引用类型，也可以转化为任何引用类型，所以下面的可以正常执行。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Integer value1 = (Integer) null;</span><br><span class="line">Double value2 = (Double) null;</span><br><span class="line">Boolean value3 = (Boolean) null;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>但是在使用Integer.valueOf(null)时会报空指针异常</p>
-<p>做法： 尽量不要使用包装类，使用时也应该判断空值</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">自动拆箱</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java细节//" class="article-tag-list-link color2">Java细节</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/07/22/Java/%E8%87%AA%E5%8A%A8%E6%8B%86%E7%AE%B1%E5%8F%AF%E8%83%BD%E9%80%A0%E6%88%90NULL/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/find-the-distance-value-between-two-arrays" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/15/LeetCode/find-the-distance-value-between-two-arrays/">两个数组间的距离值</a>
-    </h1>
-  
-
-        
-        <a href="/2022/07/15/LeetCode/find-the-distance-value-between-two-arrays/" class="archive-article-date">
-  	<time datetime="2022-07-15T07:57:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你两个整数数组 arr1 ， arr2 和一个整数 d ，请你返回两个数组之间的 距离值 。</p>
-<p>「距离值」 定义为符合此距离要求的元素数目：对于元素 arr1[i] ，不存在任何元素 arr2[j] 满足 |arr1[i]-arr2[j]| &lt;= d 。</p>
-<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>是在官方整理的二分法的每天练习中做到的一道题，但是这道题用二分真的不能太理解啊！！！！什么破题！！！官方题解又是什么辣鸡啊！！！用暴力就好了啊这题！！！二分思想根本不是主干啊！！！总之就是很让我恼火的一道题！！！！！题解也不写了，不愿再看见这道题！！！(╬◣д◢)好好出题！！！好好写题解！！！</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/07/15/LeetCode/find-the-distance-value-between-two-arrays/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Algorithm/Bisection-method" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/10/Algorithm/Bisection-method/">二分法理解</a>
-    </h1>
-  
-
-        
-        <a href="/2022/07/10/Algorithm/Bisection-method/" class="archive-article-date">
-  	<time datetime="2022-07-10T03:25:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="二分法"><a href="#二分法" class="headerlink" title="二分法"></a>二分法</h3><p>对于有序的数组，二分法查找可将时间复杂度从O(n)降低为O(log n)</p>
-<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><p>无论哪种情况，为了保证被查找的数组（不太准确的说法）中的每一个数都被拿出来比较，看是否符合条件；；</p>
-<ul>
-<li><p>l 代表这段区间的最小，r代表最大，每次更新区间的判断依据是mid；。</p>
-</li>
-<li><p>更新r的值，要看最先定义的时候n是否被取到：r=n-1（取到），r=n（没有取到）。这里取到的意思是我们分析题目时，数组长度n是否被包含在答案中。</p>
-</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Algprithm</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">二分法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法理解//" class="article-tag-list-link color5">算法理解</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/07/10/Algorithm/Bisection-method/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">Next&gt;&gt;</a>
@@ -1585,6 +1612,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">lambda</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">String，类型转换</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
               </li>
             
             <div class="clearfix"></div>
