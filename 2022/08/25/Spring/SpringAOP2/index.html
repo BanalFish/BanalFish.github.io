@@ -12,24 +12,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>SpringAOP--个人笔记 | BanalFish游向银河</title>
+  <title>SpringAOP--个人笔记二 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言写到这里的时候我才发现，前面所讲的IoC，不管是new一个实例，也就是@Bean，new自己，还是注入依赖，在自己里面new一个别的对象，其实都是在new。我甚至开始想象Spring在最开始被构想的时候，设计人只想写一个可以帮助我们new的角色，然后又一想，那用的人得给我点信息吧，再一想，既然给了我信息，那我可不可以在new之前还对这些信息做一下包装呢…由此多出许多扩展的“功能”。 话题回到A">
+  <meta name="description" content="前言说起AOP那就意味着是对原有功能的增强，那要把这种变强了的逻辑与原来的融为一体，AOP就需要一个专门的角色来做这件事，这个角色也就是Weaver织入器了，在SpringAOP中对应的就是ProxyFactory（与IoC一样，名字后缀都是Factory哦）。 ProxyFactory说起工厂Factory，生产东西（既然叫ProxyFactory那也就是生产Proxy咯）需要原材料并且运输给订">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SpringAOP--个人笔记">
-<meta property="og:url" content="http://example.com/2022/08/23/Spring/SpringAOP/index.html">
+<meta property="og:title" content="SpringAOP--个人笔记二">
+<meta property="og:url" content="http://example.com/2022/08/25/Spring/SpringAOP2/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="前言写到这里的时候我才发现，前面所讲的IoC，不管是new一个实例，也就是@Bean，new自己，还是注入依赖，在自己里面new一个别的对象，其实都是在new。我甚至开始想象Spring在最开始被构想的时候，设计人只想写一个可以帮助我们new的角色，然后又一想，那用的人得给我点信息吧，再一想，既然给了我信息，那我可不可以在new之前还对这些信息做一下包装呢…由此多出许多扩展的“功能”。 话题回到A">
+<meta property="og:description" content="前言说起AOP那就意味着是对原有功能的增强，那要把这种变强了的逻辑与原来的融为一体，AOP就需要一个专门的角色来做这件事，这个角色也就是Weaver织入器了，在SpringAOP中对应的就是ProxyFactory（与IoC一样，名字后缀都是Factory哦）。 ProxyFactory说起工厂Factory，生产东西（既然叫ProxyFactory那也就是生产Proxy咯）需要原材料并且运输给订">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://s2.loli.net/2022/08/24/sJe9NKh2gRlOFoV.png">
-<meta property="article:published_time" content="2022-08-23T13:20:31.000Z">
-<meta property="article:modified_time" content="2022-08-24T13:40:03.710Z">
+<meta property="article:published_time" content="2022-08-25T11:11:17.000Z">
+<meta property="article:modified_time" content="2022-08-25T12:48:12.766Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Spring">
 <meta property="article:tag" content="总结">
 <meta property="article:tag" content="AOP">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://s2.loli.net/2022/08/24/sJe9NKh2gRlOFoV.png">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
   
@@ -158,50 +156,36 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Spring/SpringAOP" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Spring/SpringAOP2" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      SpringAOP--个人笔记
+      SpringAOP--个人笔记二
     </h1>
   
 
         
-        <a href="/2022/08/23/Spring/SpringAOP/" class="archive-article-date">
-  	<time datetime="2022-08-23T13:20:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-23</time>
+        <a href="/2022/08/25/Spring/SpringAOP2/" class="archive-article-date">
+  	<time datetime="2022-08-25T11:11:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-25</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>写到这里的时候我才发现，前面所讲的IoC，不管是new一个实例，也就是@Bean，new自己，还是注入依赖，在自己里面new一个别的对象，其实都是在new。<br>我甚至开始想象Spring在最开始被构想的时候，设计人只想写一个可以帮助我们new的角色，然后又一想，那用的人得给我点信息吧，再一想，既然给了我信息，那我可不可以在new之前还对这些信息做一下包装呢…由此多出许多扩展的“功能”。</p>
-<p>话题回到AOP，它可以看做是与OOP在方向上互相垂直的另一种“OOP”；AOP被翻译为面向切面编程。</p>
-<h3 id="AOP的发展"><a href="#AOP的发展" class="headerlink" title="AOP的发展"></a>AOP的发展</h3><h4 id="第一代"><a href="#第一代" class="headerlink" title="第一代"></a>第一代</h4><p>第一代AOP即静态AOP，采用通过特殊的编译器，将横切逻辑编译并织入到系统的静态类。什么是横切逻辑？横切就是在原本好好的类的随便哪里（当然得根据需要！不是真的随便）砍一刀，逻辑就是那个刀。<br>静态AOP的好处是这个横切逻辑将以Java字节码的形式编译到Java类，JVM可以接着正常运行，缺点很显然就是不灵活啦。比如那个刀和你的肉相处得很愉快了，这下要换个地方可就有点切肤之痛了。</p>
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>说起AOP那就意味着是对原有功能的增强，那要把这种变强了的逻辑与原来的融为一体，AOP就需要一个专门的角色来做这件事，这个角色也就是Weaver织入器了，在SpringAOP中对应的就是ProxyFactory（与IoC一样，名字后缀都是Factory哦）。</p>
+<h3 id="ProxyFactory"><a href="#ProxyFactory" class="headerlink" title="ProxyFactory"></a>ProxyFactory</h3><p>说起工厂Factory，生产东西（既然叫ProxyFactory那也就是生产Proxy咯）需要原材料并且运输给订货的人（我猜），这里的ProxyFactory需要的原材料我把它换了各说法，就叫“<strong>信息</strong>”，和BeanFactory类似，都需要这么个信息才能让别人代替我们生产；前面好像也提到过设计模式的工厂模式，我们在程序设计时，希望有个返回的方法将实现细节隐藏，因为买雪糕的时候我们只希望得到雪糕就好，不在乎雪糕怎么做的，我也换个说法，就叫“<strong>得到</strong>”。</p>
+<blockquote>
+<p>回顾一下BeanFactory，它需要的信息，从配置文件中读取分析后被装配到了BeanDefinition，再由BeanDefinitionRegistry完成注册和加载。<br>得到这个概念，在BeanFactory中时好像也出现过哦，就是当时我们不想让接口的实现类由我们自己去new，而是让FactoryBean帮我们做了这个工作。</p>
+</blockquote>
 <hr>
-<h4 id="第二代"><a href="#第二代" class="headerlink" title="第二代"></a>第二代</h4><p>第二代AOP与第一代最大的不同就是AOP的织入过程在系统开始运行之后才开始。有以下四种实现方式：<br>1.动态代理<br>2.动态字节码增强<br>3.自定义类加载器<br>4.AOL扩展（语言扩展）</p>
-<p>Spring使用的是前两种。</p>
-<hr>
-<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>简单提一下涉及到的概念：</p>
-<ul>
-<li>JoinPoint：就是需要添加逻辑的地方，也叫作增强的地方，这些地方可以是方法（正常的或者构造方法）、字段（设置字段）、异常（处理抛出的异常）、类初始化（静态代码块）。</li>
-<li>PointCut：如果说JoinPoint是单个的地方，那PointCut就是对某些JoinPoint的抽象描述，比如小学、初中都叫学校，也是我们增强的地方。(～￣▽￣)～</li>
-<li>Advice：一般有之前（Before）、之后（After）、之前之后（Around），描述的是增强的时间，即什么时候执行横切逻辑</li>
-<li>Aspect：相当于“类”，是对横切逻辑的封装。class不也是一个类中有好多方法，Aspect就是class躺在地上了_(¦3」∠)_</li>
-<li>Weaver：织入器，也就是把Aspect在特定的时间（Advice）织入到某个地方（PointCut）啦</li>
-</ul>
-<hr>
-<h4 id="AOP的实现机制"><a href="#AOP的实现机制" class="headerlink" title="AOP的实现机制"></a>AOP的实现机制</h4><h5 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h5><p><img src="https://s2.loli.net/2022/08/24/sJe9NKh2gRlOFoV.png" alt="image.png"></p>
-<p>这是我画的一个简易图，ISubject是一个接口，SubjectImpl是它的一个实现类，也是我们将要代理的类，也就是说SubjectProxy将会持有这个SubjectImpl，并对其做出一些额外的修饰，使SubjectImpl的方法得到增强。<br>比如SubjectImpl有个需要增强的request方法，为了实现它的代理类，于是我们让它继承自ISubject接口，这个request呢就可以给另一个实现了这个接口的类，让它去做这些额外的动作了。</p>
-<hr>
-<p>但是如果还有其他的类也需要增强request方法呢？为每一个类都创建接口和代理类吗？可以预想到的这么做的后果是代码冗余且设计不合理，这就是静态代理做的事情，灵活的动态代理我总结出可以这么表述：</p>
-<p>原来SubjectProxy的工作有两个：<br>1.拥有旧东西：即把SubjectImpl通过构造方法注入进来<br>2.增加新东西：实现ISubject中定义的方法，在其中进行逻辑增强<br>那么改进后的动态代理也是做这么两件事，只不过换了形式：<br>1.原来的旧东西统一就声明为Object，这样构造方法不再关注具体的类了<br>2.增加新东西之前统一都实现一个接口好了，这个接口叫InvocationHandler，那些个统一的方法也干脆统一名字，就叫invoke好了，实现的这个类也都叫Proxy完事</p>
-<h5 id="动态字节码增强"><a href="#动态字节码增强" class="headerlink" title="动态字节码增强"></a>动态字节码增强</h5><p>这个时候又有一个问题，如果这个类并没有实现这个叫什么，哦对，InvocationHandler接口呢？那么SpringAOP会尝试通过 CGLIB 这个开源的动态字节码库生成类库，为咱们的类生成代理实例，是不是很贴心呢~</p>
-<p>动态字节码生成的原理是：为我们的目标类生成子类，在子类中增强逻辑，要用的时候就用子类岂不也是美事一桩。</p>
-
+<h4 id="信息"><a href="#信息" class="headerlink" title="信息"></a>信息</h4><p>信息从哪里来，又往哪里去？答曰：从配置文件来，到某某某某类去。<br>信息可以分为两类，一类是 记录Proxy的控制信息，另一类是 生成Proxy所需要的必要信息，如target、Advice、Advisor。</p>
+<p>哪些控制信息呢？比如要不要使用CGLIB代理啦，是否采取进一步的优化措施啦，如果信息配置完成后还允不允许修改啦，这些都是，当然都说了三个了，剩下两个也提一嘴吧：是否可以强转为Advised，是否将当前对象绑定到ThreadLocal，由于我不懂就不接着深入了。</p>
+<p>这些控制信息被封装到ProxyConfig这个JavaBean对象，而那些必要信息就由Advised接口隐藏。<br>那现在这有两类信息，我们当然要化繁为简（也没有很繁吧！）为一个，这个简就是AdvisedSupprot，它不仅继承了ProxyConfig，也实现了Advised接口，也就是说它拥有这两类信息(￣▽￣)／</p>
+<h4 id="得到"><a href="#得到" class="headerlink" title="得到"></a>得到</h4>
       
 
       
@@ -289,7 +273,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/08/23/Spring/SpringAOP/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/08/25/Spring/SpringAOP2/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -303,18 +287,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2022/08/24/Java/%E5%AD%97%E7%AC%A6%E5%BC%BA%E8%BD%AC%E4%B8%BA%E5%AD%97%E7%AC%A6%E4%B8%B2/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          char不能使用括号强转为String
-        
-      </div>
-    </a>
   
-  
-    <a href="/2022/08/22/Java/java%E5%8F%8C%E5%86%92%E5%8F%B7/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Java双冒号(::)运算符的使用</div>
+    <a href="/2022/08/24/Java/%E5%AD%97%E7%AC%A6%E5%BC%BA%E8%BD%AC%E4%B8%BA%E5%AD%97%E7%AC%A6%E4%B8%B2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">char不能使用括号强转为String</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -341,7 +316,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E5%8F%91%E5%B1%95"><span class="toc-number">2.</span> <span class="toc-text">AOP的发展</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E4%BB%A3"><span class="toc-number">2.1.</span> <span class="toc-text">第一代</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E4%BB%A3"><span class="toc-number">2.2.</span> <span class="toc-text">第二代</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-number">2.3.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AOP%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">2.4.</span> <span class="toc-text">AOP的实现机制</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.4.1.</span> <span class="toc-text">代理模式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E5%AD%97%E8%8A%82%E7%A0%81%E5%A2%9E%E5%BC%BA"><span class="toc-number">2.4.2.</span> <span class="toc-text">动态字节码增强</span></a></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ProxyFactory"><span class="toc-number">2.</span> <span class="toc-text">ProxyFactory</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BE%97%E5%88%B0"><span class="toc-number">2.2.</span> <span class="toc-text">得到</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>

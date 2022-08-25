@@ -154,6 +154,125 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-LeetCode/integer-to-roman" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/23/LeetCode/integer-to-roman/">整数转罗马数字</a>
+    </h1>
+  
+
+        
+        <a href="/2022/05/23/LeetCode/integer-to-roman/" class="archive-article-date">
+  	<time datetime="2022-05-23T03:18:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>罗马数字包含以下七种字符： I， V， X， L，C，D 和 M。</p>
+<p>字符          数值<br>I             1<br>V             5<br>X             10<br>L             50<br>C             100<br>D             500<br>M             1000</p>
+<p>例如， 罗马数字 2 写做 II ，即为两个并列的 1。12 写做 XII ，即为 X + II 。 27 写做  XXVII, 即为 XX + V + II 。</p>
+<p>通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做 IIII，而是 IV。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为 IX。这个特殊的规则只适用于以下六种情况：</p>
+<p>I 可以放在 V (5) 和 X (10) 的左边，来表示 4 和 9。<br>X 可以放在 L (50) 和 C (100) 的左边，来表示 40 和 90。 <br>C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。<br>给你一个整数，将其转为罗马数字。</p>
+<blockquote>
+<p>题目链接来自<a href="!https://leetcode.cn/problems/integer-to-roman">力扣</a></p>
+</blockquote>
+<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>之前还做过一道罗马数字转整数的，跑题了跑题了。</p>
+<p>上手就是对结果进行分析，这题有点像之前做的关于数字转换的题，就是指用到除号、取余之类的，比如整数反转，不过这题没有取余。</p>
+<p>想了一下，拼接成罗马字符串应该是对出现的1、5、10这样的数字进行计数后<strong>重复排列</strong>。三下五除二，写了第一版代码，但是题目所说的特殊的六种情况并不是只有这六种要单独列举，而是类似942、43这种作为数的一部分的时候也能以特殊形式表现出来。</p>
+<p>我想那难道要单独列两个treeMap出来吗？突然灵光一闪，银瓶乍破水浆迸（不是），我想那不如<strong>合在一起，降序排列</strong>，于是美滋滋地通过了，一看击败百分七…</p>
+<p>我的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public String intToRoman(int num) &#123;</span><br><span class="line">       StringBuilder res = new StringBuilder();</span><br><span class="line"></span><br><span class="line">       Map map = new TreeMap(new Comparator() &#123;</span><br><span class="line">           @Override</span><br><span class="line">           public int compare(Object o1, Object o2) &#123;</span><br><span class="line">               if ((int) o1 - (int) o2 &gt; 0)</span><br><span class="line">                   return -1;</span><br><span class="line">               else if ((int) o1 - (int) o2 &lt; 0)</span><br><span class="line">                   return 1;</span><br><span class="line">               else</span><br><span class="line">                   return 0;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line"></span><br><span class="line">       map.put(1000, &quot;M&quot;);</span><br><span class="line">       map.put(900, &quot;CM&quot;);</span><br><span class="line">       map.put(500, &quot;D&quot;);</span><br><span class="line">       map.put(400, &quot;CD&quot;);</span><br><span class="line">       map.put(40, &quot;XL&quot;);</span><br><span class="line">       map.put(100, &quot;C&quot;);</span><br><span class="line">       map.put(90, &quot;XC&quot;);</span><br><span class="line">       map.put(50, &quot;L&quot;);</span><br><span class="line">       map.put(10, &quot;X&quot;);</span><br><span class="line">       map.put(9, &quot;IX&quot;);</span><br><span class="line">       map.put(5, &quot;V&quot;);</span><br><span class="line">       map.put(4, &quot;IV&quot;);</span><br><span class="line">       map.put(1, &quot;I&quot;);</span><br><span class="line"></span><br><span class="line">       Set&lt;Map.Entry&lt;Integer, String&gt;&gt; set = map.entrySet();</span><br><span class="line"></span><br><span class="line">       for (Map.Entry&lt;Integer, String&gt; entry : set) &#123;//遍历Entry</span><br><span class="line">           int b = num / entry.getKey();</span><br><span class="line">           res.append(getRes(entry.getValue(), b));</span><br><span class="line">           num = num - entry.getKey() * b;//更新num</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       return res.toString();</span><br><span class="line"></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public String getRes(String after, int index) &#123;//重复排列需要的字符，及重复次数</span><br><span class="line">       StringBuilder builder = new StringBuilder();</span><br><span class="line">       for (int i = 0; i &lt; index; i++) &#123;</span><br><span class="line">           builder.append(after);</span><br><span class="line">       &#125;</span><br><span class="line">       return builder.toString();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>改进：<br>1.TreeMap–&gt;数组<br>可以看到用的是TreeMap，并且还重新写了比较器，因为当时一下子没想到其他的，看了别人的，才知道可以用两个数组，这样也是一一对应，而且顺序固定的。</p>
+<p>网友说这种解法是贪心算法，意思是罗马人为了少表示数字，重复次数超过三就会像4、9这样放在左边的形式来表示。<br>贪心法则：每次尽量用最大的数来表示。<br>想了想第一版代码和第二版代码测试的数字，确实第一版的结果更长。</p>
+<p>网友代码C++：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">   string intToRoman(int num) &#123;</span><br><span class="line">       int values[] = &#123;1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1&#125;;</span><br><span class="line">       string reps[] = &#123;&quot;M&quot;, &quot;CM&quot;, &quot;D&quot;, &quot;CD&quot;, &quot;C&quot;, &quot;XC&quot;, &quot;L&quot;, &quot;XL&quot;, &quot;X&quot;, &quot;IX&quot;, &quot;V&quot;, &quot;IV&quot;, &quot;I&quot;&#125;;</span><br><span class="line"></span><br><span class="line">       string res;</span><br><span class="line">       int </span><br><span class="line">       for (int i = 0; i &lt; 13; i ++ )  //这里不使用图里的count了，一遍一遍来就行了</span><br><span class="line">           while(num &gt;= values[i])</span><br><span class="line">           &#123;</span><br><span class="line">               num -= values[i];</span><br><span class="line">               res += reps[i];</span><br><span class="line">           &#125;</span><br><span class="line">       return res;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>链接来自<a href="!https://leetcode.cn/problems/integer-to-roman/solution/tan-xin-ha-xi-biao-tu-jie-by-ml-zimingmeng/">图解贪心哈希表</a></p>
+</blockquote>
+<h3 id="硬编码"><a href="#硬编码" class="headerlink" title="硬编码"></a>硬编码</h3><p>官方给出的另一种解法是硬编码，列出个十百千的各数字对应的罗马值，然后每次除以、取余得到新数字即可。</p>
+<blockquote>
+<p>解法在<a href="!https://leetcode.cn/problems/integer-to-roman/solution/zheng-shu-zhuan-luo-ma-shu-zi-by-leetcod-75rs/">硬编码</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/23/LeetCode/integer-to-roman/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Interview/index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1066,104 +1185,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/02/LeetCode/addBinary/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/maximum-subarray" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/27/LeetCode/maximum-subarray/">根据最大子数组和看分治法</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/27/LeetCode/maximum-subarray/" class="archive-article-date">
-  	<time datetime="2022-04-27T07:38:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</p>
-<p>子数组 是数组中的一个连续部分。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题/算法分析//" class="article-tag-list-link color5">算法分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/27/LeetCode/maximum-subarray/">展开全文 >></a>
         </p>
       
 

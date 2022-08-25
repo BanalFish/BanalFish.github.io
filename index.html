@@ -154,6 +154,107 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Spring/SpringAOP2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/25/Spring/SpringAOP2/">SpringAOP--个人笔记二</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/25/Spring/SpringAOP2/" class="archive-article-date">
+  	<time datetime="2022-08-25T11:11:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>说起AOP那就意味着是对原有功能的增强，那要把这种变强了的逻辑与原来的融为一体，AOP就需要一个专门的角色来做这件事，这个角色也就是Weaver织入器了，在SpringAOP中对应的就是ProxyFactory（与IoC一样，名字后缀都是Factory哦）。</p>
+<h3 id="ProxyFactory"><a href="#ProxyFactory" class="headerlink" title="ProxyFactory"></a>ProxyFactory</h3><p>说起工厂Factory，生产东西（既然叫ProxyFactory那也就是生产Proxy咯）需要原材料并且运输给订货的人（我猜），这里的ProxyFactory需要的原材料我把它换了各说法，就叫“<strong>信息</strong>”，和BeanFactory类似，都需要这么个信息才能让别人代替我们生产；前面好像也提到过设计模式的工厂模式，我们在程序设计时，希望有个返回的方法将实现细节隐藏，因为买雪糕的时候我们只希望得到雪糕就好，不在乎雪糕怎么做的，我也换个说法，就叫“<strong>得到</strong>”。</p>
+<blockquote>
+<p>回顾一下BeanFactory，它需要的信息，从配置文件中读取分析后被装配到了BeanDefinition，再由BeanDefinitionRegistry完成注册和加载。<br>得到这个概念，在BeanFactory中时好像也出现过哦，就是当时我们不想让接口的实现类由我们自己去new，而是让FactoryBean帮我们做了这个工作。</p>
+</blockquote>
+<hr>
+<h4 id="信息"><a href="#信息" class="headerlink" title="信息"></a>信息</h4><p>信息从哪里来，又往哪里去？答曰：从配置文件来，到某某某某类去。<br>信息可以分为两类，一类是 记录Proxy的控制信息，另一类是 生成Proxy所需要的必要信息，如target、Advice、Advisor。</p>
+<p>哪些控制信息呢？比如要不要使用CGLIB代理啦，是否采取进一步的优化措施啦，如果信息配置完成后还允不允许修改啦，这些都是，当然都说了三个了，剩下两个也提一嘴吧：是否可以强转为Advised，是否将当前对象绑定到ThreadLocal，由于我不懂就不接着深入了。</p>
+<p>这些控制信息被封装到ProxyConfig这个JavaBean对象，而那些必要信息就由Advised接口隐藏。<br>那现在这有两类信息，我们当然要化繁为简（也没有很繁吧！）为一个，这个简就是AdvisedSupprot，它不仅继承了ProxyConfig，也实现了Advised接口，也就是说它拥有这两类信息(￣▽￣)／</p>
+<h4 id="得到"><a href="#得到" class="headerlink" title="得到"></a>得到</h4>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/25/Spring/SpringAOP2/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java/字符强转为字符串" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -247,19 +348,19 @@
 
 
   
-    <article id="post-Spring/SpringAOP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Spring/SpringAOP1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/23/Spring/SpringAOP/">SpringAOP--个人笔记</a>
+      <a class="article-title" href="/2022/08/23/Spring/SpringAOP1/">SpringAOP--个人笔记一</a>
     </h1>
   
 
         
-        <a href="/2022/08/23/Spring/SpringAOP/" class="archive-article-date">
+        <a href="/2022/08/23/Spring/SpringAOP1/" class="archive-article-date">
   	<time datetime="2022-08-23T13:20:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-23</time>
 </a>
         
@@ -332,7 +433,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/23/Spring/SpringAOP/">展开全文 >></a>
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/23/Spring/SpringAOP1/">展开全文 >></a>
         </p>
       
 
@@ -1165,122 +1266,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/08/LeetCode/rotate-array/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ES/ES整合SpringBoot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/03/ES/ES%E6%95%B4%E5%90%88SpringBoot/">SpringBoot整合ES5.2.2版本</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/03/ES/ES%E6%95%B4%E5%90%88SpringBoot/" class="archive-article-date">
-  	<time datetime="2022-08-03T02:52:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>由于业务用的是ES5.2.2的老版本，于是学习ES时也以此版本为标准。</p>
-<p>快速上手操作可看<a href="!https://www.elastic.co/guide/en/elasticsearch/client/java-rest/5.2/_getting_started.html">官方文档链接</a></p>
-<h3 id="导入pom文件依赖"><a href="#导入pom文件依赖" class="headerlink" title="导入pom文件依赖"></a>导入pom文件依赖</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">   	&lt;groupId&gt;org.elasticsearch.client&lt;/groupId&gt;</span><br><span class="line">   	&lt;artifactId&gt;rest&lt;/artifactId&gt;</span><br><span class="line">   	&lt;version&gt;5.2.2&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h3><p>Java连接ES有几种不同的方式，现在网上搜到的大多是RestHighClient，应用于高版本的ES；还有TransportClient，官方表示7.x版本后弃用（好像是），笔者本人测试可以连接成功到本机上的是低版本的RestClient.</p>
-<blockquote>
-<p>反倒是同事发给的代码用的是TransportClient他们可以连接上，但笔者本人连接不上。</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">RestClient restClient=RestClient.builder(</span><br><span class="line">              new HttpHost(&quot;localhost&quot;,9200,&quot;http&quot;)</span><br><span class="line">      ).build();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>测试连接</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//测试连接</span><br><span class="line">      String method=&quot;GET&quot;;</span><br><span class="line">      String endpoint=&quot;/dangdang&quot;;//索引名称</span><br><span class="line">      Response response = restClient.performRequest(method, endpoint);</span><br><span class="line">      System.out.println(EntityUtils.toString(response.getEntity()));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">HttpEntity entity = new NStringEntity(</span><br><span class="line">               &quot;&#123;\n&quot; +</span><br><span class="line">                       &quot;    \&quot;user\&quot; : \&quot;kinmochi\&quot;,\n&quot; +</span><br><span class="line">                       &quot;    \&quot;post_date\&quot; : \&quot;2000-11-15T14:12:12\&quot;,\n&quot; +</span><br><span class="line">                       &quot;    \&quot;message\&quot; : \&quot;loliloliloli\&quot;\n&quot; +</span><br><span class="line">                       &quot;&#125;&quot;, ContentType.APPLICATION_JSON);</span><br><span class="line">       Response indexResponse = restClient.performRequest(</span><br><span class="line">               &quot;PUT&quot;,</span><br><span class="line">               &quot;/twitter/tweet/1&quot;,// /索引/文档/id</span><br><span class="line">               Collections.&lt;String, String&gt;emptyMap(),</span><br><span class="line">               entity);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>虽然官方没有如何利用JSON查询（可能是没找到），但是从示例可以推出查询代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Map&lt;String, String&gt; params = Collections.emptyMap();</span><br><span class="line">      String jsonParams=&quot;&#123;\&quot;query\&quot;:&#123;\&quot;bool\&quot;:&#123;\&quot;must\&quot;:[&#123;\&quot;match\&quot;:&#123;\&quot;tags\&quot;:\&quot;2\&quot;&#125;&#125;]&#125;&#125;,\&quot;from\&quot;:0,\&quot;size\&quot;:10&#125;&quot;;//查询条件的JSON语句</span><br><span class="line">      HttpEntity entity = new NStringEntity(jsonParams, ContentType.APPLICATION_JSON);</span><br><span class="line"></span><br><span class="line">      Response response = restClient.performRequest(&quot;GET&quot;, &quot;/test1/person/_search&quot;, params,entity);</span><br><span class="line">//params为空Map</span><br><span class="line">      </span><br><span class="line">      System.out.println(EntityUtils.toString(response.getEntity()));//打印</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="关闭连接"><a href="#关闭连接" class="headerlink" title="关闭连接"></a>关闭连接</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">restClient.close();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>学习一门新技术时，不能保证一开始就找到正确的方法，总是需要经过搜索很多相关资料，最后从中找出最适合自己的机器及需求的方法。</p>
-<p>虽然最后的结果看起来十分简单，但是其中确实报过了很多错，有些错误还不能被搜索就解决，需要自己调试看源码、分析等过程，终于柳暗花明。</p>
-<p>发现ES的一个<br><a href="!https://quanke.gitbooks.io/elasticsearch-java-rest/content/java-low-level-rest-client/getting-started/performing-requests.html">中文手册链接</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ElasticSearch</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">ES5.2.2版本</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/03/ES/ES%E6%95%B4%E5%90%88SpringBoot/">展开全文 >></a>
         </p>
       
 
