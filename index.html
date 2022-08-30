@@ -154,6 +154,168 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Algorithm/排序算法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="排序算法"><a href="#排序算法" class="headerlink" title="排序算法"></a>排序算法</h2><p>以下都以目标是升序为例</p>
+<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>如果前一个比后一个大，则说明我们期望它所处的位置应该往后，两两交换后就可以暂时保存这个较大数，并与后面的数接着比较，这样每次都会有一个确定的最大数排到后面。</p>
+<h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><p>类似冒泡，但是不再两两交换，因为交换的目的只是暂存那个较大值，所以用一个临时变量就可以，每趟也都可以找出一个确定的数在它应该在的位置。</p>
+<h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><p>冒泡和选择每次都将这个数放到后面，如果一个数它的位置最终会在靠前的地方，那往后的遍历比较不就是很浪费时间吗？</p>
+<p>冒泡和选择的无序和有序区的划分为：“无序，有序”；插入的划分为“有序，无序”。插入排序每次遍历时就把当前这个数在有序区中，倒着查找一个合适的地方插入进去。所以小的基本都在前面、大的基本都在后面这种情况下效率最高。</p>
+<h3 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h3><p>找一个办法使原数组变成“小的在前、大的在后”的状态，一个一半中的数无序有序不需要管，于是就根据步长分成多个子序列，在子序列中让它就是小的在前，大的在后的状态；每次除以2缩短步长，直到最后步长&lt;1。到等于1的时候就是插入排序了，但是由于这个时候数组已经基本有序，所以效率会很高。</p>
+<p>希尔排序对比先前提出的重要思想是：？</p>
+<p>是什么？到底是什么？启发了后来的思想？是分组吗？我感觉还是没有触碰到核心，一层薄雾始终在我和要触碰的东西之间。</p>
+<p>以希尔排序为分界点，此前的排序算法时间复杂度为O(n^2)，在此之后的都为O(nlogn)。</p>
+<h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><p>采用分治法的思想，对单独的区间进行排序，最后进行合并；代价是需要额外的存储空间。</p>
+<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p>选一个基准值，比它小的放左边，大的放右边，这样一趟下来就确定了一个数应该在的地方；接着再分别对左边和右边的采取同样的操作。</p>
+<h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><p>把一个数组看成一个二叉树，先从第一个非叶子节点开始检查是否符合大于左右孩子的条件，符合则从它的左孩子开始检查，右孩子与左孩子比较大小，因为每次只需把最大的放到根节点就行，左右的顺序不重要。</p>
+<p>第一趟遍历完后，已经得到大顶堆，把根与最后一个进行交换，这样最大的就确定了；第二趟及之后则是从根节点开始调整为大顶堆，直到最后堆的总数为1，则完成了排序。</p>
+<h3 id="计数排序"><a href="#计数排序" class="headerlink" title="计数排序"></a>计数排序</h3><p>取决于要排序数组的值的范围。如果一个数组中最大值为10，则新建一个长度为11的数组，以待排序数组值作为下标，出现的次数作为新数组的值，最后对新数组进行顺序地打印就行。有点像键值对。</p>
+<h3 id="桶排序"><a href="#桶排序" class="headerlink" title="桶排序"></a>桶排序</h3><p>在计数排序的基础上进行的修改。既然计数排序需要的额外空间取决于最大值，其中的许多空间很有可能都被浪费，桶排序根据最大值、最小值、待排序数组的长度计算出桶的个数，对每一个桶，其中的元素都采用插入排序算法进行了排序。有点像HashMap。</p>
+<p>元素被放到哪个桶取决于映射函数，好的映射函数要使元素能够均匀分配到每一个桶。还有一点是在额外空间充足的情况下，尽量增大桶的数量，是不是为了减少桶中元素的数量来减小插入排序所需要的时间呢。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>昨天我在想希尔排序启发后来人的到底是什么，现在我想应该是分组的思想启发出了分治法也说不定。也许不是希尔排序到底有什么思想的贡献，而是它较之前算法的提升、分组思路，其之后排序算法各类发展思想，在我们后来人的总结时，才使得它处于一个这么特殊、处于分水岭的位置。</p>
+<p>希尔排序本身或许没有什么意义，意义是我们赋予它的。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/30/Algorithm/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Spring/SpringMVC1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/29/Spring/SpringMVC1/">SpringMVC--个人笔记一</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/29/Spring/SpringMVC1/" class="archive-article-date">
+  	<time datetime="2022-08-29T13:28:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>关于SpringMVC，我没有什么可以平稳过渡的语言，会看它完全是因为最开始学习Spring的时候用到了而已，所以在我领悟出更深层次的含义前，这个前言暂且就先这样吧。</p>
+<h3 id="MVC模式"><a href="#MVC模式" class="headerlink" title="MVC模式"></a>MVC模式</h3><p>大致的流程是：<br>Servlet-&gt;JSP-&gt;JSP Model1-&gt;JSP Model2-&gt;Web MVC</p>
+<p>1.Servlet：将业务逻辑、视图渲染等都耦合到一个类中<br>2.JSP：后来出现JSP可以分担渲染工作后，由于JSP中仍然可以编写Java代码来表示某些业务逻辑，所以JSP走上了Servlet的老路<br>3.JSP Model1：引入了JavaBean来封装业务逻辑，但是流程管理仍然由JSP掌管<br>4.JSP Model2：将流程管理封装到Servlet，JSP负责视图渲染，JavaBean封装业务逻辑与数据层交互。<br>在这种模式下，我们倾向于选择单个Servlet控制器，因为如果每个请求就对应一个Servlet，那么在xml中定义的映射关系将会是多么庞大。但是Model2中单个的控制器往往有<br>1.将逻辑写死导致无法复用的问题<br>2.主要的控制逻辑和小分支的控制逻辑耦合在一起</p>
+<p>5.Web MVC：在JSP Model2的基础上，将主要的控制逻辑写在Front Controller，而其他的小分支就写在多个sub-controller中</p>
+<h3 id="Spring-MVC"><a href="#Spring-MVC" class="headerlink" title="Spring MVC"></a>Spring MVC</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>1.通过新建不同角色的方式，将处理期间设计的各种关注点进行了明确的分离，如HandlerMapping、LocalResolver、ViewResolver等<br>2.分离了从视图pull数据这个动作 和 具体sub-controller之间的耦合<br>3.拥有Spring关于IoC和AOP的支持</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">SpringMVC</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/29/Spring/SpringMVC1/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Spring/SpringAOP2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1098,214 +1260,6 @@
 
 
   
-    <article id="post-LeetCode/submissions" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/15/LeetCode/submissions/">整数除法</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/15/LeetCode/submissions/" class="archive-article-date">
-  	<time datetime="2022-08-15T08:32:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定两个整数 a 和 b ，求它们的除法的商 a/b ，要求不得使用乘号 ‘*’、除号 ‘/‘ 以及求余符号 ‘%’ 。</p>
-<p>注意：</p>
-<p>整数除法的结果应当截去（truncate）其小数部分，<br>例如：truncate(8.345) = 8 以及 truncate(-2.7335) = -2<br>假设我们的环境只能存储 32 位有符号整数，<br>其数值范围是 [−2^31, 2^31−1]。本题中，如果除法结果溢出，则返回 2^31 − 1</p>
-<p><a href="!https://leetcode.cn/problems/xoh6Oh">力扣-整数除法</a></p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int divide(int a, int b) &#123;</span><br><span class="line">	//结果超出正数最大值的情况</span><br><span class="line">       if (a == Integer.MIN_VALUE &amp;&amp; b == -1)</span><br><span class="line">           return Integer.MAX_VALUE;</span><br><span class="line"></span><br><span class="line">	//因为不让用乘法，用异或的方法确定符号</span><br><span class="line">       int sign = (a &gt; 0) ^ (b &gt; 0) ? -1 : 1;</span><br><span class="line">	</span><br><span class="line">	//将 2147483647 转成负数，不会越界；所以都转为负数</span><br><span class="line">       if (a &gt; 0) a = -a;</span><br><span class="line">       if (b &gt; 0) b = -b;</span><br><span class="line">       int res = 0;</span><br><span class="line"></span><br><span class="line">       while (a &lt;= b) &#123;//表示a一直可被除</span><br><span class="line"></span><br><span class="line">		//以2的指数倍探测a中含有多少个b</span><br><span class="line">		//value表示指数增长的除数</span><br><span class="line">           int value = b;</span><br><span class="line">		//暂时记录指数的幂</span><br><span class="line">           int k = 1;</span><br><span class="line"></span><br><span class="line">		//当a比value的2倍小，表示可以增加k值</span><br><span class="line">		//且除数value比最小值的一半要大（负数的情况下）</span><br><span class="line">		//转成正数就是：除数value比最大值2^31的一半要小</span><br><span class="line">		//这样value+value不会溢出</span><br><span class="line">           while ((a &lt;= value + value) &amp;&amp; value &gt;= 0xc0000000) &#123;</span><br><span class="line">               value += value;</span><br><span class="line">               k += k;</span><br><span class="line">           &#125;</span><br><span class="line">           a -= value;//在剩下的部分继续寻找有多少个b</span><br><span class="line">           res += k;</span><br><span class="line">       &#125;</span><br><span class="line">       // 不能使用乘号，所以将乘号换成三目运算符</span><br><span class="line">       return sign == 1 ? res : -res;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="使用位运算优化"><a href="#使用位运算优化" class="headerlink" title="使用位运算优化"></a>使用位运算优化</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">// 时间复杂度：O(1)</span><br><span class="line">public int divide(int a, int b) &#123;if (a == Integer.MIN_VALUE &amp;&amp; b == -1)</span><br><span class="line">       return Integer.MAX_VALUE;</span><br><span class="line">       int sign = (a &gt; 0) ^ (b &gt; 0) ? -1 : 1;</span><br><span class="line">       a = Math.abs(a);</span><br><span class="line">       b = Math.abs(b);</span><br><span class="line">       int res = 0;</span><br><span class="line">       for (int i = 31; i &gt;= 0; i--) &#123;</span><br><span class="line">           // 首先，右移的话，再怎么着也不会越界</span><br><span class="line">           // 其次，无符号右移的目的是：将 -2147483648 看成 2147483648</span><br><span class="line"></span><br><span class="line">           // 注意，这里不能是 (a &gt;&gt;&gt; i) &gt;= b 而应该是 (a &gt;&gt;&gt; i) - b &gt;= 0</span><br><span class="line">           // 这个也是为了避免 b = -2147483648，如果 b = -2147483648</span><br><span class="line">           // 那么 (a &gt;&gt;&gt; i) &gt;= b 永远为 true，但是 (a &gt;&gt;&gt; i) - b &gt;= 0 为 false</span><br><span class="line">           if ((a &gt;&gt;&gt; i) - b &gt;= 0) &#123; // a &gt;= (b &lt;&lt; i)</span><br><span class="line">               a -= (b &lt;&lt; i);</span><br><span class="line">               //当a=-2147483648 b=1时可以满足第一次就返回；一旦最开始没有进入，则之后再也不可能进入</span><br><span class="line">               //除去特殊情况(a=-2147483648 b=1)下的res的值不会超过2^30</span><br><span class="line">               //由于此时是从最大值向最小缩进，所以判断条件应该写成下面这种形式</span><br><span class="line">               if (res &gt; Integer.MAX_VALUE - (1 &lt;&lt; i)) &#123;</span><br><span class="line">                   return Integer.MIN_VALUE;</span><br><span class="line">               &#125;</span><br><span class="line">               res += (1 &lt;&lt; i);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       // 因为不能使用乘号，所以将乘号换成三目运算符</span><br><span class="line">       return sign == 1 ? res : -res;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>(并没有很理解直接返回最小值的那种特殊情况的判断条件的意思，只能暂时强记硬背)</p>
-<p>对于被除数和除数，要分<br>被除数为最小值时，除数为1和-1的情况：</p>
-<ul>
-<li>对于1，直接返回最小值，也就是底下的特殊情况判断条件</li>
-<li>对于-1，则溢出，直接返回32位能表示的最大值,最开始就返回</li>
-</ul>
-<p>然后底下由大数向小数缩进，找到每次a中含有的最多的b的个数，最后累加的和即为结果。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/15/LeetCode/submissions/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/rotate-array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/08/LeetCode/rotate-array/">两个数组间的距离值</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/08/LeetCode/rotate-array/" class="archive-article-date">
-  	<time datetime="2022-08-08T09:53:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个数组，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。</p>
-<p> <br>示例 1:</p>
-<p>输入: nums = [1,2,3,4,5,6,7], k = 3<br>输出: [5,6,7,1,2,3,4]<br>解释:<br>向右轮转 1 步: [7,1,2,3,4,5,6]<br>向右轮转 2 步: [6,7,1,2,3,4,5]<br>向右轮转 3 步: [5,6,7,1,2,3,4]</p>
-<p>题目来自 <a href="!https://leetcode.cn/problems/rotate-array">力扣-轮转数组</a></p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>正常思路是另外开辟内存空间来存放数组结果，空间复杂度为O(n)，有空间复杂度为O(1)的更简便的做法：翻转数组</p>
-<p>图解的链接可以看<a href="!https://leetcode.cn/problems/rotate-array/solution/shu-zu-fan-zhuan-xuan-zhuan-shu-zu-by-de-5937/">这个</a></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">   	public void rotate(int[] nums, int k) &#123;</span><br><span class="line">       	k %= nums.length;</span><br><span class="line">       	reverse(nums, 0, nums.length - 1);</span><br><span class="line">       	reverse(nums, 0, k - 1);</span><br><span class="line">       	reverse(nums, k, nums.length - 1);</span><br><span class="line">   	&#125;</span><br><span class="line">   	public void reverse(int[] nums, int start, int end) &#123;</span><br><span class="line">       	while (start &lt; end) &#123;</span><br><span class="line">           int temp = nums[start];</span><br><span class="line">           nums[start] = nums[end];</span><br><span class="line">           nums[end] = temp;</span><br><span class="line">           start += 1;</span><br><span class="line">           end -= 1;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>这个的算法思想应该是：一个数组有着某种顺序（不是升序或者降序），当轮转时，就是打乱了它的先后顺序，头到了尾，尾到了头，于是决定先翻转整个数组，然后根据下标再调整回原来的这种顺序规律。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/08/LeetCode/rotate-array/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">Next&gt;&gt;</a>
@@ -1616,6 +1570,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">SpringMVC</a>
               </li>
             
             <div class="clearfix"></div>
