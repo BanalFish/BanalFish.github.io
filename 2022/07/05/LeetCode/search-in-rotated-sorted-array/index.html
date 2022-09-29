@@ -22,7 +22,7 @@
 <meta property="og:description" content="题目描述整数数组 nums 按升序排列，数组中的值 互不相同 。 在传递给函数之前，nums 在预先未知的某个下标 k（0 &lt;&#x3D; k &lt; nums.length）上进行了 旋转，使数组变为 [nums[k], nums[k+1], …, nums[n-1], nums[0], nums[1], …, nums[k-1]]（下标 从 0 开始 计数）。例如， [0,1,2,4,5,6,7">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-05T03:36:20.000Z">
-<meta property="article:modified_time" content="2022-07-10T03:27:36.702Z">
+<meta property="article:modified_time" content="2022-09-07T07:03:37.942Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="LeetCode">
@@ -177,7 +177,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>整数数组 nums 按升序排列，数组中的值 互不相同 。</p>
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>整数数组 nums 按升序排列，数组中的值 <strong>互不相同</strong> 。</p>
 <p>在传递给函数之前，nums 在预先未知的某个下标 k（0 &lt;= k &lt; nums.length）上进行了 旋转，使数组变为 [nums[k], nums[k+1], …, nums[n-1], nums[0], nums[1], …, nums[k-1]]（下标 从 0 开始 计数）。例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。</p>
 <p>给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。</p>
 <p><strong>你必须设计一个时间复杂度为 O(log n) 的算法解决此问题。</strong></p>
@@ -198,7 +198,7 @@
 <p>对于一个区间，其必定只有两种状态：有序或旋转数组。循环的目的是从每次的区间中找到一个包含target的有序区间。</p>
 <p>另一种思路：<br>1.利用二分法找到k点<br>2.判断target在旋转点的左区间还是右区间<br>3.二分法查找得到下标</p>
 <p>这种思路不去找区间，因为包含target区间的只有被k分为两段区间的可能，所以去找k。</p>
-
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">补充：题目中很重要的一点就是数组中的数值各不重复，刚刚做的一题更改了限制条件是数值可能会有重复，于是比较的时候是拿中间的mid和右边的r比较。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
 
       
@@ -671,6 +671,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">SpringMVC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">锁</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">继承</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">执行顺序</a>
               </li>
             
             <div class="clearfix"></div>

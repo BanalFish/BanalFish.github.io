@@ -22,7 +22,7 @@
 <meta property="og:description" content="前言关于SpringMVC，我没有什么可以平稳过渡的语言，会看它完全是因为最开始学习Spring的时候用到了而已，所以在我领悟出更深层次的含义前，这个前言暂且就先这样吧。 MVC模式大致的流程是：Servlet-&gt;JSP-&gt;JSP Model1-&gt;JSP Model2-&gt;Web MVC 1.Servlet：将业务逻辑、视图渲染等都耦合到一个类中2.JSP：后来出现JSP可以">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-08-29T13:28:28.000Z">
-<meta property="article:modified_time" content="2022-08-29T13:49:41.524Z">
+<meta property="article:modified_time" content="2022-09-05T11:36:41.067Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Spring">
 <meta property="article:tag" content="总结">
@@ -181,6 +181,7 @@
 <p>1.Servlet：将业务逻辑、视图渲染等都耦合到一个类中<br>2.JSP：后来出现JSP可以分担渲染工作后，由于JSP中仍然可以编写Java代码来表示某些业务逻辑，所以JSP走上了Servlet的老路<br>3.JSP Model1：引入了JavaBean来封装业务逻辑，但是流程管理仍然由JSP掌管<br>4.JSP Model2：将流程管理封装到Servlet，JSP负责视图渲染，JavaBean封装业务逻辑与数据层交互。<br>在这种模式下，我们倾向于选择单个Servlet控制器，因为如果每个请求就对应一个Servlet，那么在xml中定义的映射关系将会是多么庞大。但是Model2中单个的控制器往往有<br>1.将逻辑写死导致无法复用的问题<br>2.主要的控制逻辑和小分支的控制逻辑耦合在一起</p>
 <p>5.Web MVC：在JSP Model2的基础上，将主要的控制逻辑写在Front Controller，而其他的小分支就写在多个sub-controller中</p>
 <h3 id="Spring-MVC"><a href="#Spring-MVC" class="headerlink" title="Spring MVC"></a>Spring MVC</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>1.通过新建不同角色的方式，将处理期间设计的各种关注点进行了明确的分离，如HandlerMapping、LocalResolver、ViewResolver等<br>2.分离了从视图pull数据这个动作 和 具体sub-controller之间的耦合<br>3.拥有Spring关于IoC和AOP的支持</p>
+<h4 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h4><p>1.DispatcherServlet，对应的就是Front Controller<br>2.HandlerMapping，根据url查找响应的Handler<br>3.Handler，执行逻辑后返回ModelAndView（其中包含视图的逻辑名称和模型数据），次级控制器都称作Handler，controller是Handler的一种<br>4.ViewResolver，处理视图名与View实例之间的对应关系<br>5.View，视图的生成策略</p>
 
       
 
@@ -321,7 +322,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MVC%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">MVC模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-MVC"><span class="toc-number">3.</span> <span class="toc-text">Spring MVC</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">3.1.</span> <span class="toc-text">优点</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MVC%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">MVC模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-MVC"><span class="toc-number">3.</span> <span class="toc-text">Spring MVC</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">3.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%92%E8%89%B2"><span class="toc-number">3.2.</span> <span class="toc-text">角色</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -650,6 +651,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">SpringMVC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">锁</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">继承</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">执行顺序</a>
               </li>
             
             <div class="clearfix"></div>
