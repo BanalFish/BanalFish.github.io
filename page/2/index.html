@@ -154,6 +154,123 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Java/java双冒号" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/22/Java/java%E5%8F%8C%E5%86%92%E5%8F%B7/">Java双冒号(::)运算符的使用</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/22/Java/java%E5%8F%8C%E5%86%92%E5%8F%B7/" class="archive-article-date">
+  	<time datetime="2022-08-22T08:17:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>看见同事的代码用到了::，不太懂，于是搜索了一番。而且关于List的循环取值，我用的迭代器写法，他用的for增强循环，我一时没想到这个写法，遂去搜了下两者区别，总结一句话：for循环适合访问随机结构，iterator适合访问顺序结构。<br>用iterator的好处是即使后续类型改为Set，代码基本不会变；以现在的业务看应该是不会改类型了，所以他那种写法更好一些。</p>
+<h3 id="lambda表达式和Consumer接口"><a href="#lambda表达式和Consumer接口" class="headerlink" title="lambda表达式和Consumer接口"></a>lambda表达式和Consumer接口</h3><p>函数接口是对 <strong>方法作为参数</strong> 的优化，Java8以前需要通过匿名内部类来实现方法，再将此方法作为参数传给调用者，函数接口就是对匿名内部类的优化。函数接口的实现可以被转为lambda表达式。</p>
+<h5 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h5><p>Consumer是函数接口（因为其上有@FunctionalInterface，函数式接口指其中只定义了一个抽象方法的接口），拥有两个方法：<br>1.accept(T t)：消费一个指定类型的数据<br>2.deafault Consumer<T> andThen(Consumer&lt;? super T&gt; after)<br>这里涉及到一个java8新增的特性，即接口中可以定义一个默认的返回方法。通过观察方法的返回值和参数，发现它们一样，可以实现一个效果：消费数据的时候，首先做一个操作，然后再做一个操作，实现组合。</p>
+<hr>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line">public class Demo01Consumer &#123;</span><br><span class="line">   	public static void main(String[] args) &#123;</span><br><span class="line">       	consumerString(s -&gt; System.out.println(s));</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	private static void consumerString(Consumer&lt;String&gt; function) &#123;</span><br><span class="line">       	function.accept(&quot;Hello&quot;);</span><br><span class="line">   	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在上面的代码中，“consumerString(s -&gt; System.out.println(s));”这一句相当于有一个匿名内部类<strong>实现了Consumer</strong>接口（因为consumerString这个方法定义的参数类型就是Consumer这个函数接口）的accept方法，因为底下是个defalut已经定义，不实现accept的话就没有别的可以实现的了。</p>
+<p>然后这个匿名内部类叫function，它实现了accept方法，以一个“Hello”作为入参，然后消费“Hello”，消费的方法就是sout输出语句。</p>
+<hr>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line">public class Demo02Consumer &#123;</span><br><span class="line">   public static void main(String[] args) &#123;</span><br><span class="line">       consumerString(</span><br><span class="line">               // toUpperCase()方法，将字符串转换为大写</span><br><span class="line">               s -&gt; System.out.println(s.toUpperCase()),</span><br><span class="line">               // toLowerCase()方法，将字符串转换为小写</span><br><span class="line">               s -&gt; System.out.println(s.toLowerCase())</span><br><span class="line">       );</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   private static void consumerString(Consumer&lt;String&gt; one, Consumer&lt;String&gt; two) &#123;</span><br><span class="line">       one.andThen(two).accept(&quot;Hello&quot;);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>再看上面的代码，“one.andThen(two).accept(“Hello”);”意思就是以Hello为参数先执行one的动作，再执行two的动作。下面是andThen方法源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">void accept(T t);</span><br><span class="line"></span><br><span class="line">default Consumer&lt;T&gt; andThen(Consumer&lt;? super T&gt; after) &#123;</span><br><span class="line">       Objects.requireNonNull(after);</span><br><span class="line">       return (T t) -&gt; &#123; accept(t); after.accept(t); &#125;;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>这个andThen方法就是先做本接口的accept操作，再做传入的、也就是after的accept操作。</p>
+<p>且这个方法的返回类型是Consumer，最后的return语句以t为参数，并且在大括号中实现了accept方法，于是就可以看作是返回了这个Consumer类型。</p>
+<h3 id="双冒号（只是调用，没有别的实现）"><a href="#双冒号（只是调用，没有别的实现）" class="headerlink" title="双冒号（只是调用，没有别的实现）"></a>双冒号（只是调用，没有别的实现）</h3><blockquote>
+<p>java8允许我们使用lambda表达式创建匿名方法。</p>
+<p>但有时lambda表达式<strong>除了调用</strong>现有方法之外<strong>什么也不做</strong>。</p>
+<p>在这些情况下，通过<strong>名称引用</strong>现有的<strong>方法</strong>，通常能更直白的表现出方法的调用过程。对于已经存在的且具有方法名称的方法，它其实是简洁且易于读取的一种lambda表达式，或者说是对lambda表达式的一种进一步简化。</p>
+</blockquote>
+<blockquote>
+<p>来自<a href="!https://blog.csdn.net/aigoV/article/details/102586953">Java8新特性2：方法引用–深入理解双冒号::的使用</a></p>
+</blockquote>
+<p>这里的简化表现形式 在于对参数省略，着重表现出的是调用者和被调用的方法。有四种方法引用：<br>1.类名::方法名<br>2.实例名::方法名<br>3.特定类型::方法名(引用特定类型的任意对象的实例方法)<br>4.类名：new（构造函数的引用）</p>
+<p>对于3，结合这篇文章<a href="!https://blog.csdn.net/weixin_42740530/article/details/104655470">JAVA 8 ‘::’ 关键字，带你深入了解它！</a>的意思应该是调用这个方法的是参数。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>主要是理解方法作为参数、这种形式的简化表达的含义。</p>
+<p>（哈哈哈哈发现每次复制for循环那篇笔记都是在22号</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">lambda</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java8新特性//" class="article-tag-list-link color4">Java8新特性</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/22/Java/java%E5%8F%8C%E5%86%92%E5%8F%B7/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Spring/SpringIoC_BeanFactory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1187,109 +1304,9 @@
 
 
   
-    <article id="post-Algorithm/Bisection-method" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/10/Algorithm/Bisection-method/">二分法理解</a>
-    </h1>
-  
-
-        
-        <a href="/2022/07/10/Algorithm/Bisection-method/" class="archive-article-date">
-  	<time datetime="2022-07-10T03:25:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="二分法"><a href="#二分法" class="headerlink" title="二分法"></a>二分法</h3><p>对于有序的数组，二分法查找可将时间复杂度从O(n)降低为O(log n)</p>
-<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><p>无论哪种情况，为了保证被查找的数组（不太准确的说法）中的每一个数都被拿出来比较，看是否符合条件；；</p>
-<ul>
-<li><p>l 代表这段区间的最小，r代表最大，每次更新区间的判断依据是mid；。</p>
-</li>
-<li><p>更新r的值，要看最先定义的时候n是否被取到：r=n-1（取到），r=n（没有取到）。这里取到的意思是我们分析题目时，数组长度n是否被包含在答案中。</p>
-</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Algprithm</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">二分法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法理解//" class="article-tag-list-link color5">算法理解</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/07/10/Algorithm/Bisection-method/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">Next&gt;&gt;</a>
+      <a class="extend prev" rel="prev" href="/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/">Next&gt;&gt;</a>
     </nav>
   
 
@@ -1617,6 +1634,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">命令行指令，jar包</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">动态规划</a>
               </li>
             
             <div class="clearfix"></div>
