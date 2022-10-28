@@ -22,7 +22,7 @@
 <meta property="og:description" content="前言前面大致理清了IOC容器的职责和如何使用xml配置后，接下来是原理部分。 BeanFactory综述BeanFactory大体来说可以分为 容器启动阶段 和 Bean实例化阶段。 容器启动阶段又可以按顺序如下排列：1.加载配置2.分析配置信息3.装配到BeanDefinition4.其他后操作 启动阶段就是把Bean的配置信息从xml文件中读取、分析出来再包装成BeanDefinition的过">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-08-21T10:47:27.000Z">
-<meta property="article:modified_time" content="2022-08-23T13:20:26.420Z">
+<meta property="article:modified_time" content="2022-10-27T10:33:39.294Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Spring">
 <meta property="article:tag" content="IOC">
@@ -179,15 +179,17 @@
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前面大致理清了IOC容器的职责和如何使用xml配置后，接下来是原理部分。</p>
 <h3 id="BeanFactory综述"><a href="#BeanFactory综述" class="headerlink" title="BeanFactory综述"></a>BeanFactory综述</h3><p>BeanFactory大体来说可以分为 <strong>容器启动阶段</strong> 和 <strong>Bean实例化阶段</strong>。</p>
 <p>容器启动阶段又可以按顺序如下排列：<br>1.加载配置<br>2.分析配置信息<br>3.装配到BeanDefinition<br>4.其他后操作</p>
-<p>启动阶段就是把Bean的配置信息从xml文件中读取、分析出来再包装成BeanDefinition的过程，前期工作准备好后，就可以开始实例化：<br>1.实例化对象<br>2.装配依赖<br>3.生命周期回调<br>4.对象其他处理<br>5.注册回调接口</p>
+<p><strong>启动阶段就是把Bean的配置信息从xml文件中读取、分析出来再包装成BeanDefinition的过程</strong>，前期工作准备好后，就可以开始实例化：<br>1.实例化对象<br>2.装配依赖<br>3.生命周期回调<br>4.对象其他处理<br>5.注册回调接口</p>
 <hr>
-<h4 id="启动阶段"><a href="#启动阶段" class="headerlink" title="启动阶段"></a>启动阶段</h4><p>如果想在容器实例化对象之前做出修改应该怎么办？Spring提供了一个接口：BeanFactoryPostProcessor，允许在实例化之前，对BeanDefinition做出最后的修改，它的实现类有：<br>1.PropertyPlaceholderConfigurer<br>2.PropertyOverrideConfigurer</p>
+<h4 id="启动阶段"><a href="#启动阶段" class="headerlink" title="启动阶段"></a>启动阶段</h4><p>如果想在容器实例化对象之前做出修改应该怎么办？Spring提供了一个接口：<strong>BeanFactoryPostProcessor</strong>，允许在实例化之前，对BeanDefinition做出最后的修改，它的实现类有：<br>1.PropertyPlaceholderConfigurer<br>2.PropertyOverrideConfigurer</p>
 <p>看第一个的名字就可以猜到是通过占位的方式完成，在xml中使用如${}的方式占位，第一阶段加载完所有配置信息时还只是以占位符的形式存在；之后它被应用的时候，才去properties里面加载信息替换原来占位符的值。同时它还可以检查Java的System类中的properties，如果在properties文件中找不到相应配置项，那么它就会去System的Properties中查找。</p>
 <p>PropertyOverrideConfigurer看名字猜到应该是重写了什么，实际上也就是覆盖了原来xml中bean定义的property信息。</p>
-<p>除了对xml中配置信息的修改，也就是说除了本身定义这些Bean需要的东西以外，还有 字符串到Java对象转换规则的信息 也需要注册到容器。Xml中都是配置的字符串，从字符串到Java对象的这种<strong>转换工作</strong>就是由PropertyEditer来做，将PropertyEditer<strong>注册</strong>到容器的工作就是CustomerEditConfigurer的工作。</p>
+<p>除了对xml中配置信息的修改，也就是说除了本身定义这些Bean需要的东西以外，还有 字符串到Java对象转换规则的信息 也需要注册到容器。Xml中都是配置的字符串，从字符串到Java对象的这种<strong>转换工作</strong>就是由<strong>PropertyEditer</strong>来做，将PropertyEditer<strong>注册</strong>到容器的工作就是CustomerEditConfigurer的工作。</p>
 <hr>
 <p>1.PropertyPlaceholderConfigurer（通过占位符提前占领位置，而后从properties文件中读取真正的值）<br>2.PropertyOverrideConfigurer（properties文件的值替换掉xml的值）<br>3.CustomerEditConfigurer（将具有转换职能的类注册到容器）</p>
-<p>启动阶段做的就是加载配置-&gt;分析配置信息-&gt;包装成BeanDefinition-&gt;修改值</p>
+<ul>
+<li>启动阶段做的就是加载配置-&gt;分析配置信息-&gt;包装成BeanDefinition-&gt;修改值</li>
+</ul>
 <hr>
 <h4 id="实例化阶段"><a href="#实例化阶段" class="headerlink" title="实例化阶段"></a>实例化阶段</h4><p>分为以下几个步骤：<br>1.实例化Bean对象<br>2.设置对象属性<br>3.检查Aware相关接口并设置响应的依赖</p>
 <p>4.BeanPostProcessor前置处理<br>5.检查是否是InitializingBean以决定是否调用afterPropertieSet方法<br>6.检查是否配置有自定义的init-method<br>7.BeanPostProcessor后置处理</p>
@@ -716,6 +718,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">位运算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MVCC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">滑动窗口</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">前缀和</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">二份查找</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">双指针</a>
               </li>
             
             <div class="clearfix"></div>

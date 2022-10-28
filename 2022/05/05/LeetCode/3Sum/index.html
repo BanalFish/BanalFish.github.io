@@ -22,7 +22,7 @@
 <meta property="og:description" content="题目描述给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c &#x3D; 0 ？请你找出所有和为 0 且不重复的三元组。 注意：答案中不可以包含重复的三元组。  题目链接来自力扣三数之和  思考题解首先最容易想到暴力解法，但是O(n^3)的时间复杂度想都不用想肯定超时，考虑到找两数之和的相反数，那Map匹配？好像时间复杂度也很高，再就是想到了">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-05-05T02:55:05.000Z">
-<meta property="article:modified_time" content="2022-05-05T03:11:25.602Z">
+<meta property="article:modified_time" content="2022-10-14T03:20:17.169Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="LeetCode">
@@ -190,6 +190,9 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static List&lt;List&lt;Integer&gt;&gt; threeSum(int[] nums) &#123;</span><br><span class="line">       List&lt;List&lt;Integer&gt;&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">       if (nums.length &lt; 3 || nums == null)//判定数组长度是否小于3</span><br><span class="line">           return list;</span><br><span class="line"></span><br><span class="line">       Arrays.sort(nums);//排序</span><br><span class="line"></span><br><span class="line">       for (int i = 0; i &lt; nums.length; i++) &#123;</span><br><span class="line"></span><br><span class="line">           if (nums[i] &gt; 0)//最小数大于0，直接返回</span><br><span class="line">               return list;</span><br><span class="line"></span><br><span class="line">           //第一层，对i去重</span><br><span class="line">           if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1])//从第一个往后若有重复的数字就跳过</span><br><span class="line">               continue;</span><br><span class="line"></span><br><span class="line">           //左右指针</span><br><span class="line">           int l = i + 1;</span><br><span class="line">           int r = nums.length - 1;</span><br><span class="line">           while (l &lt; r) &#123;</span><br><span class="line">               if (nums[i] + nums[l] + nums[r] == 0) &#123;</span><br><span class="line">                   List&lt;Integer&gt; t = new ArrayList&lt;&gt;();</span><br><span class="line">                   t.add(nums[i]);</span><br><span class="line">                   t.add(nums[l]);</span><br><span class="line">                   t.add(nums[r]);</span><br><span class="line">                   list.add(t);</span><br><span class="line">                   //第二层去重，对l</span><br><span class="line">                   while (l &lt; r &amp;&amp; nums[l + 1] == nums[l])</span><br><span class="line">                       l++;</span><br><span class="line">                   //第三层去重，对r</span><br><span class="line">                   while (l &lt; r &amp;&amp; nums[r - 1] == nums[r])</span><br><span class="line">                       r--;</span><br><span class="line">                   //既对没有重复的进行条件改变</span><br><span class="line">                   //也是对重复了的进行+1避免最后一个的重复，因为不重复的第一次已经在上面添加进去了</span><br><span class="line">                   l++;</span><br><span class="line">                   r--;</span><br><span class="line">               &#125; else if (nums[i] + nums[l] + nums[r] &gt; 0)</span><br><span class="line">                   r--;</span><br><span class="line">               else</span><br><span class="line">                   l++;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return list;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>不过它们去重都没有用List的内置算法，而是通过移动指针判断是否与下一个数重复，我想这可能是因为如果用contains判断，每次都还要先new一个新的list，然后再判断是否存在，而内置函数的contains用了循环遍历，这样不仅空间消耗增大，时间消耗应该也不小。</p>
+<hr>
+<p>现在是2022-10-14，在剑指Offer又看到了这题，于是回来看看以前是怎么写这题的，还是自己写的题解更容易看啊。</p>
+<p>对于本题，不仅要找到全部的组合，而且要求组合包含的元素不能重复，而原先想到的二分法查找更适用的条件是<strong>找精确的某个值</strong>，而这种需要<strong>查找全部的可能性</strong>，需要从两边往里缩、逐渐减小范围，且要求不能重复，则按照下标移动判断是否重复，不仅达到去重，而且也把查找的区间范围缩小了。</p>
 
       
 
@@ -683,6 +686,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">位运算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MVCC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">滑动窗口</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">前缀和</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">二份查找</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">双指针</a>
               </li>
             
             <div class="clearfix"></div>

@@ -154,6 +154,411 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-MySQL/MVCC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/25/MySQL/MVCC/">MVCC-多版本并发控制</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/25/MySQL/MVCC/" class="archive-article-date">
+  	<time datetime="2022-10-25T01:44:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>今天才发现竟然没有写过关于MySQL的笔记，在看面经时看见了有关MVCC的内容，不明白于是学习了一番，记录下感悟思考。</p>
+<h3 id="MVCC背景"><a href="#MVCC背景" class="headerlink" title="MVCC背景"></a>MVCC背景</h3><p>MVCC又叫多版本并发控制，它是为了提高数据库的并发性能出现的，在并发读仍然不满足需求的情况下，提出读-写也不冲突的办法。当然，针对数据库的隔离级别为RC和RR来说。</p>
+<ul>
+<li>如何做到读-写不冲突？<br>sum：维持一个数据的多个版本，使读-写不冲突。</li>
+</ul>
+<p>在多线程的情况下，多个事务可能会对同一条数据做出不同的修改（写），某个读事务可能会在这些写线程提交时间的中间提出进行读操作。读中间的哪一条，涉及到数据库的隔离级别，暂时按下不表，先将重点放在具体怎么读的过程。</p>
+<hr>
+<h3 id="怎么读"><a href="#怎么读" class="headerlink" title="怎么读"></a>怎么读</h3><ul>
+<li><p>对于多个事务修改这条数据，存在修改后最终结果好几个不同的版本，为了保证数据的隔离性，需要将几个不同版本的数据保存下来。</p>
+</li>
+<li><p>记录过去的操作，明显可以用日志的方式来实践，MySQL有undo日志这么一说，用来将数据恢复成修改前的样子，<br>每次对记录更新后，都会将旧值放到undo日志中，并且每一条数据，都有一个roll_pointer指针指向前面的旧版本数据，从而形成一条版本链。</p>
+</li>
+<li><p>现在旧版本已经保存，新来的读事务如何确定它要读哪一条数据呢？<br>对于<strong>不加锁</strong>的读（给它一个名字，叫快照读），这个事务会记录这一瞬间<strong>活跃</strong>（没有commmit）的事务id（在RC下，每次快照读都会生成新的；在RR下，同一个事务复用先前的ReadView（快照）。事务id随着时间的增长增加）。<br>因为虽然修改的数据可能被记录到了版本链中，但是可能并没有提交，对于还没被提交的事务，是不能被其它事务看见提交结果的。所以这个记录相关事务id的信息叫做ReadView。</p>
+</li>
+</ul>
+<p>通过把版本链中的数据的事务id与快照读中的按照一定规则筛选后，可确定最终读哪条数据。<br>规则如下：<br>1.修改这条数据的事务id与生成快照读的事务id相同吗？</p>
+<blockquote>
+<p>相同说明这个事务修改完后就来读，中间没有其它事务来修改，不会出现数据不一致问题。</p>
+</blockquote>
+<p>2.是否小于最小活跃的事务id？</p>
+<blockquote>
+<p>小于说明这条修改的数据已经提交，可以访问。</p>
+</blockquote>
+<p>3.是否大于最大的活跃id？</p>
+<blockquote>
+<p>大于说明都未提交，不可访问。</p>
+</blockquote>
+<p>4.是否在最小活跃id和最大活跃id中间？</p>
+<blockquote>
+<p>存在则看是否在活跃id的集合中，在则说明未提交不可访问，不在说明已经提交，可以访问。</p>
+</blockquote>
+<p><strong>总的来说，就是记录修改的数据和是哪个事务修改的它，最终在当前某时刻的事务id集合中按照规则判断哪些事务已提交、可被访问。</strong></p>
+<ul>
+<li>根据如上信息，我们可以推出ReadView可以包含的信息有：<ul>
+<li>当前活跃的事务id</li>
+<li>最小的活跃事务id</li>
+<li>最大的活跃事务id+1</li>
+<li>创建快照读的事务id</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>现在回到隔离级别，<br>隔离级别有四种：</p>
+<ul>
+<li>读未提交</li>
+<li>读已提交</li>
+<li>可重复读</li>
+<li>序列化</li>
+</ul>
+<p>1.读未提交的意思是说，可以看到别的事务对某数据修改的结果值，会抢先读取，如果这个修改的事务没有被提交，那么这个先读取的结果是错误的。这就叫做“脏读”。<br>2.读已提交就是在1的基础上，可以读已提交的数据；如果某个事务在第一次查询后得到结果A值，再次按照相同的查询条件去查可能得到B值，这是因为在两次读取的间隙，可能存在另一个事务修改了原值。这就叫“不可重复读”。<br>3.可重复读就是在2的基础上，实现可重复读。如何实现的呢？</p>
+<blockquote>
+<p>在RR（可重复读）隔离级别下，同一个事务第一次快照读后生成的ReadView会被后面的快照读复用，这样快照读没变、用的事务也没变，最后读到的数据也不会变，因此保证了可重复读。</p>
+<p>对应的，读已提交就是每次快照读的时候重新生成一个新的ReadView，从而及时更新每次事务提交的情况。</p>
+</blockquote>
+<ul>
+<li>在可重复读的情况下，如果两次快照读之间存在一次当前读，那么就会导致重新生成一个ReadView，从而发生幻读，因为为了保证可重复读、从而保持相同的ReadView都改变了，那么结果自然不能保证。所以MVCC可以不完全地解决幻读。</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><blockquote>
+<p><a href="!https://www.bilibili.com/video/BV1hL411479T/?spm_id_from=333.788&vd_source=57d830f6e821a67f2043e6492c9c9a35">讲得比较清楚的视频</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MVCC</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/MySQL//" class="article-tag-list-link color1">MySQL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/10/25/MySQL/MVCC/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/和大于等于target的最短子数组" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/14/LeetCode/%E5%92%8C%E5%A4%A7%E4%BA%8E%E7%AD%89%E4%BA%8Etarget%E7%9A%84%E6%9C%80%E7%9F%AD%E5%AD%90%E6%95%B0%E7%BB%84/">和大于等于 target 的最短子数组</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/14/LeetCode/%E5%92%8C%E5%A4%A7%E4%BA%8E%E7%AD%89%E4%BA%8Etarget%E7%9A%84%E6%9C%80%E7%9F%AD%E5%AD%90%E6%95%B0%E7%BB%84/" class="archive-article-date">
+  	<time datetime="2022-10-14T07:12:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定一个含有 n 个正整数的数组和一个正整数 target 。</p>
+<p>找出该数组中满足其和 ≥ target 的长度最小的 连续子数组 [numsl, numsl+1, …, numsr-1, numsr] ，并返回其长度。如果不存在符合条件的子数组，返回 0 。</p>
+<p>示例 1：<br>输入：target = 7, nums = [2,3,1,2,4,3]<br>输出：2<br>解释：子数组 [4,3] 是该条件下的长度最小的子数组。</p>
+<p>示例 2：<br>输入：target = 4, nums = [1,4,4]<br>输出：1</p>
+<p>示例 3：<br>输入：target = 11, nums = [1,1,1,1,1,1,1,1]<br>输出：0
+ </p>
+<p>提示：</p>
+<ul>
+<li>1 &lt;= target &lt;= 109</li>
+<li>1 &lt;= nums.length &lt;= 105</li>
+<li>1 &lt;= nums[i] &lt;= 105
+ </li>
+</ul>
+<blockquote>
+<p>来源：<a href="!https://leetcode.cn/problems/2VG8Kg">力扣（LeetCode）</a></p>
+</blockquote>
+<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>肯定是当时脑子浆糊了，才会想到要先对数组排序，再去倒着找答案。后来测试用例有没有通过的，下来调试的时候才意识到，真是服了自己。</p>
+<h3 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h3><p>看到一个对滑动窗口的解释，大概意思是：用双指针确定窗口的两端，并在判断是否符合条件的过程中逐渐缩小范围，并且整个窗口是往后移动、更新其中元素的，直至最后窗口的两个端点重合且达到终点。</p>
+<p>滑动窗口应该适用于查找数组中某一段序列（或从而间接求其属性）的情景。</p>
+<p>代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static int minSubArrayLen1(int target, int[] nums)&#123;</span><br><span class="line">       //滑动窗口</span><br><span class="line">       if(nums.length==0)&#123;</span><br><span class="line">           return 0;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       int start=0;</span><br><span class="line">       int end=0;</span><br><span class="line">       int sum=0;</span><br><span class="line">       int res=Integer.MAX_VALUE;</span><br><span class="line">       //第一个while循环更新右端点</span><br><span class="line">       while(end&lt;nums.length)&#123;</span><br><span class="line">           sum+=nums[end];</span><br><span class="line">           //第二个while根据条件更新左端点</span><br><span class="line">           while(sum&gt;=target)&#123;</span><br><span class="line">               res=Math.min(res,end-start+1);</span><br><span class="line">               sum-=nums[start];</span><br><span class="line">               start++;</span><br><span class="line">           &#125;</span><br><span class="line">           end++;</span><br><span class="line">       &#125;</span><br><span class="line">       return res==Integer.MAX_VALUE?0:res;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="前缀和-二分查找"><a href="#前缀和-二分查找" class="headerlink" title="前缀和+二分查找"></a>前缀和+二分查找</h3><p>对于这个无需的数组，要找到最短的且大于target的序列，</p>
+<p>由于题目规定数组的元素都是正整数，所以无序的数组对应有序的是：每个元素的前缀和，随着数组往右边增长，同时严格增长的是每个元素的前缀和。</p>
+<blockquote>
+<p>说的比较清楚的题解<a href="!https://leetcode.cn/problems/minimum-size-subarray-sum/solution/javade-jie-fa-ji-bai-liao-9985de-yong-hu-by-sdwwld/">Java的五种解法</a></p>
+</blockquote>
+<p>虽然看题解解释得很清楚了，但是总感觉没有掌握到最关键的部分。现在有点想不下去了，下次再接着来写。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">for (int i = 1; i &lt;= n; i++) &#123;</span><br><span class="line">		//目标值加上当前的前缀和</span><br><span class="line">           int tar = target + sums[i - 1];</span><br><span class="line">		//去前缀和数组中找，如果有刚好等于的，就返回下标（大于0）；</span><br><span class="line">		没有刚好的，会返回第一个大于等于tar的元素的下标值（下标是插入后的，所以源码中会+1） 的相反数；最后经过转换会变成在sum中第一个大于等于target的下标</span><br><span class="line">           int bound = binarySearch0(sums,0, sums.length, tar);</span><br><span class="line">           if (bound &lt; 0) &#123;</span><br><span class="line">			//得到没有插入前，现在的第一个大于等于target值的下标</span><br><span class="line">               bound = -bound - 1;</span><br><span class="line">           &#125;</span><br><span class="line">		//如果在范围内，将长度更新</span><br><span class="line">           if (bound &lt;= n) &#123;</span><br><span class="line">               ans = Math.min(ans, bound - (i - 1));</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return ans == Integer.MAX_VALUE ? 0 : ans;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">滑动窗口</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">前缀和</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">二份查找</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/10/14/LeetCode/%E5%92%8C%E5%A4%A7%E4%BA%8E%E7%AD%89%E4%BA%8Etarget%E7%9A%84%E6%9C%80%E7%9F%AD%E5%AD%90%E6%95%B0%E7%BB%84/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/排序数组中两个数字之和" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/13/LeetCode/%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E4%B8%A4%E4%B8%AA%E6%95%B0%E5%AD%97%E4%B9%8B%E5%92%8C/">排序数组中两个数字之和</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/13/LeetCode/%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E4%B8%A4%E4%B8%AA%E6%95%B0%E5%AD%97%E4%B9%8B%E5%92%8C/" class="archive-article-date">
+  	<time datetime="2022-10-13T07:50:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定一个已按照 升序排列  的整数数组 numbers ，请你从数组中找出两个数满足相加之和等于目标数 target 。</p>
+<p>函数应该以长度为 2 的整数数组的形式返回这两个数的下标值。numbers 的下标 从 0 开始计数 ，所以答案数组应当满足 0 &lt;= answer[0] &lt; answer[1] &lt; numbers.length 。</p>
+<p>假设数组中存在且只存在一对符合条件的数字，同时一个数字不能使用两次。</p>
+<p> </p>
+<p>示例 1：输入：numbers = [1,2,4,6,10], target = 8<br>输出：[1,3]<br>解释：2 与 6 之和等于目标数 8 。因此 index1 = 1, index2 = 3 。</p>
+<p>示例 2：<br>输入：numbers = [2,3,4], target = 6<br>输出：[0,2]</p>
+<p>示例 3：<br>输入：numbers = [-1,0], target = -1<br>输出：[0,1]
+ </p>
+<p>提示：</p>
+<ul>
+<li>2 &lt;= numbers.length &lt;= 3 * 104</li>
+<li>-1000 &lt;= numbers[i] &lt;= 1000</li>
+<li>numbers 按 递增顺序 排列</li>
+<li>-1000 &lt;= target &lt;= 1000</li>
+<li>仅存在一个有效答案</li>
+</ul>
+<blockquote>
+<p>来源：<a href="!https://leetcode.cn/problems/kLl5u1">力扣（LeetCode）</a></p>
+</blockquote>
+<h3 id="我的题解"><a href="#我的题解" class="headerlink" title="我的题解"></a>我的题解</h3><p>暴力二分查找法…</p>
+<p>代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int[] twoSum(int[] numbers, int target) &#123;</span><br><span class="line">       int[] res=new int[2];</span><br><span class="line"></span><br><span class="line">       for (int i = 0; i &lt; numbers.length-1; i++) &#123;</span><br><span class="line">           int t=numbers[i];</span><br><span class="line">           int tar=target-t;</span><br><span class="line">           int l=i+1;</span><br><span class="line">           int r= numbers.length-1;</span><br><span class="line">           while(l&lt;=r)&#123;</span><br><span class="line">               int mid=l+(r-l)/2;</span><br><span class="line">               if(numbers[mid]==tar)&#123;</span><br><span class="line">                   res[0]=i;</span><br><span class="line">                   res[1]=mid;</span><br><span class="line">                   return res;</span><br><span class="line">               &#125;</span><br><span class="line">               else if (numbers[mid]&lt;tar) &#123;</span><br><span class="line">                   l=mid+1;</span><br><span class="line">               &#125;</span><br><span class="line">               else if (numbers[mid]&gt;tar) &#123;</span><br><span class="line">                   r=mid-1;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return res;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="双指针解法"><a href="#双指针解法" class="headerlink" title="双指针解法"></a>双指针解法</h3><p>代码很简洁，是一种新的思路。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int[] twoSum(int[] numbers, int target) &#123;</span><br><span class="line">    int low = 0, high = numbers.length - 1;</span><br><span class="line">    while (low &lt; high) &#123;</span><br><span class="line">        int sum = numbers[low] + numbers[high];</span><br><span class="line">        if (sum == target) &#123;</span><br><span class="line">            return new int[]&#123;low, high&#125;;</span><br><span class="line">        &#125; else if (sum &lt; target) &#123;</span><br><span class="line">            ++low;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            --high;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return new int[]&#123;-1, -1&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">双指针</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/10/13/LeetCode/%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E4%B8%A4%E4%B8%AA%E6%95%B0%E5%AD%97%E4%B9%8B%E5%92%8C/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-LeetCode/单词长度的最大乘积" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -314,6 +719,9 @@
 <p>代码：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">       int ans = 0;</span><br><span class="line">       for (int i = 0; i &lt; 32; ++i) &#123;</span><br><span class="line">           int total = 0;</span><br><span class="line">           for (int num: nums) &#123;</span><br><span class="line">               total += ((num &gt;&gt; i) &amp; 1);</span><br><span class="line">           &#125;</span><br><span class="line">           if (total % 3 != 0) &#123;</span><br><span class="line">               ans |= (1 &lt;&lt; i);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return ans;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
+<p>如果没有那个只出现1次的数字，那么整个数字都是成三出现的数字，所以易得它们的和一定可以被3整除，更进一步的，它们每个对应的二进制位相加后也一定可以被3整除。</p>
+<p>现在多了一个异类，要想把这个数找出来，就是上面的思路，把每个数对应二进制位的数相加，如果相加和不能被3整除，就表示其中混入了异类的二进制位，就把它还原出来即可。</p>
+<p>代码中的num移位后和1做与操作，就是<strong>取这个数的最低位二进制</strong>数是多少；<br>ans做或操作，就相当于ans和移位后的1<strong>相加</strong>。</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><blockquote>
 <p><a href="!https://leetcode.cn/problems/WGki4K/solution/zhi-chu-xian-yi-ci-de-shu-zi-by-leetcode-0vrt/">只出现一次的数字</a></p>
 </blockquote>
@@ -665,7 +1073,7 @@
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>所以再怎么逃避，还是要学锁的呀！<br>一直觉得锁这个东西很抽象，抓不住它飘渺的声影，这几天花了点时间去看文章，过程中仍有似懂非懂的地方，而且看的几篇博客说的还不一样，去看英文原文…算了，还是看翻译吧…怎么都是汉字，连起来我却看不懂…</p>
 <h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><h4 id="一、乐观锁、悲观锁"><a href="#一、乐观锁、悲观锁" class="headerlink" title="一、乐观锁、悲观锁"></a>一、乐观锁、悲观锁</h4><p>它俩的区别就是<strong>是否锁住同步资源</strong>。</p>
-<h5 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h5><p>1.线程乐观地认为，即使不锁住资源，下次来也会有权利操作它，所以它并不给资源上锁，但是为啥叫乐观锁呢？</p>
+<h5 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h5><p>1.线程乐观地认为，即使不锁住资源，下次来也会有权利操作它，所以它并不给资源上锁，但是为啥叫乐观<strong>锁</strong>呢？</p>
 <p>原因是它不会对操作的数据加锁，而是通过<strong>业务</strong>实现锁的功能，这里的业务指：只有到数据提交时才通过一种机制来验证数据是否存在冲突。</p>
 <p>2.流程：</p>
 <blockquote>
@@ -676,9 +1084,10 @@
 <li>不然就一直循环尝试获取CAS</li>
 </ol>
 </blockquote>
+<p>总而言之，是只有当取得的值（通过偏移量取到）等于预期值A时，才会进行修改为B。</p>
 <p>3.CAS可能会有三大问题：</p>
 <ul>
-<li><strong>ABA问题</strong>。即A改为B，由改为A，如果单凭值来认为A的值从来没有发生过变化，这样是不准确的，为了解决这个问题，每次修改值后会加上版本号，每次比较值时不仅比较内容还会比较版本号是否一致。</li>
+<li><strong>ABA问题</strong>。即A改为B，又改为A，如果单凭值来认为A的值从来没有发生过变化，这样是不准确的，为了解决这个问题，每次修改值后会加上版本号，每次比较值时不仅比较内容还会比较版本号是否一致。</li>
 <li><strong>循环时间开销长</strong>。CAS如果长时间不成功，则会一直自旋，给CPU带来非常大的开销</li>
 <li><strong>只能保证一个共享变量的原子性操作</strong>。</li>
 </ul>
@@ -710,12 +1119,13 @@
 <p>一言以蔽之，上锁是对象原有的对象头被放在了线程的空间里，对象的对象头不再保存hash code 等信息，保存指针来简洁指向原有对象头。</p>
 <h5 id="无锁"><a href="#无锁" class="headerlink" title="无锁"></a>无锁</h5><p>无锁没有对资源进行锁定，所有的线程都能访问修改，但同时只有一个线程能修改成功；没有成功的就重复不断地尝试。无锁的原理是CAS。</p>
 <h5 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h5><p>有这么一种情况，是同步资源一直被同一个线程访问，那么CAS的判断重试的操作是多余的。</p>
-<p>1.当第一次对象的锁被某线程拥有，那么对象头中会记录线程ID，当下次某线程来临时，只需要对比线程<strong>ID是否一致</strong>，一致则执行代码，<br>2.不一致则CAS尝试<strong>替换</strong>对象头的<strong>线程ID</strong>，成功则新的线程获得了该同步资源的偏向锁，<br>3.失败则准备撤销偏向锁，首先判断拥有锁的<strong>线程是否存活</strong>，没有存活则变为无锁，所有线程去竞争偏向锁，<br>4.存活则等待，当到达全局安全点时，判断被撤销锁的线程<strong>是否还需要锁</strong>，不需要则变为无锁，所有线程去竞争；需要则升级锁为轻量级锁。</p>
+<p>1.当第一次对象的锁被某线程拥有，那么对象头中会记录线程ID，当下次某线程来临时，只需要对比线程<strong>ID是否一致</strong>，一致则执行代码（所以即使两个线程没有发生竞争，只是一个线程ID被锁对象标记，也有可能发生偏向锁向轻量级锁的升级过程）<br>2.不一致则CAS尝试<strong>替换</strong>对象头的<strong>线程ID</strong>，成功则新的线程获得了该同步资源的偏向锁，<br>3.失败则准备撤销持有锁的线程的偏向锁，首先判断<strong>拥有锁的线程</strong>是否存活<strong>，没有存活则变为无锁，所有线程去竞争偏向锁，<br>4.存活则等待，当到达全局安全点时，判断被撤销锁的线程</strong>是否还需要该锁**，不需要则变为无锁，所有线程去竞争；需要则升级锁为轻量级锁。</p>
 <h5 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h5><ul>
 <li>描述的情形：偏向锁被其他线程竞争时升级为轻量级锁，其他线程自旋，不阻塞。</li>
 <li>获取过程：<br>更新都是CAS</li>
 </ul>
-<p>1.线程新建一个lock record（锁记录空间）<br>2.将对象的mark word存入lock record</p>
+<p>1.线程新建一个lock record（锁记录空间）</p>
+<p>2.将对象的mark word存入lock record</p>
 <ul>
 <li>但是偏向锁后对象的hash code不是被线程ID覆盖了吗？我的解释是：由于identity hash code 一旦被计算过，则不能进入偏向锁状态，而已经到达偏向锁状态的对象没有被计算过identity hash code，此时计算一下再存入lock record中即可。</li>
 <li>为什么identity hash code被计算过后不能进入偏向锁状态？假设计算过一次，那么进入偏向锁的状态时，存储hash值的地方会被线程ID覆盖，从而导致后续再次计算时前后值不一样，失去了哈希码作为对象唯一标识的意义。</li>
@@ -1011,280 +1421,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/09/01/Java/%E7%BB%A7%E6%89%BF%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Algorithm/排序算法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="排序算法"><a href="#排序算法" class="headerlink" title="排序算法"></a>排序算法</h2><p>以下都以目标是升序为例</p>
-<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>如果前一个比后一个大，则说明我们期望它所处的位置应该往后，两两交换后就可以暂时保存这个较大数，并与后面的数接着比较，这样每次都会有一个确定的最大数排到后面。</p>
-<h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><p>类似冒泡，但是不再两两交换，因为交换的目的只是暂存那个较大值，所以用一个临时变量就可以，每趟也都可以找出一个确定的数在它应该在的位置。</p>
-<h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><p>冒泡和选择每次都将这个数放到后面，如果一个数它的位置最终会在靠前的地方，那往后的遍历比较不就是很浪费时间吗？</p>
-<p>冒泡和选择的无序和有序区的划分为：“无序，有序”；插入的划分为“有序，无序”。插入排序每次遍历时就把当前这个数在有序区中，倒着查找一个合适的地方插入进去。所以小的基本都在前面、大的基本都在后面这种情况下效率最高。</p>
-<h3 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h3><p>找一个办法使原数组变成“小的在前、大的在后”的状态，一个一半中的数无序有序不需要管，于是就根据步长分成多个子序列，在子序列中让它就是小的在前，大的在后的状态；每次除以2缩短步长，直到最后步长&lt;1。到等于1的时候就是插入排序了，但是由于这个时候数组已经基本有序，所以效率会很高。</p>
-<p>希尔排序对比先前提出的重要思想是：？</p>
-<p>是什么？到底是什么？启发了后来的思想？是分组吗？我感觉还是没有触碰到核心，一层薄雾始终在我和要触碰的东西之间。</p>
-<p>以希尔排序为分界点，此前的排序算法时间复杂度为O(n^2)，在此之后的都为O(nlogn)。</p>
-<h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><p>采用分治法的思想，对单独的区间进行排序，最后进行合并；代价是需要额外的存储空间。</p>
-<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p>选一个基准值，比它小的放左边，大的放右边，这样一趟下来就确定了一个数应该在的地方；接着再分别对左边和右边的采取同样的操作。</p>
-<h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><p>把一个数组看成一个二叉树，先从第一个非叶子节点开始检查是否符合大于左右孩子的条件，符合则从它的左孩子开始检查，右孩子与左孩子比较大小，因为每次只需把最大的放到根节点就行，左右的顺序不重要。</p>
-<p>第一趟遍历完后，已经得到大顶堆，把根与最后一个进行交换，这样最大的就确定了；第二趟及之后则是从根节点开始调整为大顶堆，直到最后堆的总数为1，则完成了排序。</p>
-<h3 id="计数排序"><a href="#计数排序" class="headerlink" title="计数排序"></a>计数排序</h3><p>取决于要排序数组的值的范围。如果一个数组中最大值为10，则新建一个长度为11的数组，以待排序数组值作为下标，出现的次数作为新数组的值，最后对新数组进行顺序地打印就行。有点像键值对。</p>
-<h3 id="桶排序"><a href="#桶排序" class="headerlink" title="桶排序"></a>桶排序</h3><p>在计数排序的基础上进行的修改。既然计数排序需要的额外空间取决于最大值，其中的许多空间很有可能都被浪费，桶排序根据最大值、最小值、待排序数组的长度计算出桶的个数，对每一个桶，其中的元素都采用插入排序算法进行了排序。有点像HashMap。</p>
-<p>元素被放到哪个桶取决于映射函数，好的映射函数要使元素能够均匀分配到每一个桶。还有一点是在额外空间充足的情况下，尽量增大桶的数量，是不是为了减少桶中元素的数量来减小插入排序所需要的时间呢。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>昨天我在想希尔排序启发后来人的到底是什么，现在我想应该是分组的思想启发出了分治法也说不定。也许不是希尔排序到底有什么思想的贡献，而是它较之前算法的提升、分组思路，其之后排序算法各类发展思想，在我们后来人的总结时，才使得它处于一个这么特殊、处于分水岭的位置。</p>
-<p>希尔排序本身或许没有什么意义，意义是我们赋予它的。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/30/Algorithm/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring/SpringMVC1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/29/Spring/SpringMVC1/">SpringMVC--个人笔记一</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/29/Spring/SpringMVC1/" class="archive-article-date">
-  	<time datetime="2022-08-29T13:28:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>关于SpringMVC，我没有什么可以平稳过渡的语言，会看它完全是因为最开始学习Spring的时候用到了而已，所以在我领悟出更深层次的含义前，这个前言暂且就先这样吧。</p>
-<h3 id="MVC模式"><a href="#MVC模式" class="headerlink" title="MVC模式"></a>MVC模式</h3><p>大致的流程是：<br>Servlet-&gt;JSP-&gt;JSP Model1-&gt;JSP Model2-&gt;Web MVC</p>
-<p>1.Servlet：将业务逻辑、视图渲染等都耦合到一个类中<br>2.JSP：后来出现JSP可以分担渲染工作后，由于JSP中仍然可以编写Java代码来表示某些业务逻辑，所以JSP走上了Servlet的老路<br>3.JSP Model1：引入了JavaBean来封装业务逻辑，但是流程管理仍然由JSP掌管<br>4.JSP Model2：将流程管理封装到Servlet，JSP负责视图渲染，JavaBean封装业务逻辑与数据层交互。<br>在这种模式下，我们倾向于选择单个Servlet控制器，因为如果每个请求就对应一个Servlet，那么在xml中定义的映射关系将会是多么庞大。但是Model2中单个的控制器往往有<br>1.将逻辑写死导致无法复用的问题<br>2.主要的控制逻辑和小分支的控制逻辑耦合在一起</p>
-<p>5.Web MVC：在JSP Model2的基础上，将主要的控制逻辑写在Front Controller，而其他的小分支就写在多个sub-controller中</p>
-<h3 id="Spring-MVC"><a href="#Spring-MVC" class="headerlink" title="Spring MVC"></a>Spring MVC</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>1.通过新建不同角色的方式，将处理期间设计的各种关注点进行了明确的分离，如HandlerMapping、LocalResolver、ViewResolver等<br>2.分离了从视图pull数据这个动作 和 具体sub-controller之间的耦合<br>3.拥有Spring关于IoC和AOP的支持</p>
-<h4 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h4><p>1.DispatcherServlet，对应的就是Front Controller<br>2.HandlerMapping，根据url查找响应的Handler<br>3.Handler，执行逻辑后返回ModelAndView（其中包含视图的逻辑名称和模型数据），次级控制器都称作Handler，controller是Handler的一种<br>4.ViewResolver，处理视图名与View实例之间的对应关系<br>5.View，视图的生成策略</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">SpringMVC</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/29/Spring/SpringMVC1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring/SpringAOP2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/25/Spring/SpringAOP2/">SpringAOP--个人笔记二</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/25/Spring/SpringAOP2/" class="archive-article-date">
-  	<time datetime="2022-08-25T11:11:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>说起AOP那就意味着是对原有功能的增强，那要把这种变强了的逻辑与原来的融为一体，AOP就需要一个专门的角色来做这件事，这个角色也就是Weaver织入器了，在SpringAOP中对应的就是ProxyFactory（与IoC一样，名字后缀都是Factory哦）。</p>
-<h3 id="ProxyFactory"><a href="#ProxyFactory" class="headerlink" title="ProxyFactory"></a>ProxyFactory</h3><p>说起工厂Factory，生产东西（既然叫ProxyFactory那也就是生产Proxy咯）需要原材料并且运输给订货的人（我猜），这里的ProxyFactory需要的原材料我把它换了各说法，就叫“<strong>信息</strong>”，和BeanFactory类似，都需要这么个信息才能让别人代替我们生产；前面好像也提到过设计模式的工厂模式，我们在程序设计时，希望有个返回的方法将实现细节隐藏，因为买雪糕的时候我们只希望得到雪糕就好，不在乎雪糕怎么做的，我也换个说法，就叫“<strong>得到</strong>”。</p>
-<blockquote>
-<p>回顾一下BeanFactory，它需要的信息，从配置文件中读取分析后被装配到了BeanDefinition，再由BeanDefinitionRegistry完成注册和加载。<br>得到这个概念，在BeanFactory中时好像也出现过哦，就是当时我们不想让接口的实现类由我们自己去new，而是让FactoryBean帮我们做了这个工作。</p>
-</blockquote>
-<hr>
-<h4 id="信息"><a href="#信息" class="headerlink" title="信息"></a>信息</h4><p>信息从哪里来，又往哪里去？答曰：从配置文件来，到某某某某类去。<br>信息可以分为两类，一类是 记录Proxy的控制信息，另一类是 生成Proxy所需要的必要信息，如target、Advice、Advisor。</p>
-<p>哪些控制信息呢？比如要不要使用CGLIB代理啦，是否采取进一步的优化措施啦，如果信息配置完成后还允不允许修改啦，这些都是，当然都说了三个了，剩下两个也提一嘴吧：是否可以强转为Advised，是否将当前对象绑定到ThreadLocal，由于我不懂就不接着深入了。</p>
-<p>这些控制信息被封装到ProxyConfig这个JavaBean对象，而那些必要信息就由Advised接口隐藏。<br>那现在这有两类信息，我们当然要化繁为简（也没有很繁吧喂！）成一个，这个简就是AdvisedSupprot，它不仅继承了ProxyConfig，也实现了Advised接口，也就是说它拥有这两类信息(￣▽￣)／</p>
-<h4 id="得到"><a href="#得到" class="headerlink" title="得到"></a>得到</h4><p>那谁来帮我们做“得到”这个动作？答案是一个名叫“AopProxy”的接口，它内部有两个get方法，实现类有Cglib2AopProxy和JdkDynamicAopProxy两种。当然AopProxy不是凭空而来，它的出现由AopProxyFactory实现，涉及到的设计模式就是抽象工厂，这个Factory接口有一个默认的类实现了具体的创造AopProxy方法。</p>
-<h4 id="最终"><a href="#最终" class="headerlink" title="最终"></a>最终</h4><p>现在信息有了（AdvisedSupport），得到的动作也有了（AopProxy），现在就只剩将它们组装到一起了，就是有一个类既继承了AdvisedSupport类，又实现了AopProxy接口，这个类就是当当当当，ProxyFactory！</p>
-<h3 id="ProxyFactoryBean"><a href="#ProxyFactoryBean" class="headerlink" title="ProxyFactoryBean"></a>ProxyFactoryBean</h3><p>ProxyFactory是独立于SpringIoC容器之外的，而ProxyFactoryBean将IoC和AOP组装在一起，两者都是返回代理对象。</p>
-<p>ProxyFactoryBean正确的断句是Proxy+FactoryBean，可以猜测它拥有FactoryBean的特性，也就是如果某个类持有某个FactoryBean的引用，那么它取得的不是FactoryBean本身，而是FactoryBean的getObject()方法所返回的对象，这样一来，ProxyFactoryBean就可以很容易地返回Proxy代理对象了。</p>
-<p>ProxyFactoryBean其中的逻辑就是<br>先判断要生产的Proxy的scope是不是singleton，如果是直接返回之前的，不是则根据环境创建新的，当然创建的这个步骤由它和ProxyFactory共同的父类做了，它只需要调用就好。</p>
-<h3 id="公开代理对象"><a href="#公开代理对象" class="headerlink" title="公开代理对象"></a>公开代理对象</h3><h4 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h4><p>如果一个类的方法1中调用了本类的方法2，那么即使方法1和2分别都增强了，最终的运行结果是方法1仍旧调用的是没有被增强的方法2.</p>
-<h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><p>在代理对象的方法中，不管加多少横切逻辑，有一点可以确定：终归需要调用目标对象Target上的同一方法来执行最初所定义的逻辑。</p>
-<h4 id="办法"><a href="#办法" class="headerlink" title="办法"></a>办法</h4><p>解决方法都有一个统一的思想，那就是在原调用方法中，使用增强的方法，如何使用？依赖具有增强逻辑的代理对象即可。</p>
-<p>注入办法（针对的主体都是Target）：<br>1.构造注入<br>2.setter注入<br>3.依赖Wrapper<br>4.声明接口</p>
-<p>1和2不必多说，在IoC的时候就已经是老朋友了；3的意思是依赖的这个Wrapper类中声明一个getProxy逻辑的方法，在这个方法中直接返回代理对象。而4就是让具有相同困扰的其他一些类，和这个类一起实现一个接口，交由BeanPostProcessor去处理（BeanPostProcessor处理实例化后的对象实例），在代理对象时覆盖逻辑。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/25/Spring/SpringAOP2/">展开全文 >></a>
         </p>
       
 
@@ -1652,6 +1788,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">位运算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MVCC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">滑动窗口</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">前缀和</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">二份查找</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">双指针</a>
               </li>
             
             <div class="clearfix"></div>

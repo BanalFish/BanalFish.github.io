@@ -22,7 +22,7 @@
 <meta property="og:description" content="一、定义全局共用一个实例。当被创建后，一直存在，直到程序结束。 二、分类1.饿汉式单例模式表示程序一开始就需要有该类的实例，JVM加载时就已经创建了该类的实例，因此不会有多线程的安全问题。 代码表示为： 1234567891011121314public class SingleTest &amp;#123;	&#x2F;&#x2F;私有 静态 成员变量	private final static SingleTest ins">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-06-28T02:03:37.000Z">
-<meta property="article:modified_time" content="2022-06-30T02:00:47.340Z">
+<meta property="article:modified_time" content="2022-10-28T07:35:50.250Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="设计模式">
@@ -183,6 +183,7 @@
 
 <p>问题：如果系统运行时都没用到这个实例，这么做就很浪费资源。所以可行的做法是：将<strong>创建实例的动作延迟到需要的时候</strong>。</p>
 <h4 id="2-懒汉式单例模式"><a href="#2-懒汉式单例模式" class="headerlink" title="2.懒汉式单例模式"></a>2.懒汉式单例模式</h4><p>类中这个成员变量预先声明，但是不主动创建，即不定义。只有需要的时候才进行创建，第一次创建后再也不用创建。</p>
+<p>在这里有很重要且容易被忽视的一点就是：该类的<strong>构造方法得私有</strong>，如果不私有，那么即使完成了getInstance方法，也是会有办法得到该类的实例。</p>
 <h6 id="step1："><a href="#step1：" class="headerlink" title="step1："></a>step1：</h6><ul>
 <li><p>初始思想：只要判断是不是为null就行了，如果这个变量为Null就创建，不为null就不创建(ﾉ´▽｀)ﾉ♪</p>
 </li>
@@ -218,12 +219,28 @@
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static SingleTest2 newInstance() &#123;</span><br><span class="line">       if (null == instance) &#123;</span><br><span class="line">           synchronized (SingleTest2.class) &#123;</span><br><span class="line">               if (null == instance) &#123;</span><br><span class="line">                   instance = new SingleTest2();</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return instance;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h5 id="最终版代码："><a href="#最终版代码：" class="headerlink" title="最终版代码："></a>最终版代码：</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SingleTest2 &#123;</span><br><span class="line">   	//以关键字volatile修饰之后，就会阻止JVM对其相关代码进行指令重排，这样就能够按照既定的顺序指执行。</span><br><span class="line">   	private volatile static SingleTest2 instance = null;</span><br><span class="line"></span><br><span class="line">   	private SingleTest2() &#123;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	public static SingleTest2 newInstance() &#123;</span><br><span class="line">       	if (null == instance) &#123;</span><br><span class="line">           	synchronized (SingleTest2.class) &#123;</span><br><span class="line">               	if (null == instance) &#123;</span><br><span class="line">                   	instance = new SingleTest2(); //非原子操作,可能会出现指令重排优</span><br><span class="line">               	&#125;</span><br><span class="line">           	&#125;</span><br><span class="line">       	&#125;</span><br><span class="line">       	return instance;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="最终版代码："><a href="#最终版代码：" class="headerlink" title="最终版代码："></a>最终版代码：</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SingleTest2 &#123;</span><br><span class="line">   	//以关键字volatile修饰之后，就会阻止JVM对其相关代码进行指令重排，这样就能够按照既定的顺序指执行。</span><br><span class="line">   	private volatile static SingleTest2 instance = null;</span><br><span class="line"></span><br><span class="line">	//构造私有</span><br><span class="line">   	private SingleTest2() &#123;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	public static SingleTest2 newInstance() &#123;</span><br><span class="line">       	if (null == instance) &#123;</span><br><span class="line">           	synchronized (SingleTest2.class) &#123;</span><br><span class="line">               	if (null == instance) &#123;</span><br><span class="line">                   	instance = new SingleTest2(); //非原子操作,可能会出现指令重排优化</span><br><span class="line">               	&#125;</span><br><span class="line">           	&#125;</span><br><span class="line">       	&#125;</span><br><span class="line">       	return instance;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h6 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h6><ul>
+<h2 id="2022-10-28"><a href="#2022-10-28" class="headerlink" title="2022.10.28"></a>2022.10.28</h2><p>单例模式被问到过三次了…但是每次都没有答得很好，这次又来再次搜索了相关内容，看见一个现在Java官方推荐的使用方式是采用枚举。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public enum MainTest &#123;</span><br><span class="line">   INSTANCE;</span><br><span class="line"></span><br><span class="line">   public static void main(String[] args) &#123;</span><br><span class="line">       for(int i=0;i&lt;1000;i++)&#123;</span><br><span class="line">           new Thread(new Runnable() &#123;</span><br><span class="line">               @Override</span><br><span class="line">               public void run() &#123;</span><br><span class="line">                   MainTest mainTest=MainTest.INSTANCE;</span><br><span class="line">                   System.out.println(mainTest.hashCode());</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;).start();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>最后打印的哈希码一样，说明是同一个实例对象，由于没有发生过GC（应该），所以哈希码可以在这里用来当作对象在内存里的地址。</p>
+<p>为什么采用枚举类呢？在一篇博客里看到，如果有不通过getIns方法获得实例的办法，除了构造方法也会通过反射得到实例，所以在通过反射取得对象的情况下，无法保证是单例的。如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException &#123;</span><br><span class="line">       Class&lt;ITest&gt; clazz=ITest.class;</span><br><span class="line">       Constructor&lt;ITest&gt; c=clazz.getDeclaredConstructor(null);</span><br><span class="line">       c.setAccessible(true);</span><br><span class="line">       </span><br><span class="line">       ITest i1=c.newInstance();</span><br><span class="line">       ITest i2=c.newInstance();</span><br><span class="line"></span><br><span class="line">       System.out.println(i1==i2);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但是如果是枚举实现的话是无法通过反射来获取的，因为会直接抛出异常，这是因为在Constructor的newInstance方法中，会进行强制性判断是不是枚举类型，是则直接抛异常。</p>
+<h6 id="自问自答"><a href="#自问自答" class="headerlink" title="自问自答"></a>自问自答</h6><ul>
 <li>synchronized底层原理</li>
+</ul>
+<p>大致就是会给对象头的锁维护一个计数变量，获得锁会加1，因此synchronized是可重入的，只要加1就好。释放锁的时候减1，最后为0就是释放完毕。</p>
+<ul>
 <li>volatile关键字 指令重排</li>
 </ul>
+<p>volatile的作用是保证可见性和禁止指令重排，但不能保证原子性。<br>对象的创建不是一步完成的，需要分三步操作：</p>
+<p>1.为instance分配内存空间<br>2.初始化instance<br>3.将instance指向分配的内存空间</p>
+<p>而JVM的特性是具有指令重排序的特性，在单线程下不会出现问题，但是考虑如下多线程的情况，会出现问题：</p>
+<p>如果重排序，假设排序后的顺序是1-&gt;3-&gt;2；如果线程A走到3时，线程B进入获取单例的方法，走到了判断instance是不是null，由于已经给instance分配了内存空间，所以此时线程B会直接返回没有初始化后的instance。</p>
+<p>所以使用volatile会禁止指令重排序，保证在多线程的情况下也能正常执行。</p>
 <h6 id="参考引用"><a href="#参考引用" class="headerlink" title="参考引用"></a>参考引用</h6><blockquote>
 <p><a href="!https://www.cnblogs.com/yuluoxingkong/p/9802418.html#:~:text=%E6%89%80%E8%B0%93%E6%87%92%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%84%8F%E6%80%9D%E5%B0%B1%E6%98%AF%EF%BC%8C%E5%AE%9E%E4%BE%8B%E8%99%BD%E7%84%B6%E4%BD%9C%E4%B8%BA%E8%AF%A5%E7%B1%BB%E7%9A%84%E4%B8%80%E4%B8%AA%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F%EF%BC%8C%E4%BD%86%E6%98%AF%E4%BB%96%E4%B8%8D%E4%B8%BB%E5%8A%A8%E8%BF%9B,%E8%A1%8C%E5%88%9B%E5%BB%BA%EF%BC%8C%E5%A6%82%E6%9E%9C%E4%BD%A0%E4%B8%8D%E4%BD%BF%E7%94%A8%E5%AE%83%E9%82%A3%E4%B9%88%E4%BB%96%E5%B0%86%E4%BC%9A%E6%B0%B8%E8%BF%9C%E4%B8%8D%E8%A2%AB%E5%88%9B%E5%BB%BA%EF%BC%8C%E5%8F%AA%E6%9C%89%E4%BD%A0%E5%9C%A8%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8%E5%AE%83%E7%9A%84%E6%97%B6%E5%80%99%E6%89%8D%E4%BC%9A%E8%A2%AB%E5%88%9B%20%E5%BB%BA%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%BE%97%E5%88%B0%E4%BF%9D%E6%8C%81%EF%BC%9B%E8%AF%B7%E7%9C%8B%E4%B8%8B%E4%B8%80%E6%AE%B5%E4%BB%A3%E7%A0%81">饿汉式单例模式与懒汉式单例模式</a></p>
 </blockquote>
@@ -367,7 +384,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%AE%9A%E4%B9%89"><span class="toc-number">1.</span> <span class="toc-text">一、定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%88%86%E7%B1%BB"><span class="toc-number">2.</span> <span class="toc-text">二、分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%A5%BF%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.1.</span> <span class="toc-text">1.饿汉式单例模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%87%92%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.2.</span> <span class="toc-text">2.懒汉式单例模式</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#step1%EF%BC%9A"><span class="toc-number">2.2.0.1.</span> <span class="toc-text">step1：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#step2%EF%BC%9A"><span class="toc-number">2.2.0.2.</span> <span class="toc-text">step2：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#step3%EF%BC%9A"><span class="toc-number">2.2.0.3.</span> <span class="toc-text">step3：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E7%89%88%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">最终版代码：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%96%91%E9%97%AE"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">疑问</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E5%BC%95%E7%94%A8"><span class="toc-number">2.2.1.2.</span> <span class="toc-text">参考引用</span></a></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%AE%9A%E4%B9%89"><span class="toc-number">1.</span> <span class="toc-text">一、定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%88%86%E7%B1%BB"><span class="toc-number">2.</span> <span class="toc-text">二、分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%A5%BF%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.1.</span> <span class="toc-text">1.饿汉式单例模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%87%92%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.2.</span> <span class="toc-text">2.懒汉式单例模式</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#step1%EF%BC%9A"><span class="toc-number">2.2.0.1.</span> <span class="toc-text">step1：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#step2%EF%BC%9A"><span class="toc-number">2.2.0.2.</span> <span class="toc-text">step2：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#step3%EF%BC%9A"><span class="toc-number">2.2.0.3.</span> <span class="toc-text">step3：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E7%89%88%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">最终版代码：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2022-10-28"><span class="toc-number"></span> <span class="toc-text">2022.10.28</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E8%87%AA%E9%97%AE%E8%87%AA%E7%AD%94"><span class="toc-number">0.0.0.1.</span> <span class="toc-text">自问自答</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E5%BC%95%E7%94%A8"><span class="toc-number">0.0.0.2.</span> <span class="toc-text">参考引用</span></a></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -720,6 +737,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">位运算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MVCC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">滑动窗口</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">前缀和</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">二份查找</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">双指针</a>
               </li>
             
             <div class="clearfix"></div>

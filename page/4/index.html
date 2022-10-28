@@ -154,6 +154,374 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Java/single" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/06/28/Java/single/">单例模式</a>
+    </h1>
+  
+
+        
+        <a href="/2022/06/28/Java/single/" class="archive-article-date">
+  	<time datetime="2022-06-28T02:03:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h3><p>全局共用一个实例。当被创建后，一直存在，直到程序结束。</p>
+<h3 id="二、分类"><a href="#二、分类" class="headerlink" title="二、分类"></a>二、分类</h3><h4 id="1-饿汉式单例模式"><a href="#1-饿汉式单例模式" class="headerlink" title="1.饿汉式单例模式"></a>1.饿汉式单例模式</h4><p>表示程序一开始就需要有该类的实例，JVM加载时就已经创建了该类的实例，因此<strong>不会有多线程的安全问题</strong>。</p>
+<p>代码表示为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SingleTest &#123;</span><br><span class="line"></span><br><span class="line">	//私有 静态 成员变量</span><br><span class="line">	private final static SingleTest instance = new SingleTest();</span><br><span class="line"></span><br><span class="line">	private SingleTest()&#123;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	public static SingleTest newInstance()&#123;</span><br><span class="line">		return instance;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>问题：如果系统运行时都没用到这个实例，这么做就很浪费资源。所以可行的做法是：将<strong>创建实例的动作延迟到需要的时候</strong>。</p>
+<h4 id="2-懒汉式单例模式"><a href="#2-懒汉式单例模式" class="headerlink" title="2.懒汉式单例模式"></a>2.懒汉式单例模式</h4><p>类中这个成员变量预先声明，但是不主动创建，即不定义。只有需要的时候才进行创建，第一次创建后再也不用创建。</p>
+<p>在这里有很重要且容易被忽视的一点就是：该类的<strong>构造方法得私有</strong>，如果不私有，那么即使完成了getInstance方法，也是会有办法得到该类的实例。</p>
+<h6 id="step1："><a href="#step1：" class="headerlink" title="step1："></a>step1：</h6><ul>
+<li><p>初始思想：只要判断是不是为null就行了，如果这个变量为Null就创建，不为null就不创建(ﾉ´▽｀)ﾉ♪</p>
+</li>
+<li><p>代码：</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SingleTest2 &#123;</span><br><span class="line"></span><br><span class="line">   private static SingleTest2 instance = null;</span><br><span class="line"></span><br><span class="line">   	private SingleTest2() &#123;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	public static SingleTest2 newInstance() &#123;</span><br><span class="line">       	if (null == instance) &#123;</span><br><span class="line">          		instance = new SingleTest2();</span><br><span class="line">       	&#125;</span><br><span class="line">       	return instance;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>问题：如果有多个线程同时走到if语句，同时判断为null，则会同时进行创建，最终结果有多个实例，与结果违背。</li>
+</ul>
+<h6 id="step2："><a href="#step2：" class="headerlink" title="step2："></a>step2：</h6><ul>
+<li><p>进阶思想：既然会有多个线程进入的风险，那只让一个进入不就行了？「(°ヘ°)</p>
+</li>
+<li><p>代码：</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SingleTest2 &#123;</span><br><span class="line"></span><br><span class="line">   private static SingleTest2 instance = null;</span><br><span class="line"></span><br><span class="line">   	private SingleTest2() &#123;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	public synchronized static SingleTest2 newInstance() &#123;</span><br><span class="line">       	if(null==instance)&#123;</span><br><span class="line">			instance = new SingleTest();</span><br><span class="line">		&#125;</span><br><span class="line">		return instance;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>问题：每次要调用时都会进入这个synchronized修饰的方法，而锁的开销很大，效率将会很低下。</li>
+</ul>
+<h6 id="step3："><a href="#step3：" class="headerlink" title="step3："></a>step3：</h6><ul>
+<li>思想：既然每个线程每次都要进synchronized，那可不可以只在特定的时候进入呢？结合前面两种思想：</li>
+</ul>
+<p>1.先判断是否为null<br>2.为null则进入synchronized</p>
+<p>到这里还没有结束，如果此时进入了的线程直接创建，创建完就退出，其他线程仍然可以进入synchronized再创建一个。所以：</p>
+<p>3.再次判断是否为null，为null才创建</p>
+<p>经过两次判断，终于创建了一个实例ヾ(ﾟ∀ﾟゞ)</p>
+<p>虽然叫懒汉但是一点也不懒啊…</p>
+<ul>
+<li>代码：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static SingleTest2 newInstance() &#123;</span><br><span class="line">       if (null == instance) &#123;</span><br><span class="line">           synchronized (SingleTest2.class) &#123;</span><br><span class="line">               if (null == instance) &#123;</span><br><span class="line">                   instance = new SingleTest2();</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return instance;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="最终版代码："><a href="#最终版代码：" class="headerlink" title="最终版代码："></a>最终版代码：</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class SingleTest2 &#123;</span><br><span class="line">   	//以关键字volatile修饰之后，就会阻止JVM对其相关代码进行指令重排，这样就能够按照既定的顺序指执行。</span><br><span class="line">   	private volatile static SingleTest2 instance = null;</span><br><span class="line"></span><br><span class="line">	//构造私有</span><br><span class="line">   	private SingleTest2() &#123;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	public static SingleTest2 newInstance() &#123;</span><br><span class="line">       	if (null == instance) &#123;</span><br><span class="line">           	synchronized (SingleTest2.class) &#123;</span><br><span class="line">               	if (null == instance) &#123;</span><br><span class="line">                   	instance = new SingleTest2(); //非原子操作,可能会出现指令重排优化</span><br><span class="line">               	&#125;</span><br><span class="line">           	&#125;</span><br><span class="line">       	&#125;</span><br><span class="line">       	return instance;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="2022-10-28"><a href="#2022-10-28" class="headerlink" title="2022.10.28"></a>2022.10.28</h2><p>单例模式被问到过三次了…但是每次都没有答得很好，这次又来再次搜索了相关内容，看见一个现在Java官方推荐的使用方式是采用枚举。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public enum MainTest &#123;</span><br><span class="line">   INSTANCE;</span><br><span class="line"></span><br><span class="line">   public static void main(String[] args) &#123;</span><br><span class="line">       for(int i=0;i&lt;1000;i++)&#123;</span><br><span class="line">           new Thread(new Runnable() &#123;</span><br><span class="line">               @Override</span><br><span class="line">               public void run() &#123;</span><br><span class="line">                   MainTest mainTest=MainTest.INSTANCE;</span><br><span class="line">                   System.out.println(mainTest.hashCode());</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;).start();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>最后打印的哈希码一样，说明是同一个实例对象，由于没有发生过GC（应该），所以哈希码可以在这里用来当作对象在内存里的地址。</p>
+<p>为什么采用枚举类呢？在一篇博客里看到，如果有不通过getIns方法获得实例的办法，除了构造方法也会通过反射得到实例，所以在通过反射取得对象的情况下，无法保证是单例的。如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException &#123;</span><br><span class="line">       Class&lt;ITest&gt; clazz=ITest.class;</span><br><span class="line">       Constructor&lt;ITest&gt; c=clazz.getDeclaredConstructor(null);</span><br><span class="line">       c.setAccessible(true);</span><br><span class="line">       </span><br><span class="line">       ITest i1=c.newInstance();</span><br><span class="line">       ITest i2=c.newInstance();</span><br><span class="line"></span><br><span class="line">       System.out.println(i1==i2);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但是如果是枚举实现的话是无法通过反射来获取的，因为会直接抛出异常，这是因为在Constructor的newInstance方法中，会进行强制性判断是不是枚举类型，是则直接抛异常。</p>
+<h6 id="自问自答"><a href="#自问自答" class="headerlink" title="自问自答"></a>自问自答</h6><ul>
+<li>synchronized底层原理</li>
+</ul>
+<p>大致就是会给对象头的锁维护一个计数变量，获得锁会加1，因此synchronized是可重入的，只要加1就好。释放锁的时候减1，最后为0就是释放完毕。</p>
+<ul>
+<li>volatile关键字 指令重排</li>
+</ul>
+<p>volatile的作用是保证可见性和禁止指令重排，但不能保证原子性。<br>对象的创建不是一步完成的，需要分三步操作：</p>
+<p>1.为instance分配内存空间<br>2.初始化instance<br>3.将instance指向分配的内存空间</p>
+<p>而JVM的特性是具有指令重排序的特性，在单线程下不会出现问题，但是考虑如下多线程的情况，会出现问题：</p>
+<p>如果重排序，假设排序后的顺序是1-&gt;3-&gt;2；如果线程A走到3时，线程B进入获取单例的方法，走到了判断instance是不是null，由于已经给instance分配了内存空间，所以此时线程B会直接返回没有初始化后的instance。</p>
+<p>所以使用volatile会禁止指令重排序，保证在多线程的情况下也能正常执行。</p>
+<h6 id="参考引用"><a href="#参考引用" class="headerlink" title="参考引用"></a>参考引用</h6><blockquote>
+<p><a href="!https://www.cnblogs.com/yuluoxingkong/p/9802418.html#:~:text=%E6%89%80%E8%B0%93%E6%87%92%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%84%8F%E6%80%9D%E5%B0%B1%E6%98%AF%EF%BC%8C%E5%AE%9E%E4%BE%8B%E8%99%BD%E7%84%B6%E4%BD%9C%E4%B8%BA%E8%AF%A5%E7%B1%BB%E7%9A%84%E4%B8%80%E4%B8%AA%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F%EF%BC%8C%E4%BD%86%E6%98%AF%E4%BB%96%E4%B8%8D%E4%B8%BB%E5%8A%A8%E8%BF%9B,%E8%A1%8C%E5%88%9B%E5%BB%BA%EF%BC%8C%E5%A6%82%E6%9E%9C%E4%BD%A0%E4%B8%8D%E4%BD%BF%E7%94%A8%E5%AE%83%E9%82%A3%E4%B9%88%E4%BB%96%E5%B0%86%E4%BC%9A%E6%B0%B8%E8%BF%9C%E4%B8%8D%E8%A2%AB%E5%88%9B%E5%BB%BA%EF%BC%8C%E5%8F%AA%E6%9C%89%E4%BD%A0%E5%9C%A8%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8%E5%AE%83%E7%9A%84%E6%97%B6%E5%80%99%E6%89%8D%E4%BC%9A%E8%A2%AB%E5%88%9B%20%E5%BB%BA%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%BE%97%E5%88%B0%E4%BF%9D%E6%8C%81%EF%BC%9B%E8%AF%B7%E7%9C%8B%E4%B8%8B%E4%B8%80%E6%AE%B5%E4%BB%A3%E7%A0%81">饿汉式单例模式与懒汉式单例模式</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">单例模式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/设计模式//" class="article-tag-list-link color5">设计模式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/06/28/Java/single/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Interview/interview2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/06/07/Interview/interview2/">糟糕的面试</a>
+    </h1>
+  
+
+        
+        <a href="/2022/06/07/Interview/interview2/" class="archive-article-date">
+  	<time datetime="2022-06-07T08:50:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="面试题目"><a href="#面试题目" class="headerlink" title="面试题目"></a>面试题目</h3><p>1.自我介绍<br>1.0英语水平怎么样<br>1.1为什么选Java<br>1.2你觉得自己Java水平怎么样<br>2.考试系统项目介绍<br>3.数据库遵循第几范式<br>4.第一范式<br>4.0单例模式<br>4.0.1懒汉式怎么通过程序代码创建<br>4.1大学生活最难忘的事情（说我太紧张了</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/面试//" class="article-tag-list-link color3">面试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/06/07/Interview/interview2/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/integer-to-roman" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/23/LeetCode/integer-to-roman/">整数转罗马数字</a>
+    </h1>
+  
+
+        
+        <a href="/2022/05/23/LeetCode/integer-to-roman/" class="archive-article-date">
+  	<time datetime="2022-05-23T03:18:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>罗马数字包含以下七种字符： I， V， X， L，C，D 和 M。</p>
+<p>字符          数值<br>I             1<br>V             5<br>X             10<br>L             50<br>C             100<br>D             500<br>M             1000</p>
+<p>例如， 罗马数字 2 写做 II ，即为两个并列的 1。12 写做 XII ，即为 X + II 。 27 写做  XXVII, 即为 XX + V + II 。</p>
+<p>通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做 IIII，而是 IV。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为 IX。这个特殊的规则只适用于以下六种情况：</p>
+<p>I 可以放在 V (5) 和 X (10) 的左边，来表示 4 和 9。<br>X 可以放在 L (50) 和 C (100) 的左边，来表示 40 和 90。 <br>C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。<br>给你一个整数，将其转为罗马数字。</p>
+<blockquote>
+<p>题目链接来自<a href="!https://leetcode.cn/problems/integer-to-roman">力扣</a></p>
+</blockquote>
+<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>之前还做过一道罗马数字转整数的，跑题了跑题了。</p>
+<p>上手就是对结果进行分析，这题有点像之前做的关于数字转换的题，就是指用到除号、取余之类的，比如整数反转，不过这题没有取余。</p>
+<p>想了一下，拼接成罗马字符串应该是对出现的1、5、10这样的数字进行计数后<strong>重复排列</strong>。三下五除二，写了第一版代码，但是题目所说的特殊的六种情况并不是只有这六种要单独列举，而是类似942、43这种作为数的一部分的时候也能以特殊形式表现出来。</p>
+<p>我想那难道要单独列两个treeMap出来吗？突然灵光一闪，银瓶乍破水浆迸（不是），我想那不如<strong>合在一起，降序排列</strong>，于是美滋滋地通过了，一看击败百分七…</p>
+<p>我的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public String intToRoman(int num) &#123;</span><br><span class="line">       StringBuilder res = new StringBuilder();</span><br><span class="line"></span><br><span class="line">       Map map = new TreeMap(new Comparator() &#123;</span><br><span class="line">           @Override</span><br><span class="line">           public int compare(Object o1, Object o2) &#123;</span><br><span class="line">               if ((int) o1 - (int) o2 &gt; 0)</span><br><span class="line">                   return -1;</span><br><span class="line">               else if ((int) o1 - (int) o2 &lt; 0)</span><br><span class="line">                   return 1;</span><br><span class="line">               else</span><br><span class="line">                   return 0;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line"></span><br><span class="line">       map.put(1000, &quot;M&quot;);</span><br><span class="line">       map.put(900, &quot;CM&quot;);</span><br><span class="line">       map.put(500, &quot;D&quot;);</span><br><span class="line">       map.put(400, &quot;CD&quot;);</span><br><span class="line">       map.put(40, &quot;XL&quot;);</span><br><span class="line">       map.put(100, &quot;C&quot;);</span><br><span class="line">       map.put(90, &quot;XC&quot;);</span><br><span class="line">       map.put(50, &quot;L&quot;);</span><br><span class="line">       map.put(10, &quot;X&quot;);</span><br><span class="line">       map.put(9, &quot;IX&quot;);</span><br><span class="line">       map.put(5, &quot;V&quot;);</span><br><span class="line">       map.put(4, &quot;IV&quot;);</span><br><span class="line">       map.put(1, &quot;I&quot;);</span><br><span class="line"></span><br><span class="line">       Set&lt;Map.Entry&lt;Integer, String&gt;&gt; set = map.entrySet();</span><br><span class="line"></span><br><span class="line">       for (Map.Entry&lt;Integer, String&gt; entry : set) &#123;//遍历Entry</span><br><span class="line">           int b = num / entry.getKey();</span><br><span class="line">           res.append(getRes(entry.getValue(), b));</span><br><span class="line">           num = num - entry.getKey() * b;//更新num</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       return res.toString();</span><br><span class="line"></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   public String getRes(String after, int index) &#123;//重复排列需要的字符，及重复次数</span><br><span class="line">       StringBuilder builder = new StringBuilder();</span><br><span class="line">       for (int i = 0; i &lt; index; i++) &#123;</span><br><span class="line">           builder.append(after);</span><br><span class="line">       &#125;</span><br><span class="line">       return builder.toString();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>改进：<br>1.TreeMap–&gt;数组<br>可以看到用的是TreeMap，并且还重新写了比较器，因为当时一下子没想到其他的，看了别人的，才知道可以用两个数组，这样也是一一对应，而且顺序固定的。</p>
+<p>网友说这种解法是贪心算法，意思是罗马人为了少表示数字，重复次数超过三就会像4、9这样放在左边的形式来表示。<br>贪心法则：每次尽量用最大的数来表示。<br>想了想第一版代码和第二版代码测试的数字，确实第一版的结果更长。</p>
+<p>网友代码C++：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">   string intToRoman(int num) &#123;</span><br><span class="line">       int values[] = &#123;1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1&#125;;</span><br><span class="line">       string reps[] = &#123;&quot;M&quot;, &quot;CM&quot;, &quot;D&quot;, &quot;CD&quot;, &quot;C&quot;, &quot;XC&quot;, &quot;L&quot;, &quot;XL&quot;, &quot;X&quot;, &quot;IX&quot;, &quot;V&quot;, &quot;IV&quot;, &quot;I&quot;&#125;;</span><br><span class="line"></span><br><span class="line">       string res;</span><br><span class="line">       int </span><br><span class="line">       for (int i = 0; i &lt; 13; i ++ )  //这里不使用图里的count了，一遍一遍来就行了</span><br><span class="line">           while(num &gt;= values[i])</span><br><span class="line">           &#123;</span><br><span class="line">               num -= values[i];</span><br><span class="line">               res += reps[i];</span><br><span class="line">           &#125;</span><br><span class="line">       return res;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>链接来自<a href="!https://leetcode.cn/problems/integer-to-roman/solution/tan-xin-ha-xi-biao-tu-jie-by-ml-zimingmeng/">图解贪心哈希表</a></p>
+</blockquote>
+<h3 id="硬编码"><a href="#硬编码" class="headerlink" title="硬编码"></a>硬编码</h3><p>官方给出的另一种解法是硬编码，列出个十百千的各数字对应的罗马值，然后每次除以、取余得到新数字即可。</p>
+<blockquote>
+<p>解法在<a href="!https://leetcode.cn/problems/integer-to-roman/solution/zheng-shu-zhuan-luo-ma-shu-zi-by-leetcod-75rs/">硬编码</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/23/LeetCode/integer-to-roman/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Interview/index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -878,321 +1246,6 @@
 
 
   
-    <article id="post-LeetCode/3Sum" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/05/LeetCode/3Sum/">三数之和</a>
-    </h1>
-  
-
-        
-        <a href="/2022/05/05/LeetCode/3Sum/" class="archive-article-date">
-  	<time datetime="2022-05-05T02:55:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。</p>
-<p>注意：答案中不可以包含重复的三元组。</p>
-<blockquote>
-<p>题目链接来自<a href="!https://leetcode-cn.com/problems/3sum">力扣三数之和</a></p>
-</blockquote>
-<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>首先最容易想到暴力解法，但是O(n^3)的时间复杂度想都不用想肯定超时，考虑到找两数之和的相反数，那Map匹配？好像时间复杂度也很高，再就是想到了双指针解法，先排序再根据两端之和移动双指针某一端，与双指针离不开的还得有个mid指针，如果双指针之和&lt;=0则mid++，反之mid–。操作老半天后，正感叹自己真是小天才的时候，发现mid指针移动条件不够正确，又对条件细化之后，直接死循环了…我哭了呀</p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>看了看官方题解，嗯…也是<strong>排序加双指针</strong>，但是它是先固定一端，然后移动双指针的范围。</p>
-<blockquote>
-<p>比官方简单易懂、流畅清晰的题解是<a href="!https://leetcode-cn.com/problems/3sum/solution/pai-xu-shuang-zhi-zhen-zhu-xing-jie-shi-python3-by/">这个链接</a></p>
-</blockquote>
-<p>改成Java代码后如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static List&lt;List&lt;Integer&gt;&gt; threeSum(int[] nums) &#123;</span><br><span class="line">       List&lt;List&lt;Integer&gt;&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">       if (nums.length &lt; 3 || nums == null)//判定数组长度是否小于3</span><br><span class="line">           return list;</span><br><span class="line"></span><br><span class="line">       Arrays.sort(nums);//排序</span><br><span class="line"></span><br><span class="line">       for (int i = 0; i &lt; nums.length; i++) &#123;</span><br><span class="line"></span><br><span class="line">           if (nums[i] &gt; 0)//最小数大于0，直接返回</span><br><span class="line">               return list;</span><br><span class="line"></span><br><span class="line">           //第一层，对i去重</span><br><span class="line">           if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1])//从第一个往后若有重复的数字就跳过</span><br><span class="line">               continue;</span><br><span class="line"></span><br><span class="line">           //左右指针</span><br><span class="line">           int l = i + 1;</span><br><span class="line">           int r = nums.length - 1;</span><br><span class="line">           while (l &lt; r) &#123;</span><br><span class="line">               if (nums[i] + nums[l] + nums[r] == 0) &#123;</span><br><span class="line">                   List&lt;Integer&gt; t = new ArrayList&lt;&gt;();</span><br><span class="line">                   t.add(nums[i]);</span><br><span class="line">                   t.add(nums[l]);</span><br><span class="line">                   t.add(nums[r]);</span><br><span class="line">                   list.add(t);</span><br><span class="line">                   //第二层去重，对l</span><br><span class="line">                   while (l &lt; r &amp;&amp; nums[l + 1] == nums[l])</span><br><span class="line">                       l++;</span><br><span class="line">                   //第三层去重，对r</span><br><span class="line">                   while (l &lt; r &amp;&amp; nums[r - 1] == nums[r])</span><br><span class="line">                       r--;</span><br><span class="line">                   //既对没有重复的进行条件改变</span><br><span class="line">                   //也是对重复了的进行+1避免最后一个的重复，因为不重复的第一次已经在上面添加进去了</span><br><span class="line">                   l++;</span><br><span class="line">                   r--;</span><br><span class="line">               &#125; else if (nums[i] + nums[l] + nums[r] &gt; 0)</span><br><span class="line">                   r--;</span><br><span class="line">               else</span><br><span class="line">                   l++;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return list;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>不过它们去重都没有用List的内置算法，而是通过移动指针判断是否与下一个数重复，我想这可能是因为如果用contains判断，每次都还要先new一个新的list，然后再判断是否存在，而内置函数的contains用了循环遍历，这样不仅空间消耗增大，时间消耗应该也不小。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/05/LeetCode/3Sum/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/addBinary" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/02/LeetCode/addBinary/">二进制求和</a>
-    </h1>
-  
-
-        
-        <a href="/2022/05/02/LeetCode/addBinary/" class="archive-article-date">
-  	<time datetime="2022-05-02T02:59:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你两个二进制字符串，返回它们的和（用二进制表示）。</p>
-<p>输入为 非空 字符串且只包含数字 1 和 0。</p>
-<p>提示：</p>
-<p>每个字符串仅由字符 ‘0’ 或 ‘1’ 组成。<br>1 &lt;= a.length, b.length &lt;= 10^4<br>字符串如果不是 “0” ，就都不含前导零。</p>
-<blockquote>
-<p><a href="!https://leetcode-cn.com/problems/add-binary">题目链接</a></p>
-</blockquote>
-<h3 id="思考解法"><a href="#思考解法" class="headerlink" title="思考解法"></a>思考解法</h3><p>被简单迷惑了双眼，发现没有那么简单。想了半天，突然记起来之前做过一道也是求和的题目，就是<a href="!https://leetcode-cn.com/problems/add-two-numbers/">这个链接</a>。<br>看了看以前的题解，可以套到这题上面来，只是十进制变成二进制、链表变字符串的区别，最后成功通过。</p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>不过看了看别人的解法，发现用了StringBuffer或者StringBuilder，这两个函数都有反转字符串的方法，而String没有，难为我还手写了一遍循环来反转String。代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static String addBinary(String a, String b) &#123;</span><br><span class="line">       StringBuilder sbuilder=new StringBuilder();</span><br><span class="line">       int c=0;</span><br><span class="line">       int i=a.length()-1;</span><br><span class="line">       int j=b.length()-1;</span><br><span class="line"></span><br><span class="line">       while(i&gt;=0||j&gt;=0)&#123;</span><br><span class="line">           int temp=(i&gt;=0?a.charAt(i)-&#x27;0&#x27;:&#x27;0&#x27;)+</span><br><span class="line">                   (j&gt;=0?b.charAt(j)-&#x27;0&#x27;:&#x27;0&#x27;)+</span><br><span class="line">                   c;</span><br><span class="line">           c=temp/2;</span><br><span class="line">           sbuilder.append(temp%2);</span><br><span class="line">           i--;</span><br><span class="line">           j--;</span><br><span class="line">       &#125;</span><br><span class="line">       if(c==1)</span><br><span class="line">           sbuilder.append(&quot;1&quot;);</span><br><span class="line"></span><br><span class="line">       return String.valueOf(sbuilder.reverse());</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>1.计算两个数之和时，巧妙地利用了字符对应的ASCII码值的差就是需要的十进制数字，而没有用别的方法强转为int后再进行相加<br>2.用了StringBuilder</p>
-<h5 id="String、StringBuffer和StringBuilder的区别"><a href="#String、StringBuffer和StringBuilder的区别" class="headerlink" title="String、StringBuffer和StringBuilder的区别"></a>String、StringBuffer和StringBuilder的区别</h5><p>1.都是final类，不允许被继承<br>2.String长度不可变，其他两者可变<br>3.Stirng、StringBuffer线程安全，StringBuilder线程不安全</p>
-<p>使用策略：</p>
-<p>1、基本原则：<br>如果要操作少量的数据，用String ；<br>单线程操作大量数据，用StringBuilder ；<br>多线程操作大量数据，用StringBuffer。</p>
-<p>2、不要使用String类的”+”来进行频繁的拼接，因为那样性能极差，应该使用StringBuffer或StringBuilder类，这在Java的优化上是一条比较重要的原则</p>
-<blockquote>
-<p><a href="!https://www.jianshu.com/p/8c724dd28fa4">参考链接</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/02/LeetCode/addBinary/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/maximum-subarray" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/27/LeetCode/maximum-subarray/">根据最大子数组和看分治法</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/27/LeetCode/maximum-subarray/" class="archive-article-date">
-  	<time datetime="2022-04-27T07:38:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</p>
-<p>子数组 是数组中的一个连续部分。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题/算法分析//" class="article-tag-list-link color5">算法分析</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/27/LeetCode/maximum-subarray/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/5/">Next&gt;&gt;</a>
@@ -1531,6 +1584,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">位运算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MVCC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">滑动窗口</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">前缀和</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">二份查找</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">双指针</a>
               </li>
             
             <div class="clearfix"></div>
