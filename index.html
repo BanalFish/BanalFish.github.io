@@ -339,18 +339,26 @@
 <p>来源：<a href="!https://leetcode.cn/problems/2VG8Kg">力扣（LeetCode）</a></p>
 </blockquote>
 <h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>肯定是当时脑子浆糊了，才会想到要先对数组排序，再去倒着找答案。后来测试用例有没有通过的，下来调试的时候才意识到，真是服了自己。</p>
-<h3 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h3><p>看到一个对滑动窗口的解释，大概意思是：用双指针确定窗口的两端，并在判断是否符合条件的过程中逐渐缩小范围，并且整个窗口是往后移动、更新其中元素的，直至最后窗口的两个端点重合且达到终点。</p>
-<p>滑动窗口应该适用于查找数组中某一段序列（或从而间接求其属性）的情景。</p>
-<p>代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static int minSubArrayLen1(int target, int[] nums)&#123;</span><br><span class="line">       //滑动窗口</span><br><span class="line">       if(nums.length==0)&#123;</span><br><span class="line">           return 0;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       int start=0;</span><br><span class="line">       int end=0;</span><br><span class="line">       int sum=0;</span><br><span class="line">       int res=Integer.MAX_VALUE;</span><br><span class="line">       //第一个while循环更新右端点</span><br><span class="line">       while(end&lt;nums.length)&#123;</span><br><span class="line">           sum+=nums[end];</span><br><span class="line">           //第二个while根据条件更新左端点</span><br><span class="line">           while(sum&gt;=target)&#123;</span><br><span class="line">               res=Math.min(res,end-start+1);</span><br><span class="line">               sum-=nums[start];</span><br><span class="line">               start++;</span><br><span class="line">           &#125;</span><br><span class="line">           end++;</span><br><span class="line">       &#125;</span><br><span class="line">       return res==Integer.MAX_VALUE?0:res;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="前缀和-二分查找"><a href="#前缀和-二分查找" class="headerlink" title="前缀和+二分查找"></a>前缀和+二分查找</h3><p>对于这个无需的数组，要找到最短的且大于target的序列，</p>
-<p>由于题目规定数组的元素都是正整数，所以无序的数组对应有序的是：每个元素的前缀和，随着数组往右边增长，同时严格增长的是每个元素的前缀和。</p>
 <blockquote>
 <p>说的比较清楚的题解<a href="!https://leetcode.cn/problems/minimum-size-subarray-sum/solution/javade-jie-fa-ji-bai-liao-9985de-yong-hu-by-sdwwld/">Java的五种解法</a></p>
 </blockquote>
-<p>虽然看题解解释得很清楚了，但是总感觉没有掌握到最关键的部分。现在有点想不下去了，下次再接着来写。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">for (int i = 1; i &lt;= n; i++) &#123;</span><br><span class="line">		//目标值加上当前的前缀和</span><br><span class="line">           int tar = target + sums[i - 1];</span><br><span class="line">		//去前缀和数组中找，如果有刚好等于的，就返回下标（大于0）；</span><br><span class="line">		没有刚好的，会返回第一个大于等于tar的元素的下标值（下标是插入后的，所以源码中会+1） 的相反数；最后经过转换会变成在sum中第一个大于等于target的下标</span><br><span class="line">           int bound = binarySearch0(sums,0, sums.length, tar);</span><br><span class="line">           if (bound &lt; 0) &#123;</span><br><span class="line">			//得到没有插入前，现在的第一个大于等于target值的下标</span><br><span class="line">               bound = -bound - 1;</span><br><span class="line">           &#125;</span><br><span class="line">		//如果在范围内，将长度更新</span><br><span class="line">           if (bound &lt;= n) &#123;</span><br><span class="line">               ans = Math.min(ans, bound - (i - 1));</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return ans == Integer.MAX_VALUE ? 0 : ans;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h3><p>看到一个对滑动窗口的解释，大概意思是：用双指针确定窗口的两端，并在判断是否符合条件的过程中逐渐缩小范围，并且整个窗口是往后移动、更新其中元素的，直至最后窗口的两个端点重合且达到终点。</p>
+<p>滑动窗口应该适用于查找数组中<strong>某一段序列（或从而间接求其属性）</strong>的情景。</p>
+<blockquote>
+<p>比如后面写的，求小于K的子区间的数量</p>
+</blockquote>
+<p>代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static int minSubArrayLen1(int target, int[] nums)&#123;</span><br><span class="line">       //滑动窗口</span><br><span class="line">       if(nums.length==0)&#123;</span><br><span class="line">           return 0;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       int start=0;</span><br><span class="line">       int end=0;</span><br><span class="line">       int sum=0;</span><br><span class="line">       int res=Integer.MAX_VALUE;</span><br><span class="line">       //第一个while循环更新右端点</span><br><span class="line">       while(end&lt;nums.length)&#123;</span><br><span class="line">           sum+=nums[end];</span><br><span class="line">           //第二个while根据条件更新左端点</span><br><span class="line">           while(sum&gt;=target)&#123;</span><br><span class="line">               res=Math.min(res,end-start+1);</span><br><span class="line">               sum-=nums[start];</span><br><span class="line">               start++;</span><br><span class="line">           &#125;</span><br><span class="line">           end++;</span><br><span class="line">       &#125;</span><br><span class="line">       return res==Integer.MAX_VALUE?0:res;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="前缀和-二分查找"><a href="#前缀和-二分查找" class="headerlink" title="前缀和+二分查找"></a>前缀和+二分查找</h3><p>对于这个无序的数组，要找到最短的且大于target的序列，</p>
+<blockquote>
+<p>前缀和一般用来快速求解一段区间数字的和。</p>
+</blockquote>
+<p>那么对于本题，求最短的区间长度，就是求存在两段区间，长区间减去短区间后的剩余部分，是否仍然满足大于等于给定的target值，并从可能的区间中选取最短的那一个。<br>P.S.长区间与短区间有相同的一端</p>
+<p><img src="https://s2.loli.net/2022/10/31/9mYRWwsXpEyQbCZ.png" alt="image.png"></p>
+<p>所以代码的整体思想是数学公式的变形。</p>
+<p>由于题目规定数组的元素都是正整数，所以无序的数组对应有序的是：每个元素的前缀和，随着数组往右边增长，同时严格增长的是每个元素的前缀和。<br>所以在查找刚好大于的下标时可以用到二分法。Java封装了二分，但是对于找不到的情况详见下文代码注释。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static int minSubArrayLen2(int target, int[] nums)&#123;</span><br><span class="line">       //前缀和+二分法</span><br><span class="line">       int n = nums.length;</span><br><span class="line">       if (n == 0) &#123;</span><br><span class="line">           return 0;</span><br><span class="line">       &#125;</span><br><span class="line">       int ans = Integer.MAX_VALUE;</span><br><span class="line">       int[] sums = new int[n + 1];</span><br><span class="line">       // 为了方便计算，令 size = n + 1</span><br><span class="line">       // sums[0] = 0 意味着前 0 个元素的前缀和为 0</span><br><span class="line">       // sums[1] = A[0] 前 1 个元素的前缀和为 A[0]</span><br><span class="line">       // 以此类推</span><br><span class="line">       for (int i = 1; i &lt;= n; i++) &#123;</span><br><span class="line">           sums[i] = sums[i - 1] + nums[i - 1];</span><br><span class="line">       &#125;</span><br><span class="line">       for (int i = 1; i &lt;= n; i++) &#123;</span><br><span class="line">           int tar = target + sums[i - 1];</span><br><span class="line">           //去前缀和数组中找，如果有刚好等于的，就返回下标（大于0）；</span><br><span class="line">           //没有刚好的，会返回第一个大于等于tar的元素的下标值（下标是插入后的，所以源码中会+1） 的相反数；</span><br><span class="line">           // 最后经过转换会变成在sum中第一个大于等于target的下标。</span><br><span class="line">           //如数组：&#123; 1,3,4,5,7&#125; ，要查找8，会返回-6</span><br><span class="line">           int bound = Arrays.binarySearch(sums,tar);</span><br><span class="line">           //如果没有找到</span><br><span class="line">           if (bound &lt; 0) &#123;</span><br><span class="line">               //得到没有插入前，现在的第一个大于等于target值的下标</span><br><span class="line">               bound = -bound - 1;</span><br><span class="line">           &#125;</span><br><span class="line">           //如果在范围内，将长度更新</span><br><span class="line">           if (bound &lt;= n) &#123;</span><br><span class="line">               ans = Math.min(ans, bound - (i - 1));</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return ans == Integer.MAX_VALUE ? 0 : ans;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
       
@@ -655,6 +663,121 @@
       
         <p class="article-more-link">
           <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/10/12/LeetCode/%E5%8D%95%E8%AF%8D%E9%95%BF%E5%BA%A6%E7%9A%84%E6%9C%80%E5%A4%A7%E4%B9%98%E7%A7%AF/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/乘积小于K的子数组" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/11/LeetCode/%E4%B9%98%E7%A7%AF%E5%B0%8F%E4%BA%8EK%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84/">乘积小于K的子数组</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/11/LeetCode/%E4%B9%98%E7%A7%AF%E5%B0%8F%E4%BA%8EK%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84/" class="archive-article-date">
+  	<time datetime="2022-10-11T08:39:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定一个正整数数组 nums和整数 k ，请找出该数组内乘积小于 k 的连续的子数组的个数。</p>
+<p>示例 1:</p>
+<p>输入: nums = [10,5,2,6], k = 100<br>输出: 8<br>解释: 8 个乘积小于 100 的子数组分别为: [10], [5], [2], [6], [10,5], [5,2], [2,6], [5,2,6]。<br>需要注意的是 [10,5,2] 并不是乘积小于100的子数组。</p>
+<p>示例 2:</p>
+<p>输入: nums = [1,2,3], k = 0<br>输出: 0
+ </p>
+<p>提示: </p>
+<p>1 &lt;= nums.length &lt;= 3 * 104<br>1 &lt;= nums[i] &lt;= 1000<br>0 &lt;= k &lt;= 106</p>
+<p>来源：<a href="!https://leetcode.cn/problems/ZVAVXX">力扣（LeetCode）</a></p>
+<h3 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h3><p>本人用暴力解法写的，看了看题解，是用滑动窗口，时间复杂度只有O(n)，下面是一点浅显的感悟。</p>
+<p>分析题意可得要求的是满足某条件的连续子数组的个数，由连续子数组可以想到符合特征的滑动窗口。<br>滑动窗口有两类：一种是<strong>固定大小</strong>的，一种是<strong>动态变化</strong>的，很显然这题是动态的。</p>
+<p>题目要求小于K值，那么可以让窗口的两端都从0开始，右端点逐渐向右移扩大窗口的范围，直到碰到第一个大于K值的窗口时，才开始考虑左端点右移以此缩小范围，使得当前区间的值的乘积小于K。</p>
+<p>值得补充的是，在此过程中，每一趟计算的子区间都是固定右端点、移动左端点这样的区间定义。如图：</p>
+<p><img src="https://s2.loli.net/2022/10/31/Tqk2uGoCSHihljf.png" alt="image.png"></p>
+<p>而以0为固定右端点的在之前的遍历中已经计算过了。</p>
+<p>看代码，更容易理解：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static int numSubarrayProductLessThanK(int[] nums, int k) &#123;</span><br><span class="line">       //滑动窗口</span><br><span class="line">       if (k &lt;= 1)</span><br><span class="line">           return 0;</span><br><span class="line">       int l=0,r=0;</span><br><span class="line">       int res=0;</span><br><span class="line">       int mul=1;</span><br><span class="line">       for(;r&lt;nums.length;r++)&#123;</span><br><span class="line">           mul*=nums[r];</span><br><span class="line">           while(mul&gt;=k)&#123;</span><br><span class="line">               mul/=nums[l];</span><br><span class="line">               l++;</span><br><span class="line">           &#125;</span><br><span class="line">           res+=r-l+1;</span><br><span class="line">       &#125;</span><br><span class="line">       return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>不知道我这么刷算法的方式对不对了，因为题量不够多，自己总结的方法也容易过段时间就忘，唉。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">滑动窗口</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/10/11/LeetCode/%E4%B9%98%E7%A7%AF%E5%B0%8F%E4%BA%8EK%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84/">展开全文 >></a>
         </p>
       
 
@@ -1328,99 +1451,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/09/02/LeetCode/%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/继承的执行顺序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/09/01/Java/%E7%BB%A7%E6%89%BF%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/">继承的执行顺序</a>
-    </h1>
-  
-
-        
-        <a href="/2022/09/01/Java/%E7%BB%A7%E6%89%BF%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/" class="archive-article-date">
-  	<time datetime="2022-09-01T01:39:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>自从学习Java以来，有很多东西初看是理解了，但是细节的问题并没有去在意，直到做题的时候碰到只能随便蒙一个，比如此篇关于子类继承父类后的执行顺序。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">继承</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">执行顺序</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java细节//" class="article-tag-list-link color2">Java细节</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/09/01/Java/%E7%BB%A7%E6%89%BF%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/">展开全文 >></a>
         </p>
       
 
