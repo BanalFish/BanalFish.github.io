@@ -154,6 +154,312 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Java/锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/09/23/Java/%E9%94%81/">Java中的锁分类</a>
+    </h1>
+  
+
+        
+        <a href="/2022/09/23/Java/%E9%94%81/" class="archive-article-date">
+  	<time datetime="2022-09-23T01:39:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>所以再怎么逃避，还是要学锁的呀！<br>一直觉得锁这个东西很抽象，抓不住它飘渺的声影，这几天花了点时间去看文章，过程中仍有似懂非懂的地方，而且看的几篇博客说的还不一样，去看英文原文…算了，还是看翻译吧…怎么都是汉字，连起来我却看不懂…</p>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><h4 id="一、乐观锁、悲观锁"><a href="#一、乐观锁、悲观锁" class="headerlink" title="一、乐观锁、悲观锁"></a>一、乐观锁、悲观锁</h4><p>它俩的区别就是<strong>是否锁住同步资源</strong>。</p>
+<h5 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h5><p>1.线程乐观地认为，即使不锁住资源，下次来也会有权利操作它，所以它并不给资源上锁，但是为啥叫乐观<strong>锁</strong>呢？</p>
+<p>原因是它不会对操作的数据加锁，而是通过<strong>业务</strong>实现锁的功能，这里的业务指：只有到数据提交时才通过一种机制来验证数据是否存在冲突。</p>
+<p>2.流程：</p>
+<blockquote>
+<ol>
+<li>线程事先获取要修改的变量V在内存中的偏移量offset和旧值A</li>
+<li>在获取和设置修改的这段时间可能会有其他线程访问修改V</li>
+<li>当前线程开始循环，直到V的值等于A时才会将其修改为B，且退出循环</li>
+<li>不然就一直循环尝试获取CAS</li>
+</ol>
+</blockquote>
+<p>总而言之，是只有当取得的值（通过偏移量取到）等于预期值A时，才会进行修改为B。</p>
+<p>3.CAS可能会有三大问题：</p>
+<ul>
+<li><strong>ABA问题</strong>。即A改为B，又改为A，如果单凭值来认为A的值从来没有发生过变化，这样是不准确的，为了解决这个问题，每次修改值后会加上版本号，每次比较值时不仅比较内容还会比较版本号是否一致。</li>
+<li><strong>循环时间开销长</strong>。CAS如果长时间不成功，则会一直自旋，给CPU带来非常大的开销</li>
+<li><strong>只能保证一个共享变量的原子性操作</strong>。</li>
+</ul>
+<h5 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h5><p>1.如果线程认为下次来的时候不会有权限操作需要的资源，所以它得一次操作完，以免下次来没有了，所以它会给资源上锁，其他线程不能再获取操作这个资源的权限，上的这种锁叫作悲观锁。</p>
+<h4 id="二、自旋锁、适应性自旋锁"><a href="#二、自旋锁、适应性自旋锁" class="headerlink" title="二、自旋锁、适应性自旋锁"></a>二、自旋锁、适应性自旋锁</h4><p>1.阻塞或唤醒一个线程需要操作系统切换CPU状态来完成，这种状态转换非常耗费处理器时间，<br>所以有时可以让没有获取到锁的线程自旋而不是阻塞，如果很快就出现了被释放的锁，那么可以直接获取同步资源，而避免了切换线程的开销。</p>
+<p>2.当然不是无休止地一直自旋，当自旋超过了限定次数没有成功获得锁，就应当挂起线程。</p>
+<p>3.自适应锁：<br>  意味着自旋的次数不再固定，而是由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。</p>
+<ul>
+<li>如果在同一个锁对象上，自旋的线程是刚刚成功获得过锁的，且拥有锁的线程正在运行，则虚拟机会认为这次自旋也很有可能再次成功，允许它等待相对更长的时间。</li>
+<li>如果某个锁，自旋很少成功获得过，那在之后再次尝试时可能直接阻塞线程，避免自旋带来的处理器资源浪费。</li>
+</ul>
+<h4 id="三、无锁、偏向锁、轻量级锁、重量级锁"><a href="#三、无锁、偏向锁、轻量级锁、重量级锁" class="headerlink" title="三、无锁、偏向锁、轻量级锁、重量级锁"></a>三、无锁、偏向锁、轻量级锁、重量级锁</h4><p>1.什么是上锁？</p>
+<p><strong>对象头</strong></p>
+<ul>
+<li>Java在运行时的存储格式分为这几个部分：对象头（对象自身运行时的数据、类型指针来指向属于哪个类）、实例数据、对齐部分。</li>
+<li>而对象自身运行时的数据包括：HashCode、分代年龄、锁标志信息</li>
+<li>关于锁的标志信息随着程序运行可能会发生变化，有以下几种情况：</li>
+</ul>
+<p><img src="https://s2.loli.net/2022/09/25/MwdDa1m8LHRA7sb.png" alt="image.png"></p>
+<ul>
+<li>注意到除了无锁情况的HashCode仍然放在对象头外，其他情况下的HashCode哪里去了呢？<blockquote>
+<p>a.当一个对象已经计算过hash code，它就无法进入偏向锁状态<br>b.当一个对象正处于偏向锁状态，并且需要计算其hash code，则它的偏向锁会被撤销，并且锁会膨胀为轻量级锁或重量锁<br>c.轻量级锁的实现中，会通过栈帧的lock record记录原来的mark word；重量锁则是存储在Monitor中</p>
+<p>来自博客<a href="!https://blog.csdn.net/Saintyyu/article/details/108295657">偏向锁与hashcode能共存吗？</a></p>
+</blockquote>
+</li>
+</ul>
+<p><strong>Monitor</strong></p>
+<p>每一个Java对象都有一个看不见的锁，称为内部锁或者Monitor锁；<br>Monitor是线程私有的数据结构，每一个被锁住的对象和一个Monitor关联，Monitor中的Owner字段存放拥有该锁的线程的唯一标识；<br>每个线程有一个Monitor Record列表，同时还有一个全局的可用列表。</p>
+<p>一言以蔽之，上锁是对象原有的对象头被放在了线程的空间里，对象的对象头不再保存hash code 等信息，保存指针来简洁指向原有对象头。</p>
+<h5 id="无锁"><a href="#无锁" class="headerlink" title="无锁"></a>无锁</h5><p>无锁没有对资源进行锁定，所有的线程都能访问修改，但同时只有一个线程能修改成功；没有成功的就重复不断地尝试。无锁的原理是CAS。</p>
+<h5 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h5><p>有这么一种情况，是同步资源一直被同一个线程访问，那么CAS的判断重试的操作是多余的。</p>
+<p>1.当第一次对象的锁被某线程拥有，那么对象头中会记录线程ID，当下次某线程来临时，只需要对比线程<strong>ID是否一致</strong>，一致则执行代码（所以即使两个线程没有发生竞争，只是一个线程ID被锁对象标记，也有可能发生偏向锁向轻量级锁的升级过程）<br>2.不一致则CAS尝试<strong>替换</strong>对象头的<strong>线程ID</strong>，成功则新的线程获得了该同步资源的偏向锁，<br>3.失败则准备撤销持有锁的线程的偏向锁，首先判断<strong>拥有锁的线程</strong>是否存活<strong>，没有存活则变为无锁，所有线程去竞争偏向锁，<br>4.存活则等待，当到达全局安全点时，判断被撤销锁的线程</strong>是否还需要该锁**，不需要则变为无锁，所有线程去竞争；需要则升级锁为轻量级锁。</p>
+<h5 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h5><ul>
+<li>描述的情形：偏向锁被其他线程竞争时升级为轻量级锁，其他线程自旋，不阻塞。</li>
+<li>获取过程：<br>更新都是CAS</li>
+</ul>
+<p>1.线程新建一个lock record（锁记录空间）</p>
+<p>2.将对象的mark word存入lock record</p>
+<ul>
+<li>但是偏向锁后对象的hash code不是被线程ID覆盖了吗？我的解释是：由于identity hash code 一旦被计算过，则不能进入偏向锁状态，而已经到达偏向锁状态的对象没有被计算过identity hash code，此时计算一下再存入lock record中即可。</li>
+<li>为什么identity hash code被计算过后不能进入偏向锁状态？假设计算过一次，那么进入偏向锁的状态时，存储hash值的地方会被线程ID覆盖，从而导致后续再次计算时前后值不一样，失去了哈希码作为对象唯一标识的意义。</li>
+</ul>
+<p>3.通过CAS尝试将对象的mark record存放指向lock record的指针</p>
+<ul>
+<li>如果指向成功，则继续执行代码</li>
+<li>如果指向失败，判断对象头是否指向当前线程<br>a. 如果不是，则说明有别的线程已经占领锁，当前线程会自旋等待锁，若一定次数仍未获得锁，或者有第三个线程也来竞争时，则锁会膨胀为重量锁<br>b.如果是，说明是重入锁，会新建一个lock record，但是displaced hdr指向null，起到一个重入计数的作用</li>
+</ul>
+<h5 id="重量级锁"><a href="#重量级锁" class="headerlink" title="重量级锁"></a>重量级锁</h5><p>除了当前线程，其他线程都阻塞。</p>
+<p>升级为重量级锁，对象的mark word指向Monitor，Monitor中的Owner指向Lock Record。</p>
+<p><img src="https://s2.loli.net/2022/09/26/tNKp5jixzTmwC3B.png" alt="image.png"></p>
+<p>解锁：owner指向null，唤醒EntryList中阻塞的线程</p>
+<h4 id="四、公平锁、非公平锁"><a href="#四、公平锁、非公平锁" class="headerlink" title="四、公平锁、非公平锁"></a>四、公平锁、非公平锁</h4><ul>
+<li>公平锁：按照申请的顺序来获取锁，来了之后进入等待队列</li>
+<li>非公平锁：直接尝试获取锁，获取不到才进入队列排队。可以减少唤起线程的开销，整体的吞吐率高。</li>
+<li>例子：ReentrantLock内部有一个Sync类，它含有FairSync和UnfairSync两个子类</li>
+</ul>
+<p>FairSync：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	</span><br><span class="line">static final class FairSync extends Sync &#123;</span><br><span class="line">      private static final long serialVersionUID = -3000897897090466540L;</span><br><span class="line"></span><br><span class="line">      final void lock() &#123;</span><br><span class="line">          acquire(1);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      /**</span><br><span class="line">       * tryAcquire的公平版本，除非当前线程是递归调用或者是第一个、或者不是等待的线程，不是以上三种情况的不要把锁给出去</span><br><span class="line">       * Fair version of tryAcquire.  Don&#x27;t grant access unless</span><br><span class="line">       * recursive call or no waiters or is first.</span><br><span class="line">       */   </span><br><span class="line">//公平锁的实现</span><br><span class="line">      protected final boolean tryAcquire(int acquires) &#123;</span><br><span class="line">          final Thread current = Thread.currentThread();</span><br><span class="line">   //返回state，即锁计数器。如果为0，则可获取当前锁</span><br><span class="line">          int c = getState();</span><br><span class="line">          if (c == 0) &#123;</span><br><span class="line">              if (!hasQueuedPredecessors() &amp;&amp;</span><br><span class="line">                  compareAndSetState(0, acquires)) &#123;</span><br><span class="line">                  setExclusiveOwnerThread(current);</span><br><span class="line">                  return true;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          else if (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">              int nextc = c + acquires;</span><br><span class="line">              if (nextc &lt; 0)</span><br><span class="line">                  throw new Error(&quot;Maximum lock count exceeded&quot;);</span><br><span class="line">              setState(nextc);</span><br><span class="line">              return true;</span><br><span class="line">          &#125;</span><br><span class="line">          return false;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>UnfairSync</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">static final class NonfairSync extends Sync &#123;</span><br><span class="line">       private static final long serialVersionUID = 7316153563782823691L;</span><br><span class="line"></span><br><span class="line">       /**</span><br><span class="line">        * Performs lock.  Try immediate barge, backing up to normal</span><br><span class="line">        * acquire on failure.</span><br><span class="line">        */</span><br><span class="line">       final void lock() &#123;</span><br><span class="line">           if (compareAndSetState(0, 1))</span><br><span class="line">               setExclusiveOwnerThread(Thread.currentThread());</span><br><span class="line">           else</span><br><span class="line">               acquire(1);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       protected final boolean tryAcquire(int acquires) &#123;</span><br><span class="line">           return nonfairTryAcquire(acquires);</span><br><span class="line">       &#125;</span><br><span class="line">	//非公平锁的实现</span><br><span class="line">	final boolean nonfairTryAcquire(int acquires) &#123;</span><br><span class="line">           final Thread current = Thread.currentThread();</span><br><span class="line">           int c = getState();</span><br><span class="line">           if (c == 0) &#123;</span><br><span class="line">               if (compareAndSetState(0, acquires)) &#123;</span><br><span class="line">                   setExclusiveOwnerThread(current);</span><br><span class="line">                   return true;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">           else if (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">               int nextc = c + acquires;</span><br><span class="line">               if (nextc &lt; 0) // overflow</span><br><span class="line">                   throw new Error(&quot;Maximum lock count exceeded&quot;);</span><br><span class="line">               setState(nextc);</span><br><span class="line">               return true;</span><br><span class="line">           &#125;</span><br><span class="line">           return false;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>观察FairSync的tryAcquire和NonfairSync的nonfairTryAcquire方法，发现区别在于公平锁的tryAcquire方法多了一个“!hasQueuedPredecessors()”的判断条件，而这个方法就是判断当前线程是否位于同步队列中的第一个。</p>
+<h4 id="五、可重入锁、非可重入锁"><a href="#五、可重入锁、非可重入锁" class="headerlink" title="五、可重入锁、非可重入锁"></a>五、可重入锁、非可重入锁</h4><p>1.ReentrantLock、Synchronized都是可重入锁<br>2.ReentrantLock和NonReentrantLock都继承自AQS，AQS中维护一个status的变量来对重入的次数进行统计。<br>ReentrantLock会判断当前线程是否已经拥有过该锁，是就status+1，解锁同理，只有当status=0时才释放锁。<br>NonReentrantLock直接尝试获取锁和置status为0。</p>
+<h4 id="六、独享锁、共享锁"><a href="#六、独享锁、共享锁" class="headerlink" title="六、独享锁、共享锁"></a>六、独享锁、共享锁</h4><p>1.独享锁，也叫排它锁，是加上这个锁之后不能再加上<strong>其它类型</strong>的锁（说的是类型，所以synchronized可重入），一次只能被一个资源拥有，拥有锁的线程既可读，又可写。<br>如Synchronized、Lock的实现类。<br>2.共享锁可被多个线程拥有，其他的线程只能在共享锁上再加共享锁，拥有共享锁的只能读，不能写。</p>
+<ul>
+<li>ReentrantReadWriteLock接口返回一个读锁ReadLock，是共享锁；一个写锁WriteLock，是独享锁</li>
+<li>读写锁都依赖于Sync这个内部类</li>
+</ul>
+<p><strong>state字段</strong></p>
+<p>1.独享锁的state值为0或1，应该是表示是否被某线程独占<br>2.重入锁的state表示重入的次数<br>3.共享锁的state表示持有锁的数量<br>4.读写锁的state按位切割，高16位表示读锁状态，低16位表示写锁状态</p>
+<p><strong>给写锁加锁的流程</strong></p>
+<p>Sync内部类的tryAcquire方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">protected final boolean tryAcquire(int acquires) &#123;</span><br><span class="line"></span><br><span class="line">           Thread current = Thread.currentThread();</span><br><span class="line">           int c = getState();//获取当前线程拥有的锁的个数</span><br><span class="line">           int w = exclusiveCount(c);//写锁的个数</span><br><span class="line">           if (c != 0) &#123;</span><br><span class="line">               // (Note: if c != 0 and w == 0 then shared count != 0)</span><br><span class="line">               if (w == 0 || current != getExclusiveOwnerThread())</span><br><span class="line">                   return false;</span><br><span class="line">               if (w + exclusiveCount(acquires) &gt; MAX_COUNT)</span><br><span class="line">                   throw new Error(&quot;Maximum lock count exceeded&quot;);</span><br><span class="line">               // Reentrant acquire</span><br><span class="line">               setState(c + acquires);</span><br><span class="line">               return true;</span><br><span class="line">           &#125;</span><br><span class="line">           if (writerShouldBlock() ||</span><br><span class="line">               !compareAndSetState(c, c + acquires))</span><br><span class="line">               return false;</span><br><span class="line">           setExclusiveOwnerThread(current);</span><br><span class="line">           return true;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/09/29/768nzARsiGuvSoH.png" alt="image.png"></p>
+<p>综上，成功加写锁有两种情况：<br>1.无锁竞争成功<br>2.无读锁有写锁重入成功</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><blockquote>
+<p><a href="!https://tech.meituan.com/2018/11/15/java-lock.html">美团技术团队——不可不说的Java“锁”事</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">锁</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/09/23/Java/%E9%94%81/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/跳跃游戏" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/09/02/LeetCode/%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/">跳跃游戏</a>
+    </h1>
+  
+
+        
+        <a href="/2022/09/02/LeetCode/%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/" class="archive-article-date">
+  	<time datetime="2022-09-02T02:44:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><hr>
+<p>给定一个非负整数数组 nums ，你最初位于数组的 第一个下标 。<br>数组中的每个元素代表你在该位置可以跳跃的最大长度。<br>判断你是否能够到达最后一个下标。</p>
+<p>示例 1：</p>
+<p>输入：nums = [2,3,1,1,4]<br>输出：true<br>解释：可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。</p>
+<blockquote>
+<p>来源：<a href="!https://leetcode.cn/problems/jump-game">力扣（LeetCode）</a></p>
+</blockquote>
+<hr>
+<p>给你一个非负整数数组 nums ，你最初位于数组的第一个位置。<br>数组中的每个元素代表你在该位置可以跳跃的最大长度。<br>你的目标是使用最少的跳跃次数到达数组的最后一个位置。<br>假设你总是可以到达数组的最后一个位置。</p>
+<p>示例 1:</p>
+<p>输入: nums = [2,3,1,1,4]<br>输出: 2<br>解释: 跳到最后一个位置的最小跳跃数是 2。<br>     从下标为 0 跳到下标为 1 的位置，跳 1 步，然后跳 3 步到达数组的最后一个位置。</p>
+<blockquote>
+<p>来源：<a href="!https://leetcode.cn/problems/jump-game-ii">力扣（LeetCode）</a></p>
+</blockquote>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>对于第一个，“别想那么多，就挨着跳吧”，这是一篇题解的标题。对于每一个起跳区间（如果有的话），在此区间遍历更新可以跳到的最远下标，直到下标可以达到终点，但是并不是恰好到达，只要可以到达即可。</p>
+<p>代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public boolean canJump(int[] nums) &#123;</span><br><span class="line"></span><br><span class="line">       //所能跳到的最远下标</span><br><span class="line">       int k=0;</span><br><span class="line"></span><br><span class="line">       for(int i=0;i&lt;=k;i++)&#123;</span><br><span class="line">           int temp=nums[i]+i;</span><br><span class="line">           k=Math.max(temp,k);</span><br><span class="line"></span><br><span class="line">           if(k&gt;=nums.length-1)&#123;</span><br><span class="line">               return true;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return false;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>在每次在所能跳到的起跳区间内，找到下次可以跳到的、最远的边界，因为要使起跳次数尽可能的少，意思就是起跳区间数量也少。<br>然而每一个区间的起点并不是固定的，所以需要for循环依次遍历。</p>
+<p>代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int jump(int[] nums) &#123;</span><br><span class="line">       int ans = 0;</span><br><span class="line">       int end = 0;</span><br><span class="line">       int maxPos = 0;</span><br><span class="line">       /**</span><br><span class="line">        * 除最后一个元素外，每个元素都有可能是一个起跳区间的起点</span><br><span class="line">        * 每次更新的最大值实际是区间的边界</span><br><span class="line">        * 每次查找找到最小个数的起跳区间</span><br><span class="line">        * 所以直到每次到达区间的边界才ans+1,实际上并不是在边界起跳</span><br><span class="line">        * 而是这个区间内必须跳一次</span><br><span class="line">        */</span><br><span class="line">       //i是每一次的起跳点</span><br><span class="line">       //除了最后一个元素，每个元素都有可能是起跳点</span><br><span class="line">       for (int i = 0; i &lt; nums.length - 1; i++)</span><br><span class="line">       &#123;</span><br><span class="line">           //每次起跳点与之前能到达的最大值比较，取最大值</span><br><span class="line">           maxPos = Math.max(nums[i] + i, maxPos);</span><br><span class="line">           //如果这次起跳范围到达边界</span><br><span class="line">           if (i == end)</span><br><span class="line">           &#123;</span><br><span class="line">               //更新end</span><br><span class="line">               end = maxPos;</span><br><span class="line">               //每次范围都必须跳一次，而不必管在哪里跳的</span><br><span class="line">               ans++;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>第一个和第二个的区别在于第一个需要确认是否可以跳到终点，而第二个默认一定可以跳到终点，这就导致两个解法的循环终止条件不一样，一个是当前小于边界可以到达的最远下标，一个小于是数组长度-1。</p>
+<p>分析第一个的题意，每个槽位都有可能成为起跳点，即使最后的结果是某些槽位没有被跳到，但不妨碍每个槽位的可能性；最后要判断能否到达终点，不要被恰好跳到最后一个槽位的思想局限，因为最后一次跳跃的落地点只要大于等于终点，就一定是包含了可以恰好跳到终点的情况，这样对每次当前槽位可以跳到的最远位置和在此之前可以跳到的最远位置比较，取较大者即可。</p>
+<p>第二个求跳到终点的最小次数，题目默认一定可以跳到终点。求最小次数，就是求最小个数的起跳区间，这样对每一个起跳区间，来借此确定后一个起跳区间的最大边界，直到不得不跳的时候再跳，这个时候计数就可保证是最小次数。</p>
+<p>那么如果不知道跳不跳得到终点呢？<br>那就用第一个先判断，再用第二个求值。</p>
+<p>个人猜测，贪心可以用的条件是：不知道每次选择要不要选、每次选择应该选什么、求最大/小值，下次试试看吧。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/09/02/LeetCode/%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java/继承的执行顺序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -751,7 +1057,10 @@
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>看见同事的代码用到了::，不太懂，于是搜索了一番。而且关于List的循环取值，我用的迭代器写法，他用的for增强循环，我一时没想到这个写法，遂去搜了下两者区别，总结一句话：for循环适合访问随机结构，iterator适合访问顺序结构。<br>用iterator的好处是即使后续类型改为Set，代码基本不会变；以现在的业务看应该是不会改类型了，所以他那种写法更好一些。</p>
 <h3 id="lambda表达式和Consumer接口"><a href="#lambda表达式和Consumer接口" class="headerlink" title="lambda表达式和Consumer接口"></a>lambda表达式和Consumer接口</h3><p>函数接口是对 <strong>方法作为参数</strong> 的优化，Java8以前需要通过匿名内部类来实现方法，再将此方法作为参数传给调用者，函数接口就是对匿名内部类的优化。函数接口的实现可以被转为lambda表达式。</p>
-<h5 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h5><p>Consumer是函数接口（因为其上有@FunctionalInterface，函数式接口指其中只定义了一个抽象方法的接口），拥有两个方法：<br>1.accept(T t)：消费一个指定类型的数据<br>2.deafault Consumer<T> andThen(Consumer&lt;? super T&gt; after)<br>这里涉及到一个java8新增的特性，即接口中可以定义一个默认的返回方法。通过观察方法的返回值和参数，发现它们一样，可以实现一个效果：消费数据的时候，首先做一个操作，然后再做一个操作，实现组合。</p>
+<h5 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h5><p>Consumer是函数接口（因为其上有@FunctionalInterface，函数式接口指其中只定义了一个抽象方法的接口），拥有两个方法：<br>1.accept(T t)：消费一个指定类型的数据<br>2.deafault Consumer<T> andThen(Consumer&lt;? super T&gt; after)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@FunctionalInterface</span><br><span class="line">public interface Consumer&lt;T&gt; &#123;</span><br><span class="line">   	void accept(T t);</span><br><span class="line"></span><br><span class="line">   	default Consumer&lt;T&gt; andThen(Consumer&lt;? super T&gt; after) &#123;</span><br><span class="line">       	Objects.requireNonNull(after);</span><br><span class="line">       	return (T t) -&gt; &#123; accept(t); after.accept(t); &#125;;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这里涉及到一个java8新增的特性，即<strong>接口中可以定义一个默认的返回方法</strong>。通过观察方法的返回值和参数，发现它们一样，可以实现一个效果：消费数据的时候，首先做一个操作，然后再做一个操作，实现组合。</p>
 <hr>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line">public class Demo01Consumer &#123;</span><br><span class="line">   	public static void main(String[] args) &#123;</span><br><span class="line">       	consumerString(s -&gt; System.out.println(s));</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	private static void consumerString(Consumer&lt;String&gt; function) &#123;</span><br><span class="line">       	function.accept(&quot;Hello&quot;);</span><br><span class="line">   	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -760,7 +1069,9 @@
 <hr>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line">public class Demo02Consumer &#123;</span><br><span class="line">   public static void main(String[] args) &#123;</span><br><span class="line">       consumerString(</span><br><span class="line">               // toUpperCase()方法，将字符串转换为大写</span><br><span class="line">               s -&gt; System.out.println(s.toUpperCase()),</span><br><span class="line">               // toLowerCase()方法，将字符串转换为小写</span><br><span class="line">               s -&gt; System.out.println(s.toLowerCase())</span><br><span class="line">       );</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   private static void consumerString(Consumer&lt;String&gt; one, Consumer&lt;String&gt; two) &#123;</span><br><span class="line">       one.andThen(two).accept(&quot;Hello&quot;);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>再看上面的代码，“one.andThen(two).accept(“Hello”);”意思就是以Hello为参数先执行one的动作，再执行two的动作。下面是andThen方法源码：</p>
+<p>再看上面的代码，“one.andThen(two).accept(“Hello”);”意思就是以Hello为参数先执行one的动作，再执行two的动作。</p>
+<p>一步步看，one.andThen(two)返回的是Consumer接口，所以后面调用了这个返回接口的accept方法，而这个返回接口的accept方法呢，已经在andThen()中实现了，即：{ accept(t); after.accept(t); }，换算到这个例子，也就是{ one.accept(t); two.accept(t); }。</p>
+<p>下面是andThen方法源码：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">void accept(T t);</span><br><span class="line"></span><br><span class="line">default Consumer&lt;T&gt; andThen(Consumer&lt;? super T&gt; after) &#123;</span><br><span class="line">       Objects.requireNonNull(after);</span><br><span class="line">       return (T t) -&gt; &#123; accept(t); after.accept(t); &#125;;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <hr>
@@ -958,288 +1269,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/21/Spring/SpringIoC_BeanFactory/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring/SpringIoC2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/19/Spring/SpringIoC2/">SpringIoC个人总结（二）</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/19/Spring/SpringIoC2/" class="archive-article-date">
-  	<time datetime="2022-08-19T11:35:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前一篇的个人总结主要有三个部分：</p>
-<ul>
-<li>整体介绍了BeanFactory</li>
-<li>如何配置Bean</li>
-<li>如何配置依赖关系</li>
-</ul>
-<h4 id="bean的scope"><a href="#bean的scope" class="headerlink" title="bean的scope"></a>bean的scope</h4><p>关于scope，就简单地翻译为范围，当容器中的bean不再处于scope规定的范围后，容器就会销毁它。</p>
-<p>在2.0之前支持两种：1. prototype   2.singleton<br>2.0之后增加了只支持web的另外三种：request、session、global session</p>
-<ul>
-<li>singleton：<ul>
-<li>与<strong>单例模式</strong>区分。单例模式是同一个ClassLoader中只有这一个，singleton是容器中只有一个。</li>
-<li>存活时间：直到容器销毁或退出</li>
-</ul>
-</li>
-<li>prototype：<ul>
-<li>每次请求都会返回一个新的，当然也只能返回在这个容器中</li>
-<li>返回后，容器不再拥有该对象的引用，这个对象的销毁由请求方获得</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h5 id="bean的scope陷阱"><a href="#bean的scope陷阱" class="headerlink" title="bean的scope陷阱"></a>bean的scope陷阱</h5><p>这个陷阱描述的问题就是：如果想要一个方法每次返回不同的实例，仅将这个实例定义 &lt;scope=”prototype”&gt; 是不可以的。</p>
-<p>假设A第一次请求调用这个方法后，返回第一个实例B（A依赖B），如果再次调用此方法，检测到A所处的容器已有这个B实例，对容器来说这是一样的请求，所以此后返回的是同一个B，这也印证了前面所说的，总之不管是singleton还是prototype，都针对这个容器而言。</p>
-<p>解决办法有三种：</p>
-<p>1.方法注入。在xml中配置 <lockup-method name="方法名" bean="类名">，这个标签的意思是：指定这个方法返回指定的类。</p>
-<p>2.</p>
-<ul>
-<li>使用BeanFactoryAware接口，实现了这个接口的类，都会在实例化时被容器注入一个BeanFactory，而使用BeanFactory的getBean(“类名”)方法，可以每次返回不同的实例</li>
-<li>使用ObjectFactoryCreatingBean接口，这么长的名字不用记，它的出现就是为了隔离客户端对象对BeanFactory的直接使用。在使用这个方法，在类里面也不用直接出现B的类名，而是在xml中配置，这是因为在xml中配置更隐蔽安全吗？</li>
-</ul>
-<p>3.方法替换。如果这个方法不能完成我们的目的，那就换个方法来实现好了！具体做法是拥有替换逻辑的类实现MethodReplacer接口，并在xml中指明被替换的方法被哪个类替换了逻辑。<br>（这个看着和场景问题没什么关系哈哈…）</p>
-<h3 id="工厂方法和FactoryBean"><a href="#工厂方法和FactoryBean" class="headerlink" title="工厂方法和FactoryBean"></a>工厂方法和FactoryBean</h3><p>既然之前一直围绕类与类之间的依赖，但是不要忘了还有一些类依赖一些接口，而编码过程中接口的实现类的创建，按照老规矩，我们依然不想要自己手动去new，如果这个实现类是我们自己开发的，那么可以由容器去帮助我们注入依赖，但是对于第三方库就必须要实例化了，于是FactoryBean这个Bean，注意是个Bean，就是工厂类来帮助我们实现这个功能，指去new接口实现类。</p>
-<p>也即：为了实现接口实现类和接口的解耦</p>
-<p>类别：<br>1.静态工厂方法<br>2.非静态工厂方法<br>3.自定义工厂类：实现FactoryBean接口</p>
-<p>注意自定义工厂类这里，如果某个类持有某个FactoryBean的引用，那么它取得的不是FactoryBean本身，而是FactoryBean的getObject()方法所返回的对象。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOC</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/19/Spring/SpringIoC2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring/SpringIoC1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/17/Spring/SpringIoC1/">SpringIoC个人总结（一）</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/17/Spring/SpringIoC1/" class="archive-article-date">
-  	<time datetime="2022-08-17T11:35:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>此文件本是随便复制的另一个写好的md文件复制而来，没想到打开内容是阿里算法的一道笔记，一看日期，时隔多月，我竟已对当时颇为自得的笔记感到陌生，带着害怕和惶恐迅速删除了。</p>
-<p>算是看了两遍有关《Spring揭秘》有关IOC的内容，但是仍然觉得有一层薄纱隔在我和Spring之间，摸不清抓不着，现写下一点个人小结，希望以后的自己不会惶恐关掉罢。</p>
-<h3 id="什么是IOC"><a href="#什么是IOC" class="headerlink" title="什么是IOC"></a>什么是IOC</h3><p>Spring帮助我们的第一点就是，将 new对象 这个操作包揽下来，再也不用自己去new，只要加上注解@Bean，通知容器去做即可。</p>
-<hr>
-<p>就像社会关系中的人不会是一座孤岛，new完的对象，一般会与其他实例有所关联，除了简单的JavaBean对象，像POJO。<br>所以Spring还会帮助我们绑定不同对象之间的依赖关系，像这样加上@Autowired或者@Resource注解。</p>
-<p>通常有三种<strong>注入方式</strong>，也就是绑定对象与对象之间的依赖关系的方式：</p>
-<p>1.setter<br>2.构造函数<br>3.接口注入</p>
-<p>接口注入的实现显得多此一举，现已不使用，它要求被注入的对象还要再去实现一个接口，在此接口中定义绑定关系的方法。</p>
-<hr>
-<p>那么 <strong>构建对象</strong> 和 <strong>绑定对象之间的依赖关系</strong> 就是我认为IOC的主要工作，这么说好像不太恰当，IOC控制反转应该是一种思想，那就暂且描述为Spring利用IoC帮我们所做的事情吧。</p>
-<hr>
-<p>IOC容器可以分为两类：</p>
-<p>1.BeanFactory<br>2.ApplicationContext</p>
-<p><strong>联系</strong>：ApplicationContext在BeanFactory的基础上构成（前者除了继承BeanFactory，还继承了其他的一些类，这些其他的类使ApplicationContext具有自动识别其他类、国际化支持、容器内事件发布等功能；ApplicationContext这部分没看明白，暂时不多说）</p>
-<p><strong>区别</strong>：</p>
-<p>1.<strong>初始化</strong>：BeanFactory是延迟初始化，ApplicationContext是开始全部完成初始化<br>2.<strong>资源</strong>：BeanFactory所需资源有限，ApplicationContext需要大量资源，因为它一开始全部加载好了</p>
-<blockquote>
-<p>不清楚容器、框架的概念，去看了<a href="!https://blog.csdn.net/zhangyi162/article/details/51393116">关于容器、框架、架构的一些概念（转载）</a></p>
-</blockquote>
-<h3 id="BeanFactory总述"><a href="#BeanFactory总述" class="headerlink" title="BeanFactory总述"></a>BeanFactory总述</h3><p>如果我们要让厨师为我们炒菜，他们不可能凭空造出来我们想要的菜，得给一些必要信息，统一写在纸上是一种可行的办法。<br>这个过程映射到Spring的BeanFactory，于是我们同样得给BeanFactory一些“信息”。</p>
-<ul>
-<li>信息来源：外部配置文件（properties或者xml）</li>
-<li>信息封装：将加载文件得到的信息封装成一个对象（写纸上），即BeanDefinition</li>
-<li>创建对象：BeanDefinitionRegistry负责完成Bean的注册和加载（炒菜）</li>
-<li>返回对象：FactoryBean来返回。想到设计模式中的工厂方法，大多也只是定义一个返回产品的方法，与这里不谋而合。</li>
-</ul>
-<p>创建和返回由两个不同的接口完成后，有一个叫DefaultListableBeanFactory的类继承它们，作为通用的使用类。</p>
-<blockquote>
-<p>关于创建对象这步，BeanDefinitionRegistry会对提供的信息做出额外的修饰吗？暂且按下不表。</p>
-</blockquote>
-<hr>
-<p>现在我们知道需要自己配置一些信息给容器，它才能帮助我们工作，如果容器连根据需求写代码都能完全做到时，我想剩下的内容也没有必要再接着看了。</p>
-<h5 id="xml配置"><a href="#xml配置" class="headerlink" title="xml配置"></a>xml配置</h5><p>首先从单个的bean来看，如果BeanFactory要创建，这里的创建不是指定义一个类对象，而是在堆中为它new出一块内存区域，我们做的事情是根据需要定义好每个类的名称、属性（包括基本类型和引用类型）或者方法等，然后得让容器知道这个类吧，于是给它一个名字叫做<strong>id</strong>，其所指向的类的类型用<strong>class</strong>来指明。</p>
-<blockquote>
-<p>除此之外，还可以用name来为bean取别名</p>
-</blockquote>
-<p>如果对于一些bean具有某些共同点，则可以用<beans>标签来统一管理，比如：</p>
-<ul>
-<li>default-lazy-init</li>
-<li>default-aotowired</li>
-<li>default-dependency-check：是否做依赖检查</li>
-<li>default-init-method：指定这些bean相同的初始化回调后的方法</li>
-<li>default-destroy-method：同上，但是是销毁前回调，而不是销毁方法，销毁还能有什么别的吗哈哈哈，如果能被篡改的话要出大问题</li>
-</ul>
-<hr>
-<p>还记得前面所说的IOC容器只做两件事，<strong>构建对象</strong> 和 <strong>绑定对象之间的依赖关系</strong>吗？现在已经通过xml配置了bean如何构建，现在看看通过xml绑定依赖关系。</p>
-<p>依然如前面所说，绑定有三种方式，不过接口注入已经不再使用：</p>
-<p>1.构造方法注入，使用<constructor-arg>表示是构造方法，type指定注入对象的类型；多个对象使用index下标标识</p>
-<p>2.setter方法注入，使用<property>标签，其中使用name指定实例名或者说属性名，以ref来指明是哪个类型</p>
-<hr>
-<p>两者通用的内嵌元素：</p>
-<ul>
-<li>value：其中不可再嵌套其他元素，是最底层的标签；可注入的类型包括String、原始类型及其包装类</li>
-<li>ref：<ul>
-<li>local：一个配置文件</li>
-<li>parent：当前容器的父容器</li>
-<li>bean：通用</li>
-</ul>
-</li>
-</ul>
-<hr>
-<p>那么除了这样明确地指定依赖的对象，容器还提供了<autowire>来指明通过哪种类型来绑定的抽象方法，如可以设置 autowire=byName 来通过 bean的id绑定，设置autowire=byType来通过bean的class绑定。</p>
-<p>除了这样显示的依赖关系，即我们可以先实例化这个类后再去创建它依赖的对象，那么 <depends-on> 就是来描述 先实例化依赖的对象，可能应用的场景有静态代码块初始化、数据库驱动注册等。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOC</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/17/Spring/SpringIoC1/">展开全文 >></a>
         </p>
       
 
@@ -1631,6 +1660,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">双指针</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">买卖股票</a>
               </li>
             
             <div class="clearfix"></div>

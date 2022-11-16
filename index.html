@@ -154,6 +154,283 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-LeetCode/合并重复区间 - 副本" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/11/16/LeetCode/%E5%90%88%E5%B9%B6%E9%87%8D%E5%A4%8D%E5%8C%BA%E9%97%B4%20-%20%E5%89%AF%E6%9C%AC/">买卖股票的最佳时机 III</a>
+    </h1>
+  
+
+        
+        <a href="/2022/11/16/LeetCode/%E5%90%88%E5%B9%B6%E9%87%8D%E5%A4%8D%E5%8C%BA%E9%97%B4%20-%20%E5%89%AF%E6%9C%AC/" class="archive-article-date">
+  	<time datetime="2022-11-16T02:40:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-11-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定一个数组，它的第 i 个元素是一支给定的股票在第 i 天的价格。</p>
+<p>设计一个算法来计算你所能获取的最大利润。你最多可以完成 两笔 交易。</p>
+<p>注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。</p>
+<p>示例 1:</p>
+<p>输入：prices = [3,3,5,0,0,3,1,4]<br>输出：6<br>解释：在第 4 天（股票价格 = 0）的时候买入，在第 6 天（股票价格 = 3）的时候卖出，这笔交易所能获得利润 = 3-0 = 3 。<br>     随后，在第 7 天（股票价格 = 1）的时候买入，在第 8 天 （股票价格 = 4）的时候卖出，这笔交易所能获得利润 = 4-1 = 3 。</p>
+<p>示例 2：</p>
+<p>输入：prices = [1,2,3,4,5]<br>输出：4<br>解释：在第 1 天（股票价格 = 1）的时候买入，在第 5 天 （股票价格 = 5）的时候卖出, 这笔交易所能获得利润 = 5-1 = 4 。<br>     注意你不能在第 1 天和第 2 天接连购买股票，之后再将它们卖出。<br>     因为这样属于同时参与了多笔交易，你必须在再次购买前出售掉之前的股票。</p>
+<p>示例 3：</p>
+<p>输入：prices = [7,6,4,3,1]<br>输出：0<br>解释：在这个情况下, 没有交易完成, 所以最大利润为 0。</p>
+<p>示例 4：</p>
+<p>输入：prices = [1]<br>输出：0</p>
+<p>提示：</p>
+<p>1 &lt;= prices.length &lt;= 105<br>0 &lt;= prices[i] &lt;= 105</p>
+<blockquote>
+<p>来自<a href="!https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/description/">力扣-123.买卖股票的最佳时机 III</a></p>
+</blockquote>
+<hr>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>不管是哪类买卖股票，都可分为两类题解，第一类是不保存每次状态的详细属性，在每次想要的最终结果上进行状态的迭代；第二类是保存每次状态转移后的属性，按需返回想要的结果。下面分析以上题为例。</p>
+<h4 id="第一类"><a href="#第一类" class="headerlink" title="第一类"></a>第一类</h4><p>以每天作为分析的主体，则这一天中会有5个状态，这5个状态由对应的可能发生的5个动作得到：</p>
+<p>1.什么也不做（后的当前钱数）<br>2.买入第一次（后的当前钱数），可能由前一天的第一次买或者前一天没有今天第一次买得到<br>3.卖第一次（后的当前钱数），可能由前一天的第一次卖或者今天第一次卖得到<br>4.买入第二次（后的当前钱数），可能由前一天的第二次买或者前一天没有今天第二次买得到<br>5.卖第二次（后的当前钱数），可能由前一天的第二次卖或者今天第二次卖得到</p>
+<blockquote>
+<p>第x次买入，可能是前一天的第x次买（今天第x次不买） 或者 今天第x次买<br>第y次卖，可能是前一天的第y次卖（今天第y次不卖） 或者 今天第y次卖</p>
+</blockquote>
+<hr>
+<ul>
+<li><p>对于只买卖一次就达到最大利润的情况，可以理解为一次不同天数的买卖操作后，当天再进行一次无利益的买入、卖出操作，由于买卖价格相等，所以没有利润，进而不会影响到最后的结果，但是买卖的次数却因此增加了，达到上限的次数。</p>
+</li>
+<li><p>由此来看，最大利润产生的前提是：<strong>达到最大利润时一定进行了上限次数的交易</strong>。</p>
+</li>
+</ul>
+<hr>
+<p>宏观地来看，解决如何得到最大利润的方法中，有若干天进行了操作，这若干天按时间顺序排列，就是 没有动作-&gt;第一次买-&gt;第一次卖-&gt;第二次买-&gt;第二次卖，中间穿插着没有动作的这些天数；而每天操作时的判断依据是前一天的情况如何，以<strong>前一天的情况作为今天动作的判断依据</strong>。</p>
+<p>因此，考虑每一天的5种操作后的状态（钱数），这样后一天可以根据前一天的状态（钱数）和当天的股票价格再来做决定。当遍历天数完成后，最终的钱数就是最大利润数。</p>
+<p>每天有5种不同可能的状态，一共有i天，第i+1天在第i天的基础上进行迭代，可以写出如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int maxProfit(int[] prices) &#123;</span><br><span class="line">       int n=prices.length;</span><br><span class="line">       //由于不进行任何操作手里的钱为0，所以以下都省略</span><br><span class="line">       //初始化第一天的操作</span><br><span class="line">       int buy1=-prices[0],sell1=0;</span><br><span class="line">       int buy2=-prices[0],sell2=0;</span><br><span class="line"></span><br><span class="line">       for (int i = 1; i &lt; n; i++) &#123;</span><br><span class="line">           //括号里的buy1实际含义是前一天的第一次买，也即今天不买</span><br><span class="line">           //表示前一天已经买今天不做操作，前天没买今天第一次买（此时手里的钱为0）</span><br><span class="line">           //按上面的分析，下同</span><br><span class="line">           buy1=Math.max(buy1,0-prices[i]);</span><br><span class="line">           sell1=Math.max(sell1,buy1+prices[i]);</span><br><span class="line">           buy2=Math.max(buy2,sell1-prices[i]);</span><br><span class="line">           sell2=Math.max(sell2,buy2+prices[i]);</span><br><span class="line">       &#125;</span><br><span class="line">       return sell2;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>参考自<a href="!https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/solutions/552695/mai-mai-gu-piao-de-zui-jia-shi-ji-iii-by-wrnt/">力扣官方题解</a></p>
+</blockquote>
+<h4 id="第二类"><a href="#第二类" class="headerlink" title="第二类"></a>第二类</h4><blockquote>
+<p>动态规划老三样：状态定义、状态转移、初始状态。</p>
+<p>来自<a href="!https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/solutions/1895663/mai-mai-gu-piao-xi-lie-by-my_mel-dswf/">买卖股票系列 | 两笔交易的最大收益 （动态规划）</a></p>
+</blockquote>
+<p>状态转移:时间、约束、影响动作.</p>
+<p>以 dp[i][k][0..1] 表示第i天完成k笔交易后<strong>是否持股</strong>时手里的钱数，由于数组下标从0开始，所以准确地说，应该是表示：第i+1天完成k笔交易后是否持股时手里的钱数。</p>
+<blockquote>
+<p>本题条件规定,0&lt;=k&lt;=2<br>交易表示买入并且卖出</p>
+</blockquote>
+<p>转移方程如下图：</p>
+<p><img src="https://s2.loli.net/2022/11/16/Zsvno3dpOfe5X7T.png" alt="image.png"></p>
+<p>由此可以写出代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int maxProfit(int[] prices) &#123;</span><br><span class="line">       int n = prices.length;</span><br><span class="line">       int[][][] dp = new int[n][3][2];</span><br><span class="line">       //初始化第1天0、1、2笔交易后的钱数</span><br><span class="line">       for (int k = 0; k &lt;= 2; k++) &#123;</span><br><span class="line">           dp[0][k][0] = 0;</span><br><span class="line">           dp[0][k][1] = -prices[0];</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       for (int i = 1; i &lt; n; i++) &#123;</span><br><span class="line">           //交易0次后：没有交易但是持有股 是昨天的股不做操作 或 昨天不持有股今天买了股</span><br><span class="line">           //交易0次后：没有交易但是没有股 的值为0，数组填充默认为0，省略</span><br><span class="line">           dp[i][0][1] = Math.max(dp[i - 1][0][1], dp[i - 1][0][0] - prices[i]);</span><br><span class="line">           for (int k = 1; k &lt;= 2; k++) &#123;//交易1 2 次</span><br><span class="line">               //今天不持股：是昨天也不持股今天不做操作 或 昨天有今天卖了</span><br><span class="line">               dp[i][k][0] = Math.max(dp[i - 1][k][0], dp[i - 1][k - 1][1] + prices[i]);</span><br><span class="line">               //今天持股：是昨天也持有股今天不做操作 或 昨天不持有股今天买了</span><br><span class="line">               dp[i][k][1] = Math.max(dp[i - 1][k][1], dp[i - 1][k][0] - prices[i]);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return dp[n - 1][2][0];</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>参考自<a href="!https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/solutions/1895663/mai-mai-gu-piao-xi-lie-by-my_mel-dswf/">买卖股票系列 | 两笔交易的最大收益 （动态规划）</a></p>
+</blockquote>
+<h3 id="买卖股票的最佳时机-IV"><a href="#买卖股票的最佳时机-IV" class="headerlink" title="买卖股票的最佳时机 IV"></a>买卖股票的最佳时机 IV</h3><p>给定一个整数数组 prices ，它的第 i 个元素 prices[i] 是一支给定的股票在第 i 天的价格。</p>
+<p>设计一个算法来计算你所能获取的最大利润。你最多可以完成 k 笔交易。</p>
+<p>注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。</p>
+<blockquote>
+<p>来自<a href="!https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/description/">力扣-188.买卖股票的最佳时机 IV</a></p>
+</blockquote>
+<p>此题可以用第二类的模板，将最大上线2次替换为k次即可；也可以参照第一类，将buy1、sell1、buy2、sell2替换为数组buy[]、sell[]，用来表示第某次买入后和第某次交易（买入卖出都包括）完成后，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int maxProfit(int k, int[] prices) &#123;</span><br><span class="line">       if(prices.length==0 || k==0)</span><br><span class="line">           return 0;</span><br><span class="line">       int[] buy = new int[k];</span><br><span class="line">       int[] sell = new int[k];</span><br><span class="line">       Arrays.fill(buy,-prices[0]);</span><br><span class="line"></span><br><span class="line">       for(int i=1;i&lt;prices.length;i++)&#123;</span><br><span class="line">           buy[0] = Math.max(buy[0],0-prices[i]);//第一次买 保持以前的买（今天这次不买） 和今天第一次买</span><br><span class="line">           sell[0] = Math.max(sell[0],buy[0]+prices[i]);//第一笔交易 是保持以前的不变（今天这次不卖） 还是今天就卖</span><br><span class="line">           for(int j=1;j&lt;k;j++)&#123;//循环后面的买卖 j&gt;=1</span><br><span class="line">               buy[j] = Math.max(buy[j],sell[j-1]-prices[i]);//类比第一次 是保持以前的 还是买</span><br><span class="line">               sell[j] = Math.max(sell[j],buy[j]+prices[i]);//第j+1笔交易后 是保持钱不变 还是卖出赚的多</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return sell[k-1];</span><br><span class="line">   &#125;	</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>第二类与第一类的区别是：第一类将每天各个动作导致的不同的最终状态临时保存，到了后一天会覆盖前面的值；第二类则不会覆盖，将记录都保存在了数组中。</p>
+<p>也就是说，对于动态规划的状态转移，抓准每个动作前后的状态是什么、看可不可以进行归纳，和每次影响转移的因素或者动作是什么，最后明确初始状态是什么样的。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Diff</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">动态规划</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">买卖股票</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/11/16/LeetCode/%E5%90%88%E5%B9%B6%E9%87%8D%E5%A4%8D%E5%8C%BA%E9%97%B4%20-%20%E5%89%AF%E6%9C%AC/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/合并重复区间" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/11/01/LeetCode/%E5%90%88%E5%B9%B6%E9%87%8D%E5%A4%8D%E5%8C%BA%E9%97%B4/">合并区间</a>
+    </h1>
+  
+
+        
+        <a href="/2022/11/01/LeetCode/%E5%90%88%E5%B9%B6%E9%87%8D%E5%A4%8D%E5%8C%BA%E9%97%B4/" class="archive-article-date">
+  	<time datetime="2022-11-01T13:02:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-11-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。</p>
+<p>示例 1：</p>
+<p>输入：intervals = [[1,3],[2,6],[8,10],[15,18]]<br>输出：[[1,6],[8,10],[15,18]]<br>解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].</p>
+<p>示例 2：</p>
+<p>输入：intervals = [[1,4],[4,5]]<br>输出：[[1,5]]<br>解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。
+ </p>
+<p>提示：</p>
+<p>1 &lt;= intervals.length &lt;= 104<br>intervals[i].length == 2<br>0 &lt;= starti &lt;= endi &lt;= 104</p>
+<blockquote>
+<p>来源：<a href="!https://leetcode.cn/problems/merge-intervals">力扣（LeetCode）</a></p>
+</blockquote>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>做阅文的笔试时遇到了这题，但是写了半天也没写出来，最后无奈交卷，一结束就去看了力扣的题解，还是自己刷的题不够多呀，不过大致的思路还是差不多的。</p>
+<p>大概流程就是<br>1.先对给定的二维数组按照左边界升序的规则进行排序（sort方法还能这么用）<br>2.遍历这个排序好的数组，选取一个基准出来，再将这个基准之后的区间进行判断比较合并，直到遇到的下一个区间的左边界比当前合并好的右边界要大，说明这趟合并已经结束，添加进结果集合<br>3.选取下一个区间，也就是那个让我们退出第二步中循环的那个区间</p>
+<p>就像这样：</p>
+<p><img src="https://s2.loli.net/2022/11/01/seNl4mGViJ7nqDZ.png" alt="image.png"></p>
+<p>代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static int[][] merge (int[][] intervals) &#123;</span><br><span class="line">       List&lt;int[]&gt; res = new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">       if (intervals.length == 0 || intervals == null)</span><br><span class="line">           return res.toArray(new int[0][]);</span><br><span class="line">       // 对起点进行排序</span><br><span class="line">       Arrays.sort(intervals, (a, b) -&gt; a[0] - b[0]);</span><br><span class="line"></span><br><span class="line">       int i = 0;</span><br><span class="line">       while (i &lt; intervals.length) &#123;</span><br><span class="line">           int left = intervals[i][0];</span><br><span class="line">           int right = intervals[i][1];</span><br><span class="line">           // 如果有重叠，循环判断哪个起点满足条件</span><br><span class="line">           while (i &lt; intervals.length - 1 &amp;&amp; intervals[i + 1][0] &lt;= right) &#123;</span><br><span class="line">               i++;</span><br><span class="line">               right = Math.max(right, intervals[i][1]);</span><br><span class="line">           &#125;</span><br><span class="line">           // 将现在的区间放进res里面</span><br><span class="line">           res.add(new int[]&#123;left, right&#125;);</span><br><span class="line">           // 接着判断下一个区间</span><br><span class="line">           i++;</span><br><span class="line">       &#125;</span><br><span class="line">       return res.toArray(new int[0][]);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/11/01/LeetCode/%E5%90%88%E5%B9%B6%E9%87%8D%E5%A4%8D%E5%8C%BA%E9%97%B4/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-MySQL/MVCC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -394,6 +671,10 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">二份查找</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">双指针</a>
         		</li>
       		
 		</ul>
@@ -953,7 +1234,7 @@
 </blockquote>
 <h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><h4 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h4><p>题目需要求最长的有效括号长度，也就是截取这个字符串的某个区间，这个区间内的字符串满足：<br>1.括号个数为偶数<br>2.以嵌套（如“(())”）、连续（如“()(())()”）的方式出现</p>
 <p>现设置动态数组dp[i]，其值表示截止到下标i对应的字符时，出现的<strong>最长区间长度</strong>。</p>
-<p>如果字符串长度为1，那么结果一定为0。所以下面所说的i基本是在大于0的情况下讨论。</p>
+<p>P.S.如果字符串长度为1，那么结果一定为0。所以下面所说的i基本是在大于0的情况下讨论。</p>
 <p>对于第i个字符，可能为“(”或者“)”，而如果以“(”结尾的字符串一定不会是我们需要的结果，所以“(”在dp数组对应的值应该为0，而整形数组默认值为0，即不需要对这种情况做出特殊判断，让我们把注意力放到“)”。</p>
 <p>对于“)”，它的前一位可能是“(” 和 “)”。</p>
 <p><strong>1.“(”的情况</strong></p>
@@ -1145,312 +1426,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/10/09/Idea/%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%90%E8%A1%8C%E6%8A%A5%E9%94%99/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/09/23/Java/%E9%94%81/">Java中的锁分类</a>
-    </h1>
-  
-
-        
-        <a href="/2022/09/23/Java/%E9%94%81/" class="archive-article-date">
-  	<time datetime="2022-09-23T01:39:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>所以再怎么逃避，还是要学锁的呀！<br>一直觉得锁这个东西很抽象，抓不住它飘渺的声影，这几天花了点时间去看文章，过程中仍有似懂非懂的地方，而且看的几篇博客说的还不一样，去看英文原文…算了，还是看翻译吧…怎么都是汉字，连起来我却看不懂…</p>
-<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><h4 id="一、乐观锁、悲观锁"><a href="#一、乐观锁、悲观锁" class="headerlink" title="一、乐观锁、悲观锁"></a>一、乐观锁、悲观锁</h4><p>它俩的区别就是<strong>是否锁住同步资源</strong>。</p>
-<h5 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h5><p>1.线程乐观地认为，即使不锁住资源，下次来也会有权利操作它，所以它并不给资源上锁，但是为啥叫乐观<strong>锁</strong>呢？</p>
-<p>原因是它不会对操作的数据加锁，而是通过<strong>业务</strong>实现锁的功能，这里的业务指：只有到数据提交时才通过一种机制来验证数据是否存在冲突。</p>
-<p>2.流程：</p>
-<blockquote>
-<ol>
-<li>线程事先获取要修改的变量V在内存中的偏移量offset和旧值A</li>
-<li>在获取和设置修改的这段时间可能会有其他线程访问修改V</li>
-<li>当前线程开始循环，直到V的值等于A时才会将其修改为B，且退出循环</li>
-<li>不然就一直循环尝试获取CAS</li>
-</ol>
-</blockquote>
-<p>总而言之，是只有当取得的值（通过偏移量取到）等于预期值A时，才会进行修改为B。</p>
-<p>3.CAS可能会有三大问题：</p>
-<ul>
-<li><strong>ABA问题</strong>。即A改为B，又改为A，如果单凭值来认为A的值从来没有发生过变化，这样是不准确的，为了解决这个问题，每次修改值后会加上版本号，每次比较值时不仅比较内容还会比较版本号是否一致。</li>
-<li><strong>循环时间开销长</strong>。CAS如果长时间不成功，则会一直自旋，给CPU带来非常大的开销</li>
-<li><strong>只能保证一个共享变量的原子性操作</strong>。</li>
-</ul>
-<h5 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h5><p>1.如果线程认为下次来的时候不会有权限操作需要的资源，所以它得一次操作完，以免下次来没有了，所以它会给资源上锁，其他线程不能再获取操作这个资源的权限，上的这种锁叫作悲观锁。</p>
-<h4 id="二、自旋锁、适应性自旋锁"><a href="#二、自旋锁、适应性自旋锁" class="headerlink" title="二、自旋锁、适应性自旋锁"></a>二、自旋锁、适应性自旋锁</h4><p>1.阻塞或唤醒一个线程需要操作系统切换CPU状态来完成，这种状态转换非常耗费处理器时间，<br>所以有时可以让没有获取到锁的线程自旋而不是阻塞，如果很快就出现了被释放的锁，那么可以直接获取同步资源，而避免了切换线程的开销。</p>
-<p>2.当然不是无休止地一直自旋，当自旋超过了限定次数没有成功获得锁，就应当挂起线程。</p>
-<p>3.自适应锁：<br>  意味着自旋的次数不再固定，而是由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。</p>
-<ul>
-<li>如果在同一个锁对象上，自旋的线程是刚刚成功获得过锁的，且拥有锁的线程正在运行，则虚拟机会认为这次自旋也很有可能再次成功，允许它等待相对更长的时间。</li>
-<li>如果某个锁，自旋很少成功获得过，那在之后再次尝试时可能直接阻塞线程，避免自旋带来的处理器资源浪费。</li>
-</ul>
-<h4 id="三、无锁、偏向锁、轻量级锁、重量级锁"><a href="#三、无锁、偏向锁、轻量级锁、重量级锁" class="headerlink" title="三、无锁、偏向锁、轻量级锁、重量级锁"></a>三、无锁、偏向锁、轻量级锁、重量级锁</h4><p>1.什么是上锁？</p>
-<p><strong>对象头</strong></p>
-<ul>
-<li>Java在运行时的存储格式分为这几个部分：对象头（对象自身运行时的数据、类型指针来指向属于哪个类）、实例数据、对齐部分。</li>
-<li>而对象自身运行时的数据包括：HashCode、分代年龄、锁标志信息</li>
-<li>关于锁的标志信息随着程序运行可能会发生变化，有以下几种情况：</li>
-</ul>
-<p><img src="https://s2.loli.net/2022/09/25/MwdDa1m8LHRA7sb.png" alt="image.png"></p>
-<ul>
-<li>注意到除了无锁情况的HashCode仍然放在对象头外，其他情况下的HashCode哪里去了呢？<blockquote>
-<p>a.当一个对象已经计算过hash code，它就无法进入偏向锁状态<br>b.当一个对象正处于偏向锁状态，并且需要计算其hash code，则它的偏向锁会被撤销，并且锁会膨胀为轻量级锁或重量锁<br>c.轻量级锁的实现中，会通过栈帧的lock record记录原来的mark word；重量锁则是存储在Monitor中</p>
-<p>来自博客<a href="!https://blog.csdn.net/Saintyyu/article/details/108295657">偏向锁与hashcode能共存吗？</a></p>
-</blockquote>
-</li>
-</ul>
-<p><strong>Monitor</strong></p>
-<p>每一个Java对象都有一个看不见的锁，称为内部锁或者Monitor锁；<br>Monitor是线程私有的数据结构，每一个被锁住的对象和一个Monitor关联，Monitor中的Owner字段存放拥有该锁的线程的唯一标识；<br>每个线程有一个Monitor Record列表，同时还有一个全局的可用列表。</p>
-<p>一言以蔽之，上锁是对象原有的对象头被放在了线程的空间里，对象的对象头不再保存hash code 等信息，保存指针来简洁指向原有对象头。</p>
-<h5 id="无锁"><a href="#无锁" class="headerlink" title="无锁"></a>无锁</h5><p>无锁没有对资源进行锁定，所有的线程都能访问修改，但同时只有一个线程能修改成功；没有成功的就重复不断地尝试。无锁的原理是CAS。</p>
-<h5 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h5><p>有这么一种情况，是同步资源一直被同一个线程访问，那么CAS的判断重试的操作是多余的。</p>
-<p>1.当第一次对象的锁被某线程拥有，那么对象头中会记录线程ID，当下次某线程来临时，只需要对比线程<strong>ID是否一致</strong>，一致则执行代码（所以即使两个线程没有发生竞争，只是一个线程ID被锁对象标记，也有可能发生偏向锁向轻量级锁的升级过程）<br>2.不一致则CAS尝试<strong>替换</strong>对象头的<strong>线程ID</strong>，成功则新的线程获得了该同步资源的偏向锁，<br>3.失败则准备撤销持有锁的线程的偏向锁，首先判断<strong>拥有锁的线程</strong>是否存活<strong>，没有存活则变为无锁，所有线程去竞争偏向锁，<br>4.存活则等待，当到达全局安全点时，判断被撤销锁的线程</strong>是否还需要该锁**，不需要则变为无锁，所有线程去竞争；需要则升级锁为轻量级锁。</p>
-<h5 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h5><ul>
-<li>描述的情形：偏向锁被其他线程竞争时升级为轻量级锁，其他线程自旋，不阻塞。</li>
-<li>获取过程：<br>更新都是CAS</li>
-</ul>
-<p>1.线程新建一个lock record（锁记录空间）</p>
-<p>2.将对象的mark word存入lock record</p>
-<ul>
-<li>但是偏向锁后对象的hash code不是被线程ID覆盖了吗？我的解释是：由于identity hash code 一旦被计算过，则不能进入偏向锁状态，而已经到达偏向锁状态的对象没有被计算过identity hash code，此时计算一下再存入lock record中即可。</li>
-<li>为什么identity hash code被计算过后不能进入偏向锁状态？假设计算过一次，那么进入偏向锁的状态时，存储hash值的地方会被线程ID覆盖，从而导致后续再次计算时前后值不一样，失去了哈希码作为对象唯一标识的意义。</li>
-</ul>
-<p>3.通过CAS尝试将对象的mark record存放指向lock record的指针</p>
-<ul>
-<li>如果指向成功，则继续执行代码</li>
-<li>如果指向失败，判断对象头是否指向当前线程<br>a. 如果不是，则说明有别的线程已经占领锁，当前线程会自旋等待锁，若一定次数仍未获得锁，或者有第三个线程也来竞争时，则锁会膨胀为重量锁<br>b.如果是，说明是重入锁，会新建一个lock record，但是displaced hdr指向null，起到一个重入计数的作用</li>
-</ul>
-<h5 id="重量级锁"><a href="#重量级锁" class="headerlink" title="重量级锁"></a>重量级锁</h5><p>除了当前线程，其他线程都阻塞。</p>
-<p>升级为重量级锁，对象的mark word指向Monitor，Monitor中的Owner指向Lock Record。</p>
-<p><img src="https://s2.loli.net/2022/09/26/tNKp5jixzTmwC3B.png" alt="image.png"></p>
-<p>解锁：owner指向null，唤醒EntryList中阻塞的线程</p>
-<h4 id="四、公平锁、非公平锁"><a href="#四、公平锁、非公平锁" class="headerlink" title="四、公平锁、非公平锁"></a>四、公平锁、非公平锁</h4><ul>
-<li>公平锁：按照申请的顺序来获取锁，来了之后进入等待队列</li>
-<li>非公平锁：直接尝试获取锁，获取不到才进入队列排队。可以减少唤起线程的开销，整体的吞吐率高。</li>
-<li>例子：ReentrantLock内部有一个Sync类，它含有FairSync和UnfairSync两个子类</li>
-</ul>
-<p>FairSync：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	</span><br><span class="line">static final class FairSync extends Sync &#123;</span><br><span class="line">      private static final long serialVersionUID = -3000897897090466540L;</span><br><span class="line"></span><br><span class="line">      final void lock() &#123;</span><br><span class="line">          acquire(1);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      /**</span><br><span class="line">       * tryAcquire的公平版本，除非当前线程是递归调用或者是第一个、或者不是等待的线程，不是以上三种情况的不要把锁给出去</span><br><span class="line">       * Fair version of tryAcquire.  Don&#x27;t grant access unless</span><br><span class="line">       * recursive call or no waiters or is first.</span><br><span class="line">       */   </span><br><span class="line">//公平锁的实现</span><br><span class="line">      protected final boolean tryAcquire(int acquires) &#123;</span><br><span class="line">          final Thread current = Thread.currentThread();</span><br><span class="line">   //返回state，即锁计数器。如果为0，则可获取当前锁</span><br><span class="line">          int c = getState();</span><br><span class="line">          if (c == 0) &#123;</span><br><span class="line">              if (!hasQueuedPredecessors() &amp;&amp;</span><br><span class="line">                  compareAndSetState(0, acquires)) &#123;</span><br><span class="line">                  setExclusiveOwnerThread(current);</span><br><span class="line">                  return true;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          else if (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">              int nextc = c + acquires;</span><br><span class="line">              if (nextc &lt; 0)</span><br><span class="line">                  throw new Error(&quot;Maximum lock count exceeded&quot;);</span><br><span class="line">              setState(nextc);</span><br><span class="line">              return true;</span><br><span class="line">          &#125;</span><br><span class="line">          return false;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>UnfairSync</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">static final class NonfairSync extends Sync &#123;</span><br><span class="line">       private static final long serialVersionUID = 7316153563782823691L;</span><br><span class="line"></span><br><span class="line">       /**</span><br><span class="line">        * Performs lock.  Try immediate barge, backing up to normal</span><br><span class="line">        * acquire on failure.</span><br><span class="line">        */</span><br><span class="line">       final void lock() &#123;</span><br><span class="line">           if (compareAndSetState(0, 1))</span><br><span class="line">               setExclusiveOwnerThread(Thread.currentThread());</span><br><span class="line">           else</span><br><span class="line">               acquire(1);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       protected final boolean tryAcquire(int acquires) &#123;</span><br><span class="line">           return nonfairTryAcquire(acquires);</span><br><span class="line">       &#125;</span><br><span class="line">	//非公平锁的实现</span><br><span class="line">	final boolean nonfairTryAcquire(int acquires) &#123;</span><br><span class="line">           final Thread current = Thread.currentThread();</span><br><span class="line">           int c = getState();</span><br><span class="line">           if (c == 0) &#123;</span><br><span class="line">               if (compareAndSetState(0, acquires)) &#123;</span><br><span class="line">                   setExclusiveOwnerThread(current);</span><br><span class="line">                   return true;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">           else if (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">               int nextc = c + acquires;</span><br><span class="line">               if (nextc &lt; 0) // overflow</span><br><span class="line">                   throw new Error(&quot;Maximum lock count exceeded&quot;);</span><br><span class="line">               setState(nextc);</span><br><span class="line">               return true;</span><br><span class="line">           &#125;</span><br><span class="line">           return false;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>观察FairSync的tryAcquire和NonfairSync的nonfairTryAcquire方法，发现区别在于公平锁的tryAcquire方法多了一个“!hasQueuedPredecessors()”的判断条件，而这个方法就是判断当前线程是否位于同步队列中的第一个。</p>
-<h4 id="五、可重入锁、非可重入锁"><a href="#五、可重入锁、非可重入锁" class="headerlink" title="五、可重入锁、非可重入锁"></a>五、可重入锁、非可重入锁</h4><p>1.ReentrantLock、Synchronized都是可重入锁<br>2.ReentrantLock和NonReentrantLock都继承自AQS，AQS中维护一个status的变量来对重入的次数进行统计。<br>ReentrantLock会判断当前线程是否已经拥有过该锁，是就status+1，解锁同理，只有当status=0时才释放锁。<br>NonReentrantLock直接尝试获取锁和置status为0。</p>
-<h4 id="六、独享锁、共享锁"><a href="#六、独享锁、共享锁" class="headerlink" title="六、独享锁、共享锁"></a>六、独享锁、共享锁</h4><p>1.独享锁，也叫排它锁，是加上这个锁之后不能再加上<strong>其它类型</strong>的锁（说的是类型，所以synchronized可重入），一次只能被一个资源拥有，拥有锁的线程既可读，又可写。<br>如Synchronized、Lock的实现类。<br>2.共享锁可被多个线程拥有，其他的线程只能在共享锁上再加共享锁，拥有共享锁的只能读，不能写。</p>
-<ul>
-<li>ReentrantReadWriteLock接口返回一个读锁ReadLock，是共享锁；一个写锁WriteLock，是独享锁</li>
-<li>读写锁都依赖于Sync这个内部类</li>
-</ul>
-<p><strong>state字段</strong></p>
-<p>1.独享锁的state值为0或1，应该是表示是否被某线程独占<br>2.重入锁的state表示重入的次数<br>3.共享锁的state表示持有锁的数量<br>4.读写锁的state按位切割，高16位表示读锁状态，低16位表示写锁状态</p>
-<p><strong>给写锁加锁的流程</strong></p>
-<p>Sync内部类的tryAcquire方法</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">protected final boolean tryAcquire(int acquires) &#123;</span><br><span class="line"></span><br><span class="line">           Thread current = Thread.currentThread();</span><br><span class="line">           int c = getState();//获取当前线程拥有的锁的个数</span><br><span class="line">           int w = exclusiveCount(c);//写锁的个数</span><br><span class="line">           if (c != 0) &#123;</span><br><span class="line">               // (Note: if c != 0 and w == 0 then shared count != 0)</span><br><span class="line">               if (w == 0 || current != getExclusiveOwnerThread())</span><br><span class="line">                   return false;</span><br><span class="line">               if (w + exclusiveCount(acquires) &gt; MAX_COUNT)</span><br><span class="line">                   throw new Error(&quot;Maximum lock count exceeded&quot;);</span><br><span class="line">               // Reentrant acquire</span><br><span class="line">               setState(c + acquires);</span><br><span class="line">               return true;</span><br><span class="line">           &#125;</span><br><span class="line">           if (writerShouldBlock() ||</span><br><span class="line">               !compareAndSetState(c, c + acquires))</span><br><span class="line">               return false;</span><br><span class="line">           setExclusiveOwnerThread(current);</span><br><span class="line">           return true;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><img src="https://s2.loli.net/2022/09/29/768nzARsiGuvSoH.png" alt="image.png"></p>
-<p>综上，成功加写锁有两种情况：<br>1.无锁竞争成功<br>2.无读锁有写锁重入成功</p>
-<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><blockquote>
-<p><a href="!https://tech.meituan.com/2018/11/15/java-lock.html">美团技术团队——不可不说的Java“锁”事</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">锁</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java学习//" class="article-tag-list-link color2">Java学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/09/23/Java/%E9%94%81/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/跳跃游戏" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/09/02/LeetCode/%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/">跳跃游戏</a>
-    </h1>
-  
-
-        
-        <a href="/2022/09/02/LeetCode/%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/" class="archive-article-date">
-  	<time datetime="2022-09-02T02:44:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><hr>
-<p>给定一个非负整数数组 nums ，你最初位于数组的 第一个下标 。<br>数组中的每个元素代表你在该位置可以跳跃的最大长度。<br>判断你是否能够到达最后一个下标。</p>
-<p>示例 1：</p>
-<p>输入：nums = [2,3,1,1,4]<br>输出：true<br>解释：可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。</p>
-<blockquote>
-<p>来源：<a href="!https://leetcode.cn/problems/jump-game">力扣（LeetCode）</a></p>
-</blockquote>
-<hr>
-<p>给你一个非负整数数组 nums ，你最初位于数组的第一个位置。<br>数组中的每个元素代表你在该位置可以跳跃的最大长度。<br>你的目标是使用最少的跳跃次数到达数组的最后一个位置。<br>假设你总是可以到达数组的最后一个位置。</p>
-<p>示例 1:</p>
-<p>输入: nums = [2,3,1,1,4]<br>输出: 2<br>解释: 跳到最后一个位置的最小跳跃数是 2。<br>     从下标为 0 跳到下标为 1 的位置，跳 1 步，然后跳 3 步到达数组的最后一个位置。</p>
-<blockquote>
-<p>来源：<a href="!https://leetcode.cn/problems/jump-game-ii">力扣（LeetCode）</a></p>
-</blockquote>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>对于第一个，“别想那么多，就挨着跳吧”，这是一篇题解的标题。对于每一个起跳区间（如果有的话），在此区间遍历更新可以跳到的最远下标，直到下标可以达到终点，但是并不是恰好到达，只要可以到达即可。</p>
-<p>代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public boolean canJump(int[] nums) &#123;</span><br><span class="line"></span><br><span class="line">       //所能跳到的最远下标</span><br><span class="line">       int k=0;</span><br><span class="line"></span><br><span class="line">       for(int i=0;i&lt;=k;i++)&#123;</span><br><span class="line">           int temp=nums[i]+i;</span><br><span class="line">           k=Math.max(temp,k);</span><br><span class="line"></span><br><span class="line">           if(k&gt;=nums.length-1)&#123;</span><br><span class="line">               return true;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return false;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<p>在每次在所能跳到的起跳区间内，找到下次可以跳到的、最远的边界，因为要使起跳次数尽可能的少，意思就是起跳区间数量也少。<br>然而每一个区间的起点并不是固定的，所以需要for循环依次遍历。</p>
-<p>代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int jump(int[] nums) &#123;</span><br><span class="line">       int ans = 0;</span><br><span class="line">       int end = 0;</span><br><span class="line">       int maxPos = 0;</span><br><span class="line">       /**</span><br><span class="line">        * 除最后一个元素外，每个元素都有可能是一个起跳区间的起点</span><br><span class="line">        * 每次更新的最大值实际是区间的边界</span><br><span class="line">        * 每次查找找到最小个数的起跳区间</span><br><span class="line">        * 所以直到每次到达区间的边界才ans+1,实际上并不是在边界起跳</span><br><span class="line">        * 而是这个区间内必须跳一次</span><br><span class="line">        */</span><br><span class="line">       //i是每一次的起跳点</span><br><span class="line">       //除了最后一个元素，每个元素都有可能是起跳点</span><br><span class="line">       for (int i = 0; i &lt; nums.length - 1; i++)</span><br><span class="line">       &#123;</span><br><span class="line">           //每次起跳点与之前能到达的最大值比较，取最大值</span><br><span class="line">           maxPos = Math.max(nums[i] + i, maxPos);</span><br><span class="line">           //如果这次起跳范围到达边界</span><br><span class="line">           if (i == end)</span><br><span class="line">           &#123;</span><br><span class="line">               //更新end</span><br><span class="line">               end = maxPos;</span><br><span class="line">               //每次范围都必须跳一次，而不必管在哪里跳的</span><br><span class="line">               ans++;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<p>第一个和第二个的区别在于第一个需要确认是否可以跳到终点，而第二个默认一定可以跳到终点，这就导致两个解法的循环终止条件不一样，一个是当前小于边界可以到达的最远下标，一个小于是数组长度-1。</p>
-<p>分析第一个的题意，每个槽位都有可能成为起跳点，即使最后的结果是某些槽位没有被跳到，但不妨碍每个槽位的可能性；最后要判断能否到达终点，不要被恰好跳到最后一个槽位的思想局限，因为最后一次跳跃的落地点只要大于等于终点，就一定是包含了可以恰好跳到终点的情况，这样对每次当前槽位可以跳到的最远位置和在此之前可以跳到的最远位置比较，取较大者即可。</p>
-<p>第二个求跳到终点的最小次数，题目默认一定可以跳到终点。求最小次数，就是求最小个数的起跳区间，这样对每一个起跳区间，来借此确定后一个起跳区间的最大边界，直到不得不跳的时候再跳，这个时候计数就可保证是最小次数。</p>
-<p>那么如果不知道跳不跳得到终点呢？<br>那就用第一个先判断，再用第二个求值。</p>
-<p>个人猜测，贪心可以用的条件是：不知道每次选择要不要选、每次选择应该选什么、求最大/小值，下次试试看吧。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/09/02/LeetCode/%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/">展开全文 >></a>
         </p>
       
 
@@ -1842,6 +1817,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">双指针</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">买卖股票</a>
               </li>
             
             <div class="clearfix"></div>

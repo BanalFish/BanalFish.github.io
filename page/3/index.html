@@ -154,6 +154,288 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Spring/SpringIoC2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/19/Spring/SpringIoC2/">SpringIoC个人总结（二）</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/19/Spring/SpringIoC2/" class="archive-article-date">
+  	<time datetime="2022-08-19T11:35:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前一篇的个人总结主要有三个部分：</p>
+<ul>
+<li>整体介绍了BeanFactory</li>
+<li>如何配置Bean</li>
+<li>如何配置依赖关系</li>
+</ul>
+<h4 id="bean的scope"><a href="#bean的scope" class="headerlink" title="bean的scope"></a>bean的scope</h4><p>关于scope，就简单地翻译为范围，当容器中的bean不再处于scope规定的范围后，容器就会销毁它。</p>
+<p>在2.0之前支持两种：1. prototype   2.singleton<br>2.0之后增加了只支持web的另外三种：request、session、global session</p>
+<ul>
+<li>singleton：<ul>
+<li>与<strong>单例模式</strong>区分。单例模式是同一个ClassLoader中只有这一个，singleton是容器中只有一个。</li>
+<li>存活时间：直到容器销毁或退出</li>
+</ul>
+</li>
+<li>prototype：<ul>
+<li>每次请求都会返回一个新的，当然也只能返回在这个容器中</li>
+<li>返回后，容器不再拥有该对象的引用，这个对象的销毁由请求方获得</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="bean的scope陷阱"><a href="#bean的scope陷阱" class="headerlink" title="bean的scope陷阱"></a>bean的scope陷阱</h5><p>这个陷阱描述的问题就是：如果想要一个方法每次返回不同的实例，仅将这个实例定义 &lt;scope=”prototype”&gt; 是不可以的。</p>
+<p>假设A第一次请求调用这个方法后，返回第一个实例B（A依赖B），如果再次调用此方法，检测到A所处的容器已有这个B实例，对容器来说这是一样的请求，所以此后返回的是同一个B，这也印证了前面所说的，总之不管是singleton还是prototype，都针对这个容器而言。</p>
+<p>解决办法有三种：</p>
+<p>1.方法注入。在xml中配置 <lockup-method name="方法名" bean="类名">，这个标签的意思是：指定这个方法返回指定的类。</p>
+<p>2.</p>
+<ul>
+<li>使用BeanFactoryAware接口，实现了这个接口的类，都会在实例化时被容器注入一个BeanFactory，而使用BeanFactory的getBean(“类名”)方法，可以每次返回不同的实例</li>
+<li>使用ObjectFactoryCreatingBean接口，这么长的名字不用记，它的出现就是为了隔离客户端对象对BeanFactory的直接使用。在使用这个方法，在类里面也不用直接出现B的类名，而是在xml中配置，这是因为在xml中配置更隐蔽安全吗？</li>
+</ul>
+<p>3.方法替换。如果这个方法不能完成我们的目的，那就换个方法来实现好了！具体做法是拥有替换逻辑的类实现MethodReplacer接口，并在xml中指明被替换的方法被哪个类替换了逻辑。<br>（这个看着和场景问题没什么关系哈哈…）</p>
+<h3 id="工厂方法和FactoryBean"><a href="#工厂方法和FactoryBean" class="headerlink" title="工厂方法和FactoryBean"></a>工厂方法和FactoryBean</h3><p>既然之前一直围绕类与类之间的依赖，但是不要忘了还有一些类依赖一些接口，而编码过程中接口的实现类的创建，按照老规矩，我们依然不想要自己手动去new，如果这个实现类是我们自己开发的，那么可以由容器去帮助我们注入依赖，但是对于第三方库就必须要实例化了，于是FactoryBean这个Bean，注意是个Bean，就是工厂类来帮助我们实现这个功能，指去new接口实现类。</p>
+<p>也即：为了实现接口实现类和接口的解耦</p>
+<p>类别：<br>1.静态工厂方法<br>2.非静态工厂方法<br>3.自定义工厂类：实现FactoryBean接口</p>
+<p>注意自定义工厂类这里，如果某个类持有某个FactoryBean的引用，那么它取得的不是FactoryBean本身，而是FactoryBean的getObject()方法所返回的对象。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOC</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/19/Spring/SpringIoC2/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Spring/SpringIoC1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/17/Spring/SpringIoC1/">SpringIoC个人总结（一）</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/17/Spring/SpringIoC1/" class="archive-article-date">
+  	<time datetime="2022-08-17T11:35:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>此文件本是随便复制的另一个写好的md文件复制而来，没想到打开内容是阿里算法的一道笔记，一看日期，时隔多月，我竟已对当时颇为自得的笔记感到陌生，带着害怕和惶恐迅速删除了。</p>
+<p>算是看了两遍有关《Spring揭秘》有关IOC的内容，但是仍然觉得有一层薄纱隔在我和Spring之间，摸不清抓不着，现写下一点个人小结，希望以后的自己不会惶恐关掉罢。</p>
+<h3 id="什么是IOC"><a href="#什么是IOC" class="headerlink" title="什么是IOC"></a>什么是IOC</h3><p>Spring帮助我们的第一点就是，将 new对象 这个操作包揽下来，再也不用自己去new，只要加上注解@Bean，通知容器去做即可。</p>
+<hr>
+<p>就像社会关系中的人不会是一座孤岛，new完的对象，一般会与其他实例有所关联，除了简单的JavaBean对象，像POJO。<br>所以Spring还会帮助我们绑定不同对象之间的依赖关系，像这样加上@Autowired或者@Resource注解。</p>
+<p>通常有三种<strong>注入方式</strong>，也就是绑定对象与对象之间的依赖关系的方式：</p>
+<p>1.setter<br>2.构造函数<br>3.接口注入</p>
+<p>接口注入的实现显得多此一举，现已不使用，它要求被注入的对象还要再去实现一个接口，在此接口中定义绑定关系的方法。</p>
+<hr>
+<p>那么 <strong>构建对象</strong> 和 <strong>绑定对象之间的依赖关系</strong> 就是我认为IOC的主要工作，这么说好像不太恰当，IOC控制反转应该是一种思想，那就暂且描述为Spring利用IoC帮我们所做的事情吧。</p>
+<hr>
+<p>IOC容器可以分为两类：</p>
+<p>1.BeanFactory<br>2.ApplicationContext</p>
+<p><strong>联系</strong>：ApplicationContext在BeanFactory的基础上构成（前者除了继承BeanFactory，还继承了其他的一些类，这些其他的类使ApplicationContext具有自动识别其他类、国际化支持、容器内事件发布等功能；ApplicationContext这部分没看明白，暂时不多说）</p>
+<p><strong>区别</strong>：</p>
+<p>1.<strong>初始化</strong>：BeanFactory是延迟初始化，ApplicationContext是开始全部完成初始化<br>2.<strong>资源</strong>：BeanFactory所需资源有限，ApplicationContext需要大量资源，因为它一开始全部加载好了</p>
+<blockquote>
+<p>不清楚容器、框架的概念，去看了<a href="!https://blog.csdn.net/zhangyi162/article/details/51393116">关于容器、框架、架构的一些概念（转载）</a></p>
+</blockquote>
+<h3 id="BeanFactory总述"><a href="#BeanFactory总述" class="headerlink" title="BeanFactory总述"></a>BeanFactory总述</h3><p>如果我们要让厨师为我们炒菜，他们不可能凭空造出来我们想要的菜，得给一些必要信息，统一写在纸上是一种可行的办法。<br>这个过程映射到Spring的BeanFactory，于是我们同样得给BeanFactory一些“信息”。</p>
+<ul>
+<li>信息来源：外部配置文件（properties或者xml）</li>
+<li>信息封装：将加载文件得到的信息封装成一个对象（写纸上），即BeanDefinition</li>
+<li>创建对象：BeanDefinitionRegistry负责完成Bean的注册和加载（炒菜）</li>
+<li>返回对象：FactoryBean来返回。想到设计模式中的工厂方法，大多也只是定义一个返回产品的方法，与这里不谋而合。</li>
+</ul>
+<p>创建和返回由两个不同的接口完成后，有一个叫DefaultListableBeanFactory的类继承它们，作为通用的使用类。</p>
+<blockquote>
+<p>关于创建对象这步，BeanDefinitionRegistry会对提供的信息做出额外的修饰吗？暂且按下不表。</p>
+</blockquote>
+<hr>
+<p>现在我们知道需要自己配置一些信息给容器，它才能帮助我们工作，如果容器连根据需求写代码都能完全做到时，我想剩下的内容也没有必要再接着看了。</p>
+<h5 id="xml配置"><a href="#xml配置" class="headerlink" title="xml配置"></a>xml配置</h5><p>首先从单个的bean来看，如果BeanFactory要创建，这里的创建不是指定义一个类对象，而是在堆中为它new出一块内存区域，我们做的事情是根据需要定义好每个类的名称、属性（包括基本类型和引用类型）或者方法等，然后得让容器知道这个类吧，于是给它一个名字叫做<strong>id</strong>，其所指向的类的类型用<strong>class</strong>来指明。</p>
+<blockquote>
+<p>除此之外，还可以用name来为bean取别名</p>
+</blockquote>
+<p>如果对于一些bean具有某些共同点，则可以用<beans>标签来统一管理，比如：</p>
+<ul>
+<li>default-lazy-init</li>
+<li>default-aotowired</li>
+<li>default-dependency-check：是否做依赖检查</li>
+<li>default-init-method：指定这些bean相同的初始化回调后的方法</li>
+<li>default-destroy-method：同上，但是是销毁前回调，而不是销毁方法，销毁还能有什么别的吗哈哈哈，如果能被篡改的话要出大问题</li>
+</ul>
+<hr>
+<p>还记得前面所说的IOC容器只做两件事，<strong>构建对象</strong> 和 <strong>绑定对象之间的依赖关系</strong>吗？现在已经通过xml配置了bean如何构建，现在看看通过xml绑定依赖关系。</p>
+<p>依然如前面所说，绑定有三种方式，不过接口注入已经不再使用：</p>
+<p>1.构造方法注入，使用<constructor-arg>表示是构造方法，type指定注入对象的类型；多个对象使用index下标标识</p>
+<p>2.setter方法注入，使用<property>标签，其中使用name指定实例名或者说属性名，以ref来指明是哪个类型</p>
+<hr>
+<p>两者通用的内嵌元素：</p>
+<ul>
+<li>value：其中不可再嵌套其他元素，是最底层的标签；可注入的类型包括String、原始类型及其包装类</li>
+<li>ref：<ul>
+<li>local：一个配置文件</li>
+<li>parent：当前容器的父容器</li>
+<li>bean：通用</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>那么除了这样明确地指定依赖的对象，容器还提供了<autowire>来指明通过哪种类型来绑定的抽象方法，如可以设置 autowire=byName 来通过 bean的id绑定，设置autowire=byType来通过bean的class绑定。</p>
+<p>除了这样显示的依赖关系，即我们可以先实例化这个类后再去创建它依赖的对象，那么 <depends-on> 就是来描述 先实例化依赖的对象，可能应用的场景有静态代码块初始化、数据库驱动注册等。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOC</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/17/Spring/SpringIoC1/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java/逻辑右移" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -971,234 +1253,6 @@
 
 
   
-    <article id="post-LeetCode/next-permutation" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/07/LeetCode/next-permutation/">下一个排列</a>
-    </h1>
-  
-
-        
-        <a href="/2022/07/07/LeetCode/next-permutation/" class="archive-article-date">
-  	<time datetime="2022-07-07T07:45:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>整数数组的一个 排列  就是将其所有成员以序列或线性顺序排列。</p>
-<p>例如，arr = [1,2,3] ，以下这些都可以视作 arr 的排列：[1,2,3]、[1,3,2]、[3,1,2]、[2,3,1] 。<br>整数数组的 下一个排列 是指其整数的下一个字典序更大的排列。更正式地，如果数组的所有排列根据其字典顺序从小到大排列在一个容器中，那么数组的 下一个排列 就是在这个有序容器中排在它后面的那个排列。如果不存在下一个更大的排列，那么这个数组必须重排为字典序最小的排列（即，其元素按升序排列）。</p>
-<p>例如，arr = [1,2,3] 的下一个排列是 [1,3,2] 。<br>类似地，arr = [2,3,1] 的下一个排列是 [3,1,2] 。<br>而 arr = [3,2,1] 的下一个排列是 [1,2,3] ，因为 [3,2,1] 不存在一个字典序更大的排列。<br>给你一个整数数组 nums ，找出 nums 的下一个排列。</p>
-<p>必须 原地 修改，只允许使用额外常数空间。</p>
-<blockquote>
-<p>题目来自<a href="%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps://leetcode.cn/problems/next-permutation">力扣</a></p>
-</blockquote>
-<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>  找到下一个字典序更大的排列，可以思考下一个这种排列的特征有哪些。</p>
-<ul>
-<li>进位</li>
-</ul>
-<p>类似正常的十进制数字增长时，进位时+1，什么时候进位？靠后的数字组合到不能更大时进位，如1245，个位数5进位到9时（9不能更大了），需要向前进位为1250.</p>
-<p>  类似这种思想，一个数组的数字随机，没有按照0~9的顺序增长，所以进位不加1，而是换成此数字之后大于它的最小数。</p>
-<p>  什么时候进位？和前面一样，靠后的数字组合不能更大时，就进位。</p>
-<p>举例如：12385764，<br>1.从后往前看，一个数字的组合：4不能更大，下一个；<br>2.两个数字的组合：64不能更大，下一个；<br>3.三个数字的组合：764不能更大，下一个；<br>4.四个数字的组合：5764可以更大，于是5需要进位；<br>5.在此之后的764比5大但又在组合中最小的是6，所以5进位为6,6的位置由5替代。</p>
-<ul>
-<li>下一个</li>
-</ul>
-<p>如何保证下一个？只需要在进位后，保证此进位数字之后的数字组合升序即可。</p>
-<p>上述第5步中，可以将764按照升序排列，既方便查找，也省去之后再次升序的操作。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public void nextPermutation(int[] nums) &#123;</span><br><span class="line">       int len=nums.length;</span><br><span class="line">       for(int i=len-1;i&gt;0;i--)&#123;//从后往前</span><br><span class="line">           if(nums[i]&gt;nums[i-1])&#123;//不能更大</span><br><span class="line">               Arrays.sort(nums,i,len);//进位数字此后升序</span><br><span class="line">               for(int j=i;j&lt;len;j++)&#123;//寻找大于且最小的数并替换位置</span><br><span class="line">                   if(nums[j]&gt;nums[i-1])&#123;</span><br><span class="line">                       int temp=nums[j];</span><br><span class="line">                       nums[j]=nums[i-1];</span><br><span class="line">                       nums[i-1]=temp;</span><br><span class="line">                       return;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       Arrays.sort(nums);//原数组降序，返回升序</span><br><span class="line">       return;</span><br><span class="line">   &#125;	</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>思路参考<a href="!https://leetcode.cn/problems/next-permutation/solution/xia-yi-ge-pai-lie-suan-fa-xiang-jie-si-lu-tui-dao-/">下一个排列算法详解：思路+推导+步骤</a></p>
-<p>代码参考自<a href="!https://leetcode.cn/problems/next-permutation/solution/xia-yi-ge-pai-lie-suan-fa-xiang-jie-si-lu-tui-dao-/">上述链接</a>XXXTENTACION网友的评论</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">算法思想</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/07/07/LeetCode/next-permutation/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/search-in-rotated-sorted-array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/05/LeetCode/search-in-rotated-sorted-array/">搜索旋转排序数组</a>
-    </h1>
-  
-
-        
-        <a href="/2022/07/05/LeetCode/search-in-rotated-sorted-array/" class="archive-article-date">
-  	<time datetime="2022-07-05T03:36:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>整数数组 nums 按升序排列，数组中的值 <strong>互不相同</strong> 。</p>
-<p>在传递给函数之前，nums 在预先未知的某个下标 k（0 &lt;= k &lt; nums.length）上进行了 旋转，使数组变为 [nums[k], nums[k+1], …, nums[n-1], nums[0], nums[1], …, nums[k-1]]（下标 从 0 开始 计数）。例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。</p>
-<p>给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。</p>
-<p><strong>你必须设计一个时间复杂度为 O(log n) 的算法解决此问题。</strong></p>
-<p>输入：nums = [4,5,6,7,0,1,2], target = 0<br>输出：4</p>
-<p>输入：nums = [4,5,6,7,0,1,2], target = 3<br>输出：-1</p>
-<p>输入：nums = [1], target = 0<br>输出：-1</p>
-<blockquote>
-<p>题目来自<a href="!https://leetcode.cn/problems/search-in-rotated-sorted-array">力扣</a></p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">二分法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/07/05/LeetCode/search-in-rotated-sorted-array/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/">Next&gt;&gt;</a>
@@ -1561,6 +1615,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">双指针</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">买卖股票</a>
               </li>
             
             <div class="clearfix"></div>

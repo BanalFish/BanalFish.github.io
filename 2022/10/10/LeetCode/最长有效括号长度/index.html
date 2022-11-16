@@ -24,7 +24,7 @@
 <meta property="og:image" content="https://s2.loli.net/2022/10/10/IpqxsCyMKJ17rld.png">
 <meta property="og:image" content="https://s2.loli.net/2022/10/10/o8LhDgOTCENI35X.png">
 <meta property="article:published_time" content="2022-10-10T11:25:14.000Z">
-<meta property="article:modified_time" content="2022-10-10T12:37:35.808Z">
+<meta property="article:modified_time" content="2022-11-01T08:11:37.974Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="LeetCode">
@@ -189,7 +189,7 @@
 </blockquote>
 <h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><h4 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h4><p>题目需要求最长的有效括号长度，也就是截取这个字符串的某个区间，这个区间内的字符串满足：<br>1.括号个数为偶数<br>2.以嵌套（如“(())”）、连续（如“()(())()”）的方式出现</p>
 <p>现设置动态数组dp[i]，其值表示截止到下标i对应的字符时，出现的<strong>最长区间长度</strong>。</p>
-<p>如果字符串长度为1，那么结果一定为0。所以下面所说的i基本是在大于0的情况下讨论。</p>
+<p>P.S.如果字符串长度为1，那么结果一定为0。所以下面所说的i基本是在大于0的情况下讨论。</p>
 <p>对于第i个字符，可能为“(”或者“)”，而如果以“(”结尾的字符串一定不会是我们需要的结果，所以“(”在dp数组对应的值应该为0，而整形数组默认值为0，即不需要对这种情况做出特殊判断，让我们把注意力放到“)”。</p>
 <p>对于“)”，它的前一位可能是“(” 和 “)”。</p>
 <p><strong>1.“(”的情况</strong></p>
@@ -738,6 +738,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">双指针</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">买卖股票</a>
               </li>
             
             <div class="clearfix"></div>
