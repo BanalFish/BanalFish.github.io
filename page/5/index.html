@@ -154,6 +154,109 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-LeetCode/generate-parentheses" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/12/LeetCode/generate-parentheses/">括号生成</a>
+    </h1>
+  
+
+        
+        <a href="/2022/05/12/LeetCode/generate-parentheses/" class="archive-article-date">
+  	<time datetime="2022-05-12T09:49:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。</p>
+<p>示例 1：</p>
+<p>输入：n = 3<br>输出：[“((()))”,”(()())”,”(())()”,”()(())”,”()()()”]</p>
+<p>示例 2：</p>
+<p>输入：n = 1<br>输出：[“()”]
+ </p>
+<p>提示：</p>
+<p>1 &lt;= n &lt;= 8</p>
+<blockquote>
+<p>题目来自<a href="!https://leetcode.cn/problems/generate-parentheses">力扣-括号生成</a></p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/12/LeetCode/generate-parentheses/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-LeetCode/divide-two-integers" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -379,7 +482,7 @@
 <p><a href="!https://zhuanlan.zhihu.com/p/95080265">排序算法之——归并排序和快速排序</a></p>
 <p><a href="!https://www.cnblogs.com/chengxiao/p/6129630.html">图解排序算法(三)之堆排序</a></p>
 </blockquote>
-<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>1.基本思想：每次遍历数组的时候，相邻两个元素两两比较，如果小于或大于（看情况），就交换两个的位置，交给下一组，最后会有这一趟的最值被交换到最末尾。<br>2.时间复杂度：最佳O(n) 最坏O(n^2) 平均O(n^2)<br>3.空间复杂度：O(1)<br>解释：每一次的遍历会有（n-1）个两数的组合，所以每次比较也会比较(n-1)次，虽然随着末尾确定的个数的增多，每次遍历时间会减少，但是(n-1)+(n-2)+…+1，根据数学公式，可推出结果为O((n^2)/2)，应该是简记为了O(n^2)。<br>最佳情况是：借助一个标志位，如果交换了则更新，没有则不更新；根据每次的值来判断是否进去循环，将时间复杂度降为O(n)<br>4.原地排序，稳定排序</p>
+<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>1.基本思想：每次遍历数组的时候，相邻两个元素两两比较，如果小于或大于（看情况），就交换两个的位置，交给下一组，最后会有这一趟的最值被交换到最末尾。<br>2.时间复杂度：最佳O(n) 最坏O(n^2) 平均O(n^2)<br>3.空间复杂度：O(1)k<br>解释：每一次的遍历会有（n-1）个两数的组合，所以每次比较也会比较(n-1)次，虽然随着末尾确定的个数的增多，每次遍历时间会减少，但是(n-1)+(n-2)+…+1，根据数学公式，可推出结果为O((n^2)/2)，应该是简记为了O(n^2)。<br>最佳情况是：借助一个标志位，如果交换了则更新，没有则不更新；根据每次的值来判断是否进去循环，将时间复杂度降为O(n)<br>4.原地排序，稳定排序</p>
         
       
 
@@ -1083,113 +1186,6 @@
 
 
   
-    <article id="post-Java/for" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/22/Java/for/">for循环三语句执行顺序</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/22/Java/for/" class="archive-article-date">
-  	<time datetime="2022-04-22T10:12:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p>假设 a 是一个由线程 1 和线程 2 共享的初始值为 0 的全局变量，则线程 1 和线程 2 同时执行下面的代码，最终 a 的结果不可能是()</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">boolean isOdd = false;</span><br><span class="line">for(int i=1;i&lt;=2;++i)&#123;</span><br><span class="line">   	if(i%2==1)</span><br><span class="line">		isOdd = true;</span><br><span class="line">   	else </span><br><span class="line">		isOdd = false;</span><br><span class="line">   	</span><br><span class="line">	a+=i*(isOdd?1:-1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><a href="!https://www.nowcoder.com/test/question/done?tid=55673140&qid=55070#summary">题目链接</a></p>
-</blockquote>
-<h3 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h3><ol>
-<li>线程1、2不并发，顺序执行，则1线程执行后a=-1，2线程会使用a=-1，最后两者执行过程a=1-&gt;-1-&gt;0-&gt;-2</li>
-<li>线程1、2并发，此时读写完全冲突，类似一个线程起了作用，最后a=-1</li>
-<li>线程1、2部分并发，假设线程1执行完第一次循环，此时a=1；这个时候线程2加入进来，线程1已经不起作用（被线程2覆盖），最后线程2执行两次循环，a=-&gt;2-&gt;0</li>
-</ol>
-<h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p>题目与for循环关系不大，奈何本人写的时候，看到++i 以为是先做了加i操作，再进入的循环体，一直以为整个循环只会执行一次操作，后搜索，for循环三条语句执行顺序如下：</p>
-<ol>
-<li>初始化第一条语句</li>
-<li>判断是否符合第二条的条件</li>
-<li>执行循环体</li>
-<li>执行第三条语句</li>
-<li>判断是否符合第二条的条件</li>
-</ol>
-<p>直到循环结束。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">循环</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java细节//" class="article-tag-list-link color2">Java细节</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/22/Java/for/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/4/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/6/">Next&gt;&gt;</a>
@@ -1204,7 +1200,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2022 BanalFish
+    		&copy; 2023 BanalFish
     	</div>
 
     </div>
@@ -1556,6 +1552,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">买卖股票</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RESTful</a>
               </li>
             
             <div class="clearfix"></div>

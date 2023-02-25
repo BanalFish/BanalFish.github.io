@@ -154,6 +154,147 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Spring/SpringIoC_BeanFactory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/21/Spring/SpringIoC_BeanFactory/">SpringIoC--BeanFactory</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/21/Spring/SpringIoC_BeanFactory/" class="archive-article-date">
+  	<time datetime="2022-08-21T10:47:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前面大致理清了IOC容器的职责和如何使用xml配置后，接下来是原理部分。</p>
+<h3 id="BeanFactory综述"><a href="#BeanFactory综述" class="headerlink" title="BeanFactory综述"></a>BeanFactory综述</h3><p>BeanFactory大体来说可以分为 <strong>容器启动阶段</strong> 和 <strong>Bean实例化阶段</strong>。</p>
+<p>容器启动阶段又可以按顺序如下排列：<br>1.加载配置<br>2.分析配置信息<br>3.装配到BeanDefinition<br>4.其他后操作</p>
+<p><strong>启动阶段就是把Bean的配置信息从xml文件中读取、分析出来再包装成BeanDefinition的过程</strong>，前期工作准备好后，就可以开始实例化：<br>1.实例化对象<br>2.装配依赖<br>3.生命周期回调<br>4.对象其他处理<br>5.注册回调接口</p>
+<hr>
+<h4 id="启动阶段"><a href="#启动阶段" class="headerlink" title="启动阶段"></a>启动阶段</h4><p>如果想在容器实例化对象之前做出修改应该怎么办？Spring提供了一个接口：<strong>BeanFactoryPostProcessor</strong>，允许在实例化之前，对BeanDefinition做出最后的修改，它的实现类有：<br>1.PropertyPlaceholderConfigurer<br>2.PropertyOverrideConfigurer</p>
+<p>看第一个的名字就可以猜到是通过占位的方式完成，在xml中使用如${}的方式占位，第一阶段加载完所有配置信息时还只是以占位符的形式存在；之后它被应用的时候，才去properties里面加载信息替换原来占位符的值。同时它还可以检查Java的System类中的properties，如果在properties文件中找不到相应配置项，那么它就会去System的Properties中查找。</p>
+<p>PropertyOverrideConfigurer看名字猜到应该是重写了什么，实际上也就是覆盖了原来xml中bean定义的property信息。</p>
+<p>除了对xml中配置信息的修改，也就是说除了本身定义这些Bean需要的东西以外，还有 字符串到Java对象转换规则的信息 也需要注册到容器。Xml中都是配置的字符串，从字符串到Java对象的这种<strong>转换工作</strong>就是由<strong>PropertyEditer</strong>来做，将PropertyEditer<strong>注册</strong>到容器的工作就是CustomerEditConfigurer的工作。</p>
+<hr>
+<p>1.PropertyPlaceholderConfigurer（通过占位符提前占领位置，而后从properties文件中读取真正的值）<br>2.PropertyOverrideConfigurer（properties文件的值替换掉xml的值）<br>3.CustomerEditConfigurer（将具有转换职能的类注册到容器）</p>
+<ul>
+<li>启动阶段做的就是加载配置-&gt;分析配置信息-&gt;包装成BeanDefinition-&gt;修改值</li>
+</ul>
+<hr>
+<h4 id="实例化阶段"><a href="#实例化阶段" class="headerlink" title="实例化阶段"></a>实例化阶段</h4><p>分为以下几个步骤：<br>1.实例化Bean对象<br>2.设置对象属性<br>3.检查Aware相关接口并设置响应的依赖</p>
+<p>4.BeanPostProcessor前置处理<br>5.检查是否是InitializingBean以决定是否调用afterPropertieSet方法<br>6.检查是否配置有自定义的init-method<br>7.BeanPostProcessor后置处理</p>
+<p>8.注册必要的Destruction相关的回调接口<br>9.使用ing<br>10.是否实现DisposableBean接口<br>11.是否配置自定义的destroy方法</p>
+<h5 id="Bean的实例化与BeanWrapper"><a href="#Bean的实例化与BeanWrapper" class="headerlink" title="Bean的实例化与BeanWrapper"></a>Bean的实例化与BeanWrapper</h5><p>（包含步骤1、2）</p>
+<ul>
+<li>实例化Bean的方式：<ul>
+<li>反射</li>
+<li>CGLIB动态字节码</li>
+</ul>
+</li>
+<li>如何决定：策略模式</li>
+<li>区别：反射不支持方法注入</li>
+</ul>
+<p>容器根据BeanDefinition取得实例化信息后不是直接返回实例化完成的对象实例，而是经过BeanWrapper包裹后的。<br>Spring根据对象为其构造一个BeanWrapperImpl实例，之前的被CustomerEditConfigurer注册到容器、用于转换工作的PropertyEditer，这个时候会被容器复制出一份给BeanWrapperImpl，这样BeanWrapperImpl就可以给实例转换类型、设置属性啦。</p>
+<h5 id="Aware接口"><a href="#Aware接口" class="headerlink" title="Aware接口"></a>Aware接口</h5><p>（包含步骤3）<br>当实例化完成并且相关的依赖设置好后，容器会检查该对象实例是否实现了一系列结尾以Aware命名的接口，如果实现了就会把相对应的依赖注入到实例中。<br>像之前在scope陷阱那里一样，当时为了通过BeanFactory每次返回不同的实例，有让那个类实现了BeanFactoryAware接口，从而容器可以将BeanFactory注入到那个类。</p>
+<h5 id="BeanPostProcessor"><a href="#BeanPostProcessor" class="headerlink" title="BeanPostProcessor"></a>BeanPostProcessor</h5><p>（包含步骤4、7）</p>
+<p>这里联想到另一个类：BeanFactoryPostProcessor，两者的区别在于，Factory那个存在于容器启动阶段，而现在这个存在于实例化Bean的阶段。</p>
+<p>Factory那个处理BeanDefinition，这个处理实例化后的对象实例。</p>
+<p>该接口声明了两个方法，第一个是在初始化之前处理，第二个是在初始化后处理，分别对应上述步骤的4和7.<br>接上面所说的Aware接口，在发现某些实例实现了结尾以Aware命名的接口后，会走到前置处理这一步，容器会检测到BeanPostProcessor的实现类，然后利用实现类为那个实现了接口的类注入相应的依赖。</p>
+<p>SpringAOP使用BeanPostProcessor的场景是为对象生成相应的代理对象。</p>
+<h5 id="InitializingBean和init-method"><a href="#InitializingBean和init-method" class="headerlink" title="InitializingBean和init-method"></a>InitializingBean和init-method</h5><p>（包含步骤5、6）<br>适用于一些对象实例化之后还不能马上使用的情况，后续处理可在InitializingBean接口定义中的afterPropertieSet方法中接着实现。<br>比起这种具有侵入性的实现接口的方式，init-method则通过配置在bean中的方式，使其减弱这种侵入感。</p>
+<h5 id="Disposable和destroy-method"><a href="#Disposable和destroy-method" class="headerlink" title="Disposable和destroy-method"></a>Disposable和destroy-method</h5><p>（包含步骤10、11）<br>同上面类似，应用与在销毁前还有一些动作需要执行</p>
+<hr>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>Q:BeanFactory如何创建出一个实例？</p>
+<ul>
+<li>容器启动（读取配置文件-&gt;分析信息-&gt;装配到Definition（此时可以对值做出最后的修改））</li>
+<li>Bean实例化<ul>
+<li>创建对象实例-&gt;设置值-&gt;绑定相关依赖</li>
+<li>检查Aware接口并注入相应依赖-&gt;添加初始化前的动作-&gt;初始化-&gt;初始化后的动作</li>
+<li>使用中</li>
+<li>销毁前的动作-&gt;销毁</li>
+</ul>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOC</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/21/Spring/SpringIoC_BeanFactory/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Spring/SpringIoC2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -883,7 +1024,7 @@
 <p>在Java中null是一个特殊的值，可以赋值给任何引用类型，也可以转化为任何引用类型，所以下面的可以正常执行。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Integer value1 = (Integer) null;</span><br><span class="line">Double value2 = (Double) null;</span><br><span class="line">Boolean value3 = (Boolean) null;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>但是在使用Integer.valueOf(null)时会报空指针异常</p>
+<p>但是在使用Long.longValue(null)时会报空指针异常</p>
 <p>做法： 尽量不要使用包装类，使用时也应该判断空值</p>
 
       
@@ -1148,111 +1289,6 @@
 
 
   
-    <article id="post-LeetCode/reverse-nodes-in-k-group" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/07/LeetCode/reverse-nodes-in-k-group/">K个一组翻转链表</a>
-    </h1>
-  
-
-        
-        <a href="/2022/07/07/LeetCode/reverse-nodes-in-k-group/" class="archive-article-date">
-  	<time datetime="2022-07-07T07:45:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。</p>
-<p>k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。</p>
-<p>你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。</p>
-<blockquote>
-<p>题目来自<a href="!https://leetcode.cn/problems/reverse-nodes-in-k-group">力扣</a></p>
-</blockquote>
-<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>本来想用头插法一遍过，再把不需要的再用头插法翻转一下的，但是代码写的很混乱，不知道怎么写好，最后妥协看了题解。</p>
-<p>题解基本思想都是先计算需要翻转的节点有没有达到k值，达到了才翻转，没达到就不翻转，看来我一昧追求快速最后却什么也没有写出来的方法并不正确。</p>
-<p>这题也没有考虑特殊情况什么的，因为通用的代码就包含了。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public ListNode reverseKGroup(ListNode head, int k) &#123;</span><br><span class="line"></span><br><span class="line">       //哑结点</span><br><span class="line">       ListNode dummy=new ListNode(-1,head);</span><br><span class="line">       //每一段的头结点</span><br><span class="line">       ListNode preHead=dummy;</span><br><span class="line">       //快慢指针。</span><br><span class="line">       //快指针判断后面需要翻转的节点数量是否达到k值</span><br><span class="line">       //慢指针是一段的起点</span><br><span class="line">       ListNode fast=head,slow=head;</span><br><span class="line"></span><br><span class="line">       while(fast!=null)&#123;</span><br><span class="line">           int nodeNum=0;</span><br><span class="line">           //一趟循环完，fast指向一段的后一个，即tailNext</span><br><span class="line">           for(;nodeNum&lt;k&amp;&amp;fast!=null;nodeNum++)&#123;</span><br><span class="line">               fast=fast.next;</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           //有足够的数量来翻转</span><br><span class="line">           if(nodeNum==k)&#123;</span><br><span class="line">               ListNode reverse = reverse(slow, fast);</span><br><span class="line">               preHead.next=reverse;//重新链接翻转后的区间</span><br><span class="line">               preHead=slow;//每一段的头结点重新指向</span><br><span class="line">               slow=fast;//slow也重新指向</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return dummy.next;</span><br><span class="line">   &#125;</span><br><span class="line">   //返回反转后的最后一个值。如1-2-3，翻转后3-2-1，返回1</span><br><span class="line">   //翻转的通用模板，传入头、尾.next指针</span><br><span class="line">   public ListNode reverse(ListNode head,ListNode tailNext)&#123;</span><br><span class="line">       //定义变量，指向当前和需要链接的尾巴</span><br><span class="line">       ListNode cur=head,temp=tailNext;</span><br><span class="line"></span><br><span class="line">       while(cur!=tailNext)&#123;</span><br><span class="line">           ListNode next=cur.next;//暂时存储当前指针的下一个</span><br><span class="line">           cur.next=temp;</span><br><span class="line">           temp=cur;</span><br><span class="line">           cur=next;</span><br><span class="line">       &#125;</span><br><span class="line">       return temp;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>思路：</p>
-<p>0.分段，定义需要的变量<br>1.判断是否足够翻转-&gt;for循环遍历<br>2.足够则翻转-&gt;翻转模板<br>3.定义的指向改变，又是一个区间段</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Diff</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/07/07/LeetCode/reverse-nodes-in-k-group/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/">Next&gt;&gt;</a>
@@ -1267,7 +1303,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2022 BanalFish
+    		&copy; 2023 BanalFish
     	</div>
 
     </div>
@@ -1619,6 +1655,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">买卖股票</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RESTful</a>
               </li>
             
             <div class="clearfix"></div>

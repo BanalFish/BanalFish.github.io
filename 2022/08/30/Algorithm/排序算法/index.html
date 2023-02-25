@@ -22,7 +22,7 @@
 <meta property="og:description" content="排序算法以下都以目标是升序为例 冒泡排序如果前一个比后一个大，则说明我们期望它所处的位置应该往后，两两交换后就可以暂时保存这个较大数，并与后面的数接着比较，这样每次都会有一个确定的最大数排到后面。 选择排序类似冒泡，但是不再两两交换，因为交换的目的只是暂存那个较大值，所以用一个临时变量就可以，每趟也都可以找出一个确定的数在它应该在的位置。 插入排序冒泡和选择每次都将这个数放到后面，如果一个数它的位">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-08-30T02:56:16.523Z">
-<meta property="article:modified_time" content="2022-08-30T02:55:41.055Z">
+<meta property="article:modified_time" content="2022-11-24T02:11:13.033Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="后端">
 <meta name="twitter:card" content="summary">
@@ -172,7 +172,7 @@
 <h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p>选一个基准值，比它小的放左边，大的放右边，这样一趟下来就确定了一个数应该在的地方；接着再分别对左边和右边的采取同样的操作。</p>
 <h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><p>把一个数组看成一个二叉树，先从第一个非叶子节点开始检查是否符合大于左右孩子的条件，符合则从它的左孩子开始检查，右孩子与左孩子比较大小，因为每次只需把最大的放到根节点就行，左右的顺序不重要。</p>
 <p>第一趟遍历完后，已经得到大顶堆，把根与最后一个进行交换，这样最大的就确定了；第二趟及之后则是从根节点开始调整为大顶堆，直到最后堆的总数为1，则完成了排序。</p>
-<h3 id="计数排序"><a href="#计数排序" class="headerlink" title="计数排序"></a>计数排序</h3><p>取决于要排序数组的值的范围。如果一个数组中最大值为10，则新建一个长度为11的数组，以待排序数组值作为下标，出现的次数作为新数组的值，最后对新数组进行顺序地打印就行。有点像键值对。</p>
+<h3 id="计数排序"><a href="#计数排序" class="headerlink" title="计数排序"></a>计数排序</h3><p>取决于要排序数组的值的范围。如果一个数组中最大值为10，则新建一个长度为11的数组，以待排序数组值作为下标，出现的次数作为新数组的值，最后对新数组进行顺序地打印就行。有点像键值对，key是待排序数组的元素，value是这个元素出现的次数。</p>
 <h3 id="桶排序"><a href="#桶排序" class="headerlink" title="桶排序"></a>桶排序</h3><p>在计数排序的基础上进行的修改。既然计数排序需要的额外空间取决于最大值，其中的许多空间很有可能都被浪费，桶排序根据最大值、最小值、待排序数组的长度计算出桶的个数，对每一个桶，其中的元素都采用插入排序算法进行了排序。有点像HashMap。</p>
 <p>元素被放到哪个桶取决于映射函数，好的映射函数要使元素能够均匀分配到每一个桶。还有一点是在额外空间充足的情况下，尽量增大桶的数量，是不是为了减少桶中元素的数量来减小插入排序所需要的时间呢。</p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>昨天我在想希尔排序启发后来人的到底是什么，现在我想应该是分组的思想启发出了分治法也说不定。也许不是希尔排序到底有什么思想的贡献，而是它较之前算法的提升、分组思路，其之后排序算法各类发展思想，在我们后来人的总结时，才使得它处于一个这么特殊、处于分水岭的位置。</p>
@@ -316,7 +316,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2022 BanalFish
+    		&copy; 2023 BanalFish
     	</div>
 
     </div>
@@ -668,6 +668,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">买卖股票</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RESTful</a>
               </li>
             
             <div class="clearfix"></div>

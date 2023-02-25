@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   
   
-<meta name="keywords" content="后端">
+<meta name="keywords" content="RESTful API,后端">
 
   
   
@@ -12,22 +12,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>计算机网络交换方式及评价指标 | BanalFish游向银河</title>
+  <title>对RESTful API的理解 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="因特网组成">
+  <meta name="description" content="前言  对RESTful并不算陌生，先前没有真正了解过，以为前后端分离的这种模式就差不多是了。刚刚在看Spring的时候文章提到了它，于是还是搜索了解了一下。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="计算机网络交换方式及评价指标">
-<meta property="og:url" content="http://example.com/2022/01/09/CPUnet/CPUnet1/index.html">
+<meta property="og:title" content="对RESTful API的理解">
+<meta property="og:url" content="http://example.com/2023/02/23/net/RESTful%E7%90%86%E8%A7%A3/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="因特网组成">
+<meta property="og:description" content="前言  对RESTful并不算陌生，先前没有真正了解过，以为前后端分离的这种模式就差不多是了。刚刚在看Spring的时候文章提到了它，于是还是搜索了解了一下。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://api2.mubu.com/v3/document_image/ec1f900c-8e6c-4ea3-a95a-1feec95c649b-15701233.jpg">
-<meta property="article:published_time" content="2022-01-09T14:22:50.000Z">
-<meta property="article:modified_time" content="2022-02-19T11:32:50.692Z">
+<meta property="article:published_time" content="2023-02-23T13:05:56.000Z">
+<meta property="article:modified_time" content="2023-02-23T13:25:06.789Z">
 <meta property="article:author" content="BanalFish">
-<meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="RESTful">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://api2.mubu.com/v3/document_image/ec1f900c-8e6c-4ea3-a95a-1feec95c649b-15701233.jpg">
   
     <link rel="alternative" href="/atom.xml" title="BanalFish游向银河" type="application/atom+xml">
   
@@ -156,123 +154,48 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-CPUnet/CPUnet1" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-net/RESTful理解" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      计算机网络交换方式及评价指标
+      对RESTful API的理解
     </h1>
   
 
         
-        <a href="/2022/01/09/CPUnet/CPUnet1/" class="archive-article-date">
-  	<time datetime="2022-01-09T14:22:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-09</time>
+        <a href="/2023/02/23/net/RESTful%E7%90%86%E8%A7%A3/" class="archive-article-date">
+  	<time datetime="2023-02-23T13:05:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-02-23</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="因特网组成"><a href="#因特网组成" class="headerlink" title="因特网组成"></a><strong>因特网组成</strong></h1><span id="more"></span>
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>  对RESTful并不算陌生，先前没有真正了解过，以为前后端分离的这种模式就差不多是了。刚刚在看Spring的时候文章提到了它，于是还是搜索了解了一下。</p>
+<span id="more"></span>
 
-<h2 id="边缘部分"><a href="#边缘部分" class="headerlink" title="边缘部分"></a>边缘部分</h2><ul>
-<li>直接与用户通信<br></li>
-</ul>
-<h2 id="核心部分"><a href="#核心部分" class="headerlink" title="核心部分"></a>核心部分</h2><ul>
-<li>由大量网络或者路由器组成，为边缘部分提供服务<br></li>
-</ul>
-<h1 id="三种交换方式"><a href="#三种交换方式" class="headerlink" title="三种交换方式"></a><strong>三种交换方式</strong></h1><p>交换就是：按照某种方式动态的分配传输线路的资源</p>
-<hr>
-<h2 id="电路交换"><a href="#电路交换" class="headerlink" title="电路交换"></a>电路交换</h2><pre><code>建立连接--&gt;通话--&gt;释放资源。
-
-但是不适合传输计算机资源，因为计算机资源往往突发地出现在通信链路上，当某用户编辑文件时，资源未被利用连接也一直保持，使资源利用率大大下降
-</code></pre>
-<h2 id="分组交换"><a href="#分组交换" class="headerlink" title="分组交换"></a>分组交换</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">情景：A主机传输数据到B主机</span><br><span class="line"></span><br><span class="line">A：将报文段拆分成更小的数据段，并加上首部，此时这个新的组合叫做分组，首部叫做包头；然后发送</span><br><span class="line"></span><br><span class="line">路由器：接收分组，比对首部信息，进行查表转发（存储转发）</span><br><span class="line"></span><br><span class="line">B：接收分组，并将首部去掉后的数据段进行组合，还原成初始报文</span><br><span class="line"></span><br><span class="line">A：构造分组，发送分组</span><br><span class="line"></span><br><span class="line">路由器（分组交换机）：缓存分组，转发分组</span><br><span class="line"></span><br><span class="line">B：接收分组，还原报文</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="报文交换"><a href="#报文交换" class="headerlink" title="报文交换"></a>报文交换</h2><ul>
-<li>是分组交换的前身</li>
-</ul>
-<h3 id="优缺点比较"><a href="#优缺点比较" class="headerlink" title="优缺点比较"></a>优缺点比较</h3><table>
-<thead>
-<tr>
-<th>交换方式</th>
-<th>优点</th>
-<th>缺点</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>电路交换</td>
-<td>1. 通信时延小<br>2. 数据有序发送和接收<br>3. 没有冲突<br>4. 实时性强</td>
-<td>1. 建立连接时间长<br>2. 资源利用率低<br>3. 难以规格化（不同规格、速率之间的终端难以进行通信）</td>
-</tr>
-<tr>
-<td>分组交换</td>
-<td>1. 线路利用率高<br>2. 减少了出错概率和重发的数据量<br>3. 无需建立连接<br>4. 简化了存储管理<br>5. 加速传输</td>
-<td>1. 增加了转发时延<br>2. 还原成报文较麻烦<br>3. 可能出现丢包、乱序的现象<br>4. 传输了额外的信息</td>
-</tr>
-<tr>
-<td>报文交换</td>
-<td>1. 无需建立连接<br>2. 动态分配线路<br>3. 提高线路可靠性<br>4. 提高线路利用率</td>
-<td>1. 引起转发时延<br>2. 需要较大的存储缓存<br>3. 传输了额外的信息</td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="网络性能的八大指标"><a href="#网络性能的八大指标" class="headerlink" title="网络性能的八大指标"></a>网络性能的八大指标</h1><table>
-<thead>
-<tr>
-<th>指标名称</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>速率</td>
-<td>也称比特率/数据率</td>
-</tr>
-<tr>
-<td>带宽</td>
-<td>单位时间内最高速率，瞬时</td>
-</tr>
-<tr>
-<td>吞吐量</td>
-<td>单位时间内传输地最多数据量，积分</td>
-</tr>
-<tr>
-<td>时延</td>
-<td>1. 发送时延=分组长度/发送速率  2. 传播时延=信道长度/电磁波传播速率  3. 处理时延</td>
-</tr>
-<tr>
-<td>时延带宽积</td>
-<td>以比特为单位的链路长度</td>
-</tr>
-<tr>
-<td>往返时间</td>
-<td>RTT  —— Round-Trip-Time</td>
-</tr>
-<tr>
-<td>利用率</td>
-<td>信道利用率 、网络利用率</td>
-</tr>
-<tr>
-<td>丢包率</td>
-<td>原因：1. 分组误码   2. 网络拥塞</td>
-</tr>
-<tr>
-<td><br></td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="时延带宽积"><a href="#时延带宽积" class="headerlink" title="时延带宽积"></a>时延带宽积</h3><p>假设<strong>时延为2s</strong>，<strong>带宽为2bit/s</strong>，<strong>时延带宽积=4bit</strong>，即图中第2秒时信道内有4个bit<br><img src="https://api2.mubu.com/v3/document_image/ec1f900c-8e6c-4ea3-a95a-1feec95c649b-15701233.jpg"><br><br></p>
-<h3 id="利用率"><a href="#利用率" class="headerlink" title="利用率"></a>利用率</h3><pre><code>网络空闲时的时延为D0（无数据通过的时间），网络当前时延为D（可能有数据通过的时间）  则
-U=D/D0+D  ---&gt; D=D0/(1-U)
-</code></pre>
-<hr>
+<h3 id="为何出现"><a href="#为何出现" class="headerlink" title="为何出现"></a>为何出现</h3><p>REST这个词，是Roy Thomas Fielding在他2000年的博士论文中提出的。他这样介绍论文的写作目的：</p>
 <blockquote>
-<p>图片来自 <a target="_blank" rel="noopener" href="https://blog.csdn.net/ahLOG/article/details/116202211">白芷加茯苓的博客</a></p>
+<p>本文研究计算机科学两大前沿—-软件和网络—-的交叉点。长期以来，软件研究主要关注软件设计的分类、设计方法的演化，很少客观地评估不同的设计选择对系统行为的影响。<br>而相反地，网络研究主要关注系统之间通信行为的细节、如何改进特定通信机制的表现，常常忽视了一个事实，那就是<strong>改变应用程序的互动风格比改变互动协议</strong>，<strong>对整体表现有更大的影响</strong>。<br>我这篇文章的写作目的，就是想在符合架构原理的前提下，理解和评估以网络为基础的应用软件的架构设计，得到一个功能强、性能好、适宜通信的架构。</p>
+</blockquote>
+<p>我这么理解REST的出现：</p>
+<ol>
+<li>由于互联网技术的兴起，传统的、不与外界资源产生通信的软件运行模式不再现实，那么“如何开发在互联网环境中使用的软件”就成了一个不得不考虑的问题。</li>
+<li>在此背景下，当时的研究都忽略了一个事实：那就是改变应用程序的互动风格比改变互动协议，对整体表现有更大的影响。</li>
+<li>于是Fielding决定改变互动风格，提出了RESTful架构。</li>
+</ol>
+<h3 id="它是什么"><a href="#它是什么" class="headerlink" title="它是什么"></a>它是什么</h3><ol>
+<li>REST，即Representational State Transfer的缩写，表现层状态转化。</li>
+<li>表现层：将资源呈现出的具体形式。</li>
+<li>资源：网络上的一个实体，或者说是网络上的一个具体信息。要获取它就访问它的URI。</li>
+<li>表现层的状态：如在网页端输入信息前是一个状态，信息提交后又是一个状态。</li>
+<li>状态如何转化：充分利用了HTTP协议的四个动词：GET、POST、PUT、DELETE。</li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><blockquote>
+<p><a href="!https://www.jianshu.com/p/84568e364ee8">深入理解什么是RESTful API？</a></p>
 </blockquote>
 
       
@@ -287,13 +210,24 @@ U=D/D0+D  ---&gt; D=D0/(1-U)
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">计算机网络</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">RESTful</a>
         		</li>
       		
 		</ul>
 	</div>
 
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/个人理解//" class="article-tag-list-link color5">个人理解</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -343,7 +277,7 @@ U=D/D0+D  ---&gt; D=D0/(1-U)
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/01/09/CPUnet/CPUnet1/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2023/02/23/net/RESTful%E7%90%86%E8%A7%A3/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -357,15 +291,11 @@ U=D/D0+D  ---&gt; D=D0/(1-U)
   
 <nav id="article-nav">
   
-    <a href="/2022/01/14/CPUnet/CPUnet2/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          计算机网络体系结构
-        
-      </div>
-    </a>
   
+    <a href="/2022/11/16/LeetCode/%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA%E4%B8%89/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">买卖股票的最佳时机 III</div>
+      <i class="icon-circle-right"></i>
+    </a>
   
 </nav>
 
@@ -390,7 +320,7 @@ U=D/D0+D  ---&gt; D=D0/(1-U)
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%A0%E7%89%B9%E7%BD%91%E7%BB%84%E6%88%90"><span class="toc-number">1.</span> <span class="toc-text">因特网组成</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BE%B9%E7%BC%98%E9%83%A8%E5%88%86"><span class="toc-number">1.1.</span> <span class="toc-text">边缘部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E9%83%A8%E5%88%86"><span class="toc-number">1.2.</span> <span class="toc-text">核心部分</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E4%BA%A4%E6%8D%A2%E6%96%B9%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">三种交换方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B5%E8%B7%AF%E4%BA%A4%E6%8D%A2"><span class="toc-number">2.1.</span> <span class="toc-text">电路交换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E4%BA%A4%E6%8D%A2"><span class="toc-number">2.2.</span> <span class="toc-text">分组交换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%A5%E6%96%87%E4%BA%A4%E6%8D%A2"><span class="toc-number">2.3.</span> <span class="toc-text">报文交换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9%E6%AF%94%E8%BE%83"><span class="toc-number">2.3.1.</span> <span class="toc-text">优缺点比较</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E6%80%A7%E8%83%BD%E7%9A%84%E5%85%AB%E5%A4%A7%E6%8C%87%E6%A0%87"><span class="toc-number">3.</span> <span class="toc-text">网络性能的八大指标</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E5%BB%B6%E5%B8%A6%E5%AE%BD%E7%A7%AF"><span class="toc-number">3.0.1.</span> <span class="toc-text">时延带宽积</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E7%8E%87"><span class="toc-number">3.0.2.</span> <span class="toc-text">利用率</span></a></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E5%87%BA%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">为何出现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%83%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">3.</span> <span class="toc-text">它是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -419,7 +349,7 @@ U=D/D0+D  ---&gt; D=D0/(1-U)
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2022 BanalFish
+    		&copy; 2023 BanalFish
     	</div>
 
     </div>
@@ -771,6 +701,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">买卖股票</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RESTful</a>
               </li>
             
             <div class="clearfix"></div>
