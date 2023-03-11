@@ -154,6 +154,107 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-LeetCode/rotate-array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/08/LeetCode/rotate-array/">两个数组间的距离值</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/08/LeetCode/rotate-array/" class="archive-article-date">
+  	<time datetime="2022-08-08T09:53:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个数组，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。</p>
+<p> <br>示例 1:</p>
+<p>输入: nums = [1,2,3,4,5,6,7], k = 3<br>输出: [5,6,7,1,2,3,4]<br>解释:<br>向右轮转 1 步: [7,1,2,3,4,5,6]<br>向右轮转 2 步: [6,7,1,2,3,4,5]<br>向右轮转 3 步: [5,6,7,1,2,3,4]</p>
+<p>题目来自 <a href="!https://leetcode.cn/problems/rotate-array">力扣-轮转数组</a></p>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>正常思路是另外开辟内存空间来存放数组结果，空间复杂度为O(n)，有空间复杂度为O(1)的更简便的做法：翻转数组</p>
+<p>图解的链接可以看<a href="!https://leetcode.cn/problems/rotate-array/solution/shu-zu-fan-zhuan-xuan-zhuan-shu-zu-by-de-5937/">这个</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">   	public void rotate(int[] nums, int k) &#123;</span><br><span class="line">       	k %= nums.length;</span><br><span class="line">       	reverse(nums, 0, nums.length - 1);</span><br><span class="line">       	reverse(nums, 0, k - 1);</span><br><span class="line">       	reverse(nums, k, nums.length - 1);</span><br><span class="line">   	&#125;</span><br><span class="line">   	public void reverse(int[] nums, int start, int end) &#123;</span><br><span class="line">       	while (start &lt; end) &#123;</span><br><span class="line">           int temp = nums[start];</span><br><span class="line">           nums[start] = nums[end];</span><br><span class="line">           nums[end] = temp;</span><br><span class="line">           start += 1;</span><br><span class="line">           end -= 1;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个的算法思想应该是：一个数组有着某种顺序（不是升序或者降序），当轮转时，就是打乱了它的先后顺序，头到了尾，尾到了头，于是决定先翻转整个数组，然后根据下标再调整回原来的这种顺序规律。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/08/LeetCode/rotate-array/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-ES/ES整合SpringBoot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1131,95 +1232,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/06/28/Java/single/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Interview/interview2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/06/07/Interview/interview2/">糟糕的面试</a>
-    </h1>
-  
-
-        
-        <a href="/2022/06/07/Interview/interview2/" class="archive-article-date">
-  	<time datetime="2022-06-07T08:50:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="面试题目"><a href="#面试题目" class="headerlink" title="面试题目"></a>面试题目</h3><p>1.自我介绍<br>1.0英语水平怎么样<br>1.1为什么选Java<br>1.2你觉得自己Java水平怎么样<br>2.考试系统项目介绍<br>3.数据库遵循第几范式<br>4.第一范式<br>4.0单例模式<br>4.0.1懒汉式怎么通过程序代码创建<br>4.1大学生活最难忘的事情（说我太紧张了</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/面试//" class="article-tag-list-link color3">面试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/06/07/Interview/interview2/">展开全文 >></a>
         </p>
       
 

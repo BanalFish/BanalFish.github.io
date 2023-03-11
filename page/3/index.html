@@ -456,6 +456,121 @@
 
 
   
+    <article id="post-Spring/SpringAOP1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/23/Spring/SpringAOP1/">SpringAOP--个人笔记一</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/23/Spring/SpringAOP1/" class="archive-article-date">
+  	<time datetime="2022-08-23T13:20:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>写到这里的时候我才发现，前面所讲的IoC，不管是new一个实例，也就是@Bean，new自己，还是注入依赖，在自己里面new一个别的对象，其实都是在new。<br>我甚至开始想象Spring在最开始被构想的时候，设计人只想写一个可以帮助我们new的角色，然后又一想，那用的人得给我点信息吧，再一想，既然给了我信息，那我可不可以在new之前还对这些信息做一下包装呢…由此多出许多扩展的“功能”。</p>
+<p>话题回到AOP，它可以看做是与OOP在方向上互相垂直的另一种“OOP”；AOP被翻译为面向切面编程。</p>
+<h3 id="AOP的发展"><a href="#AOP的发展" class="headerlink" title="AOP的发展"></a>AOP的发展</h3><h4 id="第一代"><a href="#第一代" class="headerlink" title="第一代"></a>第一代</h4><p>第一代AOP即静态AOP，采用通过特殊的编译器，将横切逻辑编译并织入到系统的静态类。什么是横切逻辑？横切就是在原本好好的类的随便哪里（当然得根据需要！不是真的随便）砍一刀，逻辑就是那个刀。<br>静态AOP的好处是这个横切逻辑将以Java字节码的形式编译到Java类，JVM可以接着正常运行，缺点很显然就是不灵活啦。比如那个刀和你的肉相处得很愉快了，这下要换个地方可就有点切肤之痛了。</p>
+<hr>
+<h4 id="第二代"><a href="#第二代" class="headerlink" title="第二代"></a>第二代</h4><p>第二代AOP与第一代最大的不同就是AOP的织入过程在系统开始运行之后才开始。有以下四种实现方式：<br>1.动态代理<br>2.动态字节码增强<br>3.自定义类加载器<br>4.AOL扩展（语言扩展）</p>
+<p>Spring使用的是前两种。</p>
+<hr>
+<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>简单提一下涉及到的概念：</p>
+<ul>
+<li>JoinPoint：就是需要添加逻辑的地方，也叫作增强的地方，这些地方可以是方法（正常的或者构造方法）、字段（设置字段）、异常（处理抛出的异常）、类初始化（静态代码块）。</li>
+<li>PointCut：如果说JoinPoint是单个的地方，那PointCut就是对某些JoinPoint的抽象描述，比如小学、初中都叫学校，也是我们增强的地方。(～￣▽￣)～</li>
+<li>Advice：一般有之前（Before）、之后（After）、之前之后（Around），描述的是增强的时间，即什么时候执行横切逻辑</li>
+<li>Aspect：相当于“类”，是对横切逻辑的封装。class不也是一个类中有好多方法，Aspect就是class躺在地上了_(¦3」∠)_</li>
+<li>Weaver：织入器，也就是把Aspect在特定的时间（Advice）织入到某个地方（PointCut）啦</li>
+</ul>
+<hr>
+<h4 id="AOP的实现机制"><a href="#AOP的实现机制" class="headerlink" title="AOP的实现机制"></a>AOP的实现机制</h4><h5 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h5><p><img src="https://s2.loli.net/2022/08/24/sJe9NKh2gRlOFoV.png" alt="image.png"></p>
+<p>这是我画的一个简易图，ISubject是一个接口，SubjectImpl是它的一个实现类，也是我们将要代理的类，也就是说SubjectProxy将会持有这个SubjectImpl，并对其做出一些额外的修饰，使SubjectImpl的方法得到增强。<br>比如SubjectImpl有个需要增强的request方法，为了实现它的代理类，于是我们让它继承自ISubject接口（当然方法定义肯定在接口中预先定义好了，只是我想这个逻辑顺序应该是先有这个方法，再有利用接口把这个方法抽象出来），这个request呢就可以被定义到另一个实现了这个接口的类，让代理类去做这些额外的动作了。</p>
+<hr>
+<p>但是如果还有其他的类也需要增强request方法呢？为每一个类都创建接口和代理类吗？可以预想到的这么做的后果是代码冗余且设计不合理，这就是静态代理做的事情，灵活的动态代理我总结出可以这么表述：</p>
+<p>原来SubjectProxy的工作有两个：<br>1.拥有旧东西：即把SubjectImpl通过构造方法注入进来<br>2.增加新东西：实现ISubject中定义的方法，在其中进行逻辑增强<br>那么改进后的动态代理也是做这么两件事，只不过换了形式：<br>1.原来的旧东西统一就声明为Object，这样构造方法不再关注具体的类了<br>2.增加新东西之前统一都实现一个接口好了，这个接口叫InvocationHandler，那些个统一的方法也干脆统一名字，就叫invoke好了，实现的这个类也都叫Proxy完事</p>
+<h5 id="动态字节码增强"><a href="#动态字节码增强" class="headerlink" title="动态字节码增强"></a>动态字节码增强</h5><p>这个时候又有一个问题，如果这个类并没有实现这个叫什么，哦对，InvocationHandler接口呢？那么SpringAOP会尝试通过 CGLIB 这个开源的动态字节码库生成类库，为咱们的类生成代理实例，是不是很贴心呢~</p>
+<p>动态字节码生成的原理是：为我们的目标类生成子类，在子类中增强逻辑，要用的时候就用子类岂不也是美事一桩。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/23/Spring/SpringAOP1/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java/java双冒号" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1174,107 +1289,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/15/LeetCode/submissions/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/rotate-array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/08/LeetCode/rotate-array/">两个数组间的距离值</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/08/LeetCode/rotate-array/" class="archive-article-date">
-  	<time datetime="2022-08-08T09:53:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个数组，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。</p>
-<p> <br>示例 1:</p>
-<p>输入: nums = [1,2,3,4,5,6,7], k = 3<br>输出: [5,6,7,1,2,3,4]<br>解释:<br>向右轮转 1 步: [7,1,2,3,4,5,6]<br>向右轮转 2 步: [6,7,1,2,3,4,5]<br>向右轮转 3 步: [5,6,7,1,2,3,4]</p>
-<p>题目来自 <a href="!https://leetcode.cn/problems/rotate-array">力扣-轮转数组</a></p>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>正常思路是另外开辟内存空间来存放数组结果，空间复杂度为O(n)，有空间复杂度为O(1)的更简便的做法：翻转数组</p>
-<p>图解的链接可以看<a href="!https://leetcode.cn/problems/rotate-array/solution/shu-zu-fan-zhuan-xuan-zhuan-shu-zu-by-de-5937/">这个</a></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">   	public void rotate(int[] nums, int k) &#123;</span><br><span class="line">       	k %= nums.length;</span><br><span class="line">       	reverse(nums, 0, nums.length - 1);</span><br><span class="line">       	reverse(nums, 0, k - 1);</span><br><span class="line">       	reverse(nums, k, nums.length - 1);</span><br><span class="line">   	&#125;</span><br><span class="line">   	public void reverse(int[] nums, int start, int end) &#123;</span><br><span class="line">       	while (start &lt; end) &#123;</span><br><span class="line">           int temp = nums[start];</span><br><span class="line">           nums[start] = nums[end];</span><br><span class="line">           nums[end] = temp;</span><br><span class="line">           start += 1;</span><br><span class="line">           end -= 1;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>这个的算法思想应该是：一个数组有着某种顺序（不是升序或者降序），当轮转时，就是打乱了它的先后顺序，头到了尾，尾到了头，于是决定先翻转整个数组，然后根据下标再调整回原来的这种顺序规律。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/08/LeetCode/rotate-array/">展开全文 >></a>
         </p>
       
 
