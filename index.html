@@ -154,6 +154,276 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-learn/雪崩_击穿_穿透" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/03/14/learn/%E9%9B%AA%E5%B4%A9_%E5%87%BB%E7%A9%BF_%E7%A9%BF%E9%80%8F/">关于缓存雪崩、击穿和穿透</a>
+    </h1>
+  
+
+        
+        <a href="/2023/03/14/learn/%E9%9B%AA%E5%B4%A9_%E5%87%BB%E7%A9%BF_%E7%A9%BF%E9%80%8F/" class="archive-article-date">
+  	<time datetime="2023-03-14T07:43:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="为什么要有缓存"><a href="#为什么要有缓存" class="headerlink" title="为什么要有缓存"></a>为什么要有缓存</h3><p>当用户发起请求时，程序如果从数据库磁盘读取数据，少量请求还好说，等到请求数一高，势必会影响响应性能。将数据预先放在内存中，等到请求来临时直接返回是个好办法。</p>
+<h2 id="缓存带来的问题"><a href="#缓存带来的问题" class="headerlink" title="缓存带来的问题"></a>缓存带来的问题</h2><p>A coin has two sides，缓存虽然提高了响应速度，但同时也会带来某些问题。</p>
+<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>雪崩是指大量的雪快速从斜坡上滚动下来，那缓存雪崩，就是面对大雪的不是人类，而是数据库。</p>
+<p><strong>产生原因</strong></p>
+<ol>
+<li>大量key值同时失效</li>
+<li>Redis服务宕机</li>
+</ol>
+<h4 id="大量key同时失效"><a href="#大量key同时失效" class="headerlink" title="大量key同时失效"></a>大量key同时失效</h4><p>当这么多键值都没用时，那么客户的请求将会被直接交由数据库处理，请求一多，数据库就又顶不住了。</p>
+<p><strong>解决办法</strong><br>针对这种情况，有如下几种做法：</p>
+<ol>
+<li><p>设置均匀分散的过期时间<br>不是说同一时间失效的么，那我就不同一时间失效呗。</p>
+</li>
+<li><p>设置两套key<br>什么？主key失效了？那没关系，还有备份key返回数据。</p>
+</li>
+<li><p>互斥锁<br>第一个到的请求：欸？缓存没有数据？那我就去数据库找到了再搬回来给后面来的同志用吧！不过为了防止大家发现缓存没有数据，从而也去千里迢迢之外的数据库做无用功，我还是给缓存上把锁吧。</p>
+</li>
+</ol>
+<p>后面到的请求：怎么回事？缓存被锁上了？哦，不过门上有写：“我去数据库搬数据啦！by NO.1”。既然如此，那再等等吧。</p>
+<p>许久之后，NO.1迟迟未归。</p>
+<p>众请求：怎么回事这是？用户那边急得要跳墙了。<br>姗姗来迟的NO.1：私密马赛！我迷路了！<br>众请求：。。。下次你要是超过xx时间没有回来，我们就派个人再去数据库了。</p>
+<p>所以，实现互斥锁的时候，最好设置<strong>超时时间</strong>。</p>
+<ol start="3">
+<li>定时更新key<br>防患于未然，我另外弄个后台任务线程定时检查看有没有过期，有就更新。万一这个后台线程迟迟没有检查到过期数据，而此期间又有用户发来请求怎么办？</li>
+</ol>
+<p>后台线程1：巡视A区中…<br>后台线程2：巡视B区中…<br>业务线程：（什么时候才能检查到我要的Z区资源QAQ）</p>
+<p>后台线程1：A区域，key值都有，没有缺少的…<br>后台线程2：B区域，key值都有，没有缺少的…<br>业务线程群发消息：Z区域key为xx的数据没有，在线等，急！<br>后台线程1：好的，核实后马上就去数据库搬来。<br>（发现后台线程2已经搬了，则不去搬，继续巡查；如果没搬，则1去搬）</p>
+<p>所以第二种情景就是，业务线程发现缓存数据失效后，通过<strong>消息队列</strong>发送一条消息通知给后台线程来更新缓存。</p>
+<h4 id="Redis服务宕机"><a href="#Redis服务宕机" class="headerlink" title="Redis服务宕机"></a>Redis服务宕机</h4><p>Redis服务宕机意味着如果不加干预手段，所有的请求都将由数据库处理承担。</p>
+<p><strong>解决办法</strong></p>
+<p>1.服务熔断或请求限流机制</p>
+<p>广播：FBI WARNING！Redis挂了！请求们哪来回哪去，修复Redis将消耗一定时间！<br>众请求：（躁动不安，小声咒骂）<br>广播（见状不对）：好消息好消息！虽然Redis没修好，但是我们可以让编号为质数的请求进入数据库直接访问！</p>
+<p>服务熔断就是指暂停业务应用对缓存服务的访问，直接返回错误，保证数据库的正常运行。<br>请求限流机制是指只将少部分请求发给数据库，再多的就在入口处直接拒绝服务。</p>
+<p>2.构建Redis缓存高可靠集群</p>
+<p>Redis0：众请求…我…挂了…出师未捷身先死，我还有太多太多抱负未能施展…<br>众请求：（冷漠脸）就你戏多。<br>Redis1：虽然0号机挂了！<br>Redis2：但是还有千千万万的0号！<br>此次事件又叫九子夺0.（不是）</p>
+<p>服务熔断或请求限流机制是已经宕机后的应对措施，但是我们要有风险意识，在没发生前就预先想到这种情况。所以建立高可靠集群是预防措施，主节点挂了由从节点顶上。</p>
+<h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><p>与大部分key同时失效而引发大量请求直达数据库的场景不同，缓存击穿描述的是少部分key失效且仍然有大量请求来到数据库的情形。<br>而这少部分key具有以下两种特性：</p>
+<ol>
+<li><strong>高并发访问</strong></li>
+<li><strong>缓存重建业务复杂</strong><br>本来失效的数量就少，还很容易重建，那还击穿个啥。</li>
+</ol>
+<p><strong>解决办法</strong></p>
+<ol>
+<li>互斥锁</li>
+<li>后台同步更新</li>
+</ol>
+<h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p>前面所说都是数据库有数据，从而能够正确构建新缓存的情况，那如果缓存没有、数据库也没有数据呢？这种情况就是缓存穿透。</p>
+<p>产生原因：</p>
+<ol>
+<li>业务误操作，缓存和数据库的数据被删除了</li>
+<li>黑客攻击，故意大量访问不存在的数据</li>
+</ol>
+<p><strong>解决办法</strong>：</p>
+<ol>
+<li>限制非法请求</li>
+</ol>
+<p>黑客并不知道数据库的字段有哪些，数据类型又是怎样，所以可以预先就把非法字段和非法字段类型的请求给过滤到，避免访问到缓存和数据库。</p>
+<ol start="2">
+<li>缓存空值和默认值</li>
+</ol>
+<p>某请求：（发生缓存穿透后）上穷碧落下黄泉，两处茫茫皆不见！也罢也罢，我就在缓存里放一个空值或者默认值，也让后来的请求有个东西可以带走吧，不至于像我一样，一番努力皆是打水空。</p>
+<p>为了纪念这种行为，后人在此刻碑题字，上个月的时候被风吹倒了。</p>
+<ol start="3">
+<li>布隆过滤器</li>
+</ol>
+<p>既然到了缓存都没有了，那为了避免再去数据库查找有没有相应数据，只需在数据进入到数据库前都做个标记即可。</p>
+<p>有一个默认值都是0、长度为len的数组，数据data要进入数据库前，经过三个哈希函数的计算以及对 len 取模后，得到1、4、6三个值，则在数组对应下标的地方标为1.<br>等下次请求发现缓存没有数据时，先去对data做相同的运算，如果1、4、6值仍为1，则data可能在数据库；如果有一个为0，则肯定不在。</p>
+<blockquote>
+<p>参考<a href="!https://xiaolincoding.com/redis/cluster/cache_problem.html#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F">什么是缓存雪崩、击穿、穿透？</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">学习</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">缓存雪崩</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">缓存击穿</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">缓存穿透</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/03/14/learn/%E9%9B%AA%E5%B4%A9_%E5%87%BB%E7%A9%BF_%E7%A9%BF%E9%80%8F/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-net/RSA和DH理解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/03/13/net/RSA%E5%92%8CDH%E7%90%86%E8%A7%A3/">对RSA和DH的理解</a>
+    </h1>
+  
+
+        
+        <a href="/2023/03/13/net/RSA%E5%92%8CDH%E7%90%86%E8%A7%A3/" class="archive-article-date">
+  	<time datetime="2023-03-13T12:30:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="RSA是什么"><a href="#RSA是什么" class="headerlink" title="RSA是什么"></a>RSA是什么</h3><p>根据阮雪峰的<a href="%EF%BC%81https://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html">这篇文章</a>，可知RSA在DH之后出现，并且是因为受到了DH的启发，所以暂时先看DH是什么吧。</p>
+<h3 id="DH是什么"><a href="#DH是什么" class="headerlink" title="DH是什么"></a>DH是什么</h3><p>1976年，两位美国计算机学家Whitfield Diffie 和 Martin Hellman，提出了一种崭新构思：可以在不直接传递密钥的情况下，完成解密。<br>在此之前，所有的加密模式都是对称加密，即加密解密都是一种加密规则，于是保存和传递密钥。。。什么是密钥？<br>密钥就是破解密文的钥匙。如果密文是潘多拉魔盒，只要知道了钥匙，就可以知道盒子里到底装的是什么。</p>
+<p>A：我用的xx牌钥匙给盒子上的锁哦！<br>B：瓦嘎里吗洗打！（B用xx牌钥匙打开了盒子）</p>
+<p>接着上面，于是保存和传递密钥成了很重要的问题。想象一下，如果A不想让C打开，那她就不能直接大声地说“xx牌”。（C:I’m listening）</p>
+<p>有什么办法解决呢？过路的俩歪果仁说：要不你们想个暗号呗。<br>暗号暗号，什么是暗号？接头双方根据对方说的常人不能直接明白的话，以及自己的已知条件，从而推断出某东西，这个不能直接明白的话就是暗号。</p>
+<p>下面举个不太恰当的例子：</p>
+<p>A：目前可以公开的信息：乞讨<br>B：收到。目前我可以公开的信息：打工</p>
+<p>C仅凭这两个词是无法得知xx牌的xx是什么的。</p>
+<p>A：我已知：郭芙蓉，结合“打工”，可知xx指“同福客栈”<br>B：我已知：小米，结合“乞讨”，可知xx指“同福客栈”</p>
+<p>于是A、B两人没有通过明说，但是都知道了钥匙的牌子，真是可喜可贺！</p>
+<p>TO DO前向保密，中间人攻击</p>
+<h3 id="RSA是什么-1"><a href="#RSA是什么-1" class="headerlink" title="RSA是什么"></a>RSA是什么</h3><p>DH算法启发了其余的科学家。人们认识到，加密和解密可以使用不同的规则，只要这两种规则之间存在某种对应关系即可，这样就避免了直接传递密钥。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">计算机网络</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">RSA</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">DH</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/个人理解//" class="article-tag-list-link color5">个人理解</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/03/13/net/RSA%E5%92%8CDH%E7%90%86%E8%A7%A3/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Spring/SpringBoot自动配置" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1017,283 +1287,6 @@
 
 
   
-    <article id="post-LeetCode/买卖股票的最佳时机三" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/11/16/LeetCode/%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA%E4%B8%89/">买卖股票的最佳时机 III</a>
-    </h1>
-  
-
-        
-        <a href="/2022/11/16/LeetCode/%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA%E4%B8%89/" class="archive-article-date">
-  	<time datetime="2022-11-16T02:40:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-11-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定一个数组，它的第 i 个元素是一支给定的股票在第 i 天的价格。</p>
-<p>设计一个算法来计算你所能获取的最大利润。你最多可以完成 两笔 交易。</p>
-<p>注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。</p>
-<p>示例 1:</p>
-<p>输入：prices = [3,3,5,0,0,3,1,4]<br>输出：6<br>解释：在第 4 天（股票价格 = 0）的时候买入，在第 6 天（股票价格 = 3）的时候卖出，这笔交易所能获得利润 = 3-0 = 3 。<br>     随后，在第 7 天（股票价格 = 1）的时候买入，在第 8 天 （股票价格 = 4）的时候卖出，这笔交易所能获得利润 = 4-1 = 3 。</p>
-<p>示例 2：</p>
-<p>输入：prices = [1,2,3,4,5]<br>输出：4<br>解释：在第 1 天（股票价格 = 1）的时候买入，在第 5 天 （股票价格 = 5）的时候卖出, 这笔交易所能获得利润 = 5-1 = 4 。<br>     注意你不能在第 1 天和第 2 天接连购买股票，之后再将它们卖出。<br>     因为这样属于同时参与了多笔交易，你必须在再次购买前出售掉之前的股票。</p>
-<p>示例 3：</p>
-<p>输入：prices = [7,6,4,3,1]<br>输出：0<br>解释：在这个情况下, 没有交易完成, 所以最大利润为 0。</p>
-<p>示例 4：</p>
-<p>输入：prices = [1]<br>输出：0</p>
-<p>提示：</p>
-<p>1 &lt;= prices.length &lt;= 105<br>0 &lt;= prices[i] &lt;= 105</p>
-<blockquote>
-<p>来自<a href="!https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/description/">力扣-123.买卖股票的最佳时机 III</a></p>
-</blockquote>
-<hr>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>不管是哪类买卖股票，都可分为两类题解，第一类是不保存每次状态的详细属性，在每次想要的最终结果上进行状态的迭代；第二类是保存每次状态转移后的属性，按需返回想要的结果。下面分析以上题为例。</p>
-<h4 id="第一类"><a href="#第一类" class="headerlink" title="第一类"></a>第一类</h4><p>以每天作为分析的主体，则这一天中会有5个状态，这5个状态由对应的可能发生的5个动作得到：</p>
-<p>1.什么也不做（后的当前钱数）<br>2.买入第一次（后的当前钱数），可能由前一天的第一次买或者前一天没有今天第一次买得到<br>3.卖第一次（后的当前钱数），可能由前一天的第一次卖或者今天第一次卖得到<br>4.买入第二次（后的当前钱数），可能由前一天的第二次买或者前一天没有今天第二次买得到<br>5.卖第二次（后的当前钱数），可能由前一天的第二次卖或者今天第二次卖得到</p>
-<blockquote>
-<p>第x次买入，可能是前一天的第x次买（今天第x次不买） 或者 今天第x次买<br>第y次卖，可能是前一天的第y次卖（今天第y次不卖） 或者 今天第y次卖</p>
-</blockquote>
-<hr>
-<ul>
-<li><p>对于只买卖一次就达到最大利润的情况，可以理解为一次不同天数的买卖操作后，当天再进行一次无利益的买入、卖出操作，由于买卖价格相等，所以没有利润，进而不会影响到最后的结果，但是买卖的次数却因此增加了，达到上限的次数。</p>
-</li>
-<li><p>由此来看，最大利润产生的前提是：<strong>达到最大利润时一定进行了上限次数的交易</strong>。</p>
-</li>
-</ul>
-<hr>
-<p>宏观地来看，解决如何得到最大利润的方法中，有若干天进行了操作，这若干天按时间顺序排列，就是 没有动作-&gt;第一次买-&gt;第一次卖-&gt;第二次买-&gt;第二次卖，中间穿插着没有动作的这些天数；而每天操作时的判断依据是前一天的情况如何，以<strong>前一天的情况作为今天动作的判断依据</strong>。</p>
-<p>因此，考虑每一天的5种操作后的状态（钱数），这样后一天可以根据前一天的状态（钱数）和当天的股票价格再来做决定。当遍历天数完成后，最终的钱数就是最大利润数。</p>
-<p>每天有5种不同可能的状态，一共有i天，第i+1天在第i天的基础上进行迭代，可以写出如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int maxProfit(int[] prices) &#123;</span><br><span class="line">       int n=prices.length;</span><br><span class="line">       //由于不进行任何操作手里的钱为0，所以以下都省略</span><br><span class="line">       //初始化第一天的操作</span><br><span class="line">       int buy1=-prices[0],sell1=0;</span><br><span class="line">       int buy2=-prices[0],sell2=0;</span><br><span class="line"></span><br><span class="line">       for (int i = 1; i &lt; n; i++) &#123;</span><br><span class="line">           //括号里的buy1实际含义是前一天的第一次买，也即今天不买</span><br><span class="line">           //表示前一天已经买今天不做操作，前天没买今天第一次买（此时手里的钱为0）</span><br><span class="line">           //按上面的分析，下同</span><br><span class="line">           buy1=Math.max(buy1,0-prices[i]);</span><br><span class="line">           sell1=Math.max(sell1,buy1+prices[i]);</span><br><span class="line">           buy2=Math.max(buy2,sell1-prices[i]);</span><br><span class="line">           sell2=Math.max(sell2,buy2+prices[i]);</span><br><span class="line">       &#125;</span><br><span class="line">       return sell2;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>参考自<a href="!https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/solutions/552695/mai-mai-gu-piao-de-zui-jia-shi-ji-iii-by-wrnt/">力扣官方题解</a></p>
-</blockquote>
-<h4 id="第二类"><a href="#第二类" class="headerlink" title="第二类"></a>第二类</h4><blockquote>
-<p>动态规划老三样：状态定义、状态转移、初始状态。</p>
-<p>来自<a href="!https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/solutions/1895663/mai-mai-gu-piao-xi-lie-by-my_mel-dswf/">买卖股票系列 | 两笔交易的最大收益 （动态规划）</a></p>
-</blockquote>
-<p>状态转移:时间、约束、影响动作.</p>
-<p>以 dp[i][k][0..1] 表示第i天完成k笔交易后<strong>是否持股</strong>时手里的钱数，由于数组下标从0开始，所以准确地说，应该是表示：第i+1天完成k笔交易后是否持股时手里的钱数。</p>
-<blockquote>
-<p>本题条件规定,0&lt;=k&lt;=2<br>交易表示买入并且卖出</p>
-</blockquote>
-<p>转移方程如下图：</p>
-<p><img src="https://s2.loli.net/2022/11/16/Zsvno3dpOfe5X7T.png" alt="image.png"></p>
-<p>由此可以写出代码</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int maxProfit(int[] prices) &#123;</span><br><span class="line">       int n = prices.length;</span><br><span class="line">       int[][][] dp = new int[n][3][2];</span><br><span class="line">       //初始化第1天0、1、2笔交易后的钱数</span><br><span class="line">       for (int k = 0; k &lt;= 2; k++) &#123;</span><br><span class="line">           dp[0][k][0] = 0;</span><br><span class="line">           dp[0][k][1] = -prices[0];</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       for (int i = 1; i &lt; n; i++) &#123;</span><br><span class="line">           //交易0次后：没有交易但是持有股 是昨天的股不做操作 或 昨天不持有股今天买了股</span><br><span class="line">           //交易0次后：没有交易但是没有股 的值为0，数组填充默认为0，省略</span><br><span class="line">           dp[i][0][1] = Math.max(dp[i - 1][0][1], dp[i - 1][0][0] - prices[i]);</span><br><span class="line">           for (int k = 1; k &lt;= 2; k++) &#123;//交易1 2 次</span><br><span class="line">               //今天不持股：是昨天也不持股今天不做操作 或 昨天有今天卖了</span><br><span class="line">               dp[i][k][0] = Math.max(dp[i - 1][k][0], dp[i - 1][k - 1][1] + prices[i]);</span><br><span class="line">               //今天持股：是昨天也持有股今天不做操作 或 昨天不持有股今天买了</span><br><span class="line">               dp[i][k][1] = Math.max(dp[i - 1][k][1], dp[i - 1][k][0] - prices[i]);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return dp[n - 1][2][0];</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>参考自<a href="!https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/solutions/1895663/mai-mai-gu-piao-xi-lie-by-my_mel-dswf/">买卖股票系列 | 两笔交易的最大收益 （动态规划）</a></p>
-</blockquote>
-<h3 id="买卖股票的最佳时机-IV"><a href="#买卖股票的最佳时机-IV" class="headerlink" title="买卖股票的最佳时机 IV"></a>买卖股票的最佳时机 IV</h3><p>给定一个整数数组 prices ，它的第 i 个元素 prices[i] 是一支给定的股票在第 i 天的价格。</p>
-<p>设计一个算法来计算你所能获取的最大利润。你最多可以完成 k 笔交易。</p>
-<p>注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。</p>
-<blockquote>
-<p>来自<a href="!https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/description/">力扣-188.买卖股票的最佳时机 IV</a></p>
-</blockquote>
-<p>此题可以用第二类的模板，将最大上线2次替换为k次即可；也可以参照第一类，将buy1、sell1、buy2、sell2替换为数组buy[]、sell[]，用来表示第某次买入后和第某次交易（买入卖出都包括）完成后，代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int maxProfit(int k, int[] prices) &#123;</span><br><span class="line">       if(prices.length==0 || k==0)</span><br><span class="line">           return 0;</span><br><span class="line">       int[] buy = new int[k];</span><br><span class="line">       int[] sell = new int[k];</span><br><span class="line">       Arrays.fill(buy,-prices[0]);</span><br><span class="line"></span><br><span class="line">       for(int i=1;i&lt;prices.length;i++)&#123;</span><br><span class="line">           buy[0] = Math.max(buy[0],0-prices[i]);//第一次买 保持以前的买（今天这次不买） 和今天第一次买</span><br><span class="line">           sell[0] = Math.max(sell[0],buy[0]+prices[i]);//第一笔交易 是保持以前的不变（今天这次不卖） 还是今天就卖</span><br><span class="line">           for(int j=1;j&lt;k;j++)&#123;//循环后面的买卖 j&gt;=1</span><br><span class="line">               buy[j] = Math.max(buy[j],sell[j-1]-prices[i]);//类比第一次 是保持以前的 还是买</span><br><span class="line">               sell[j] = Math.max(sell[j],buy[j]+prices[i]);//第j+1笔交易后 是保持钱不变 还是卖出赚的多</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return sell[k-1];</span><br><span class="line">   &#125;	</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>第二类与第一类的区别是：第一类将每天各个动作导致的不同的最终状态临时保存，到了后一天会覆盖前面的值；第二类则不会覆盖，将记录都保存在了数组中。</p>
-<p>也就是说，对于动态规划的状态转移，抓准每个动作前后的状态是什么、看可不可以进行归纳，和每次影响转移的因素或者动作是什么，最后明确初始状态是什么样的。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Diff</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">动态规划</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">买卖股票</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/11/16/LeetCode/%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA%E4%B8%89/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/合并重复区间" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/11/01/LeetCode/%E5%90%88%E5%B9%B6%E9%87%8D%E5%A4%8D%E5%8C%BA%E9%97%B4/">合并区间</a>
-    </h1>
-  
-
-        
-        <a href="/2022/11/01/LeetCode/%E5%90%88%E5%B9%B6%E9%87%8D%E5%A4%8D%E5%8C%BA%E9%97%B4/" class="archive-article-date">
-  	<time datetime="2022-11-01T13:02:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-11-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。</p>
-<p>示例 1：</p>
-<p>输入：intervals = [[1,3],[2,6],[8,10],[15,18]]<br>输出：[[1,6],[8,10],[15,18]]<br>解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].</p>
-<p>示例 2：</p>
-<p>输入：intervals = [[1,4],[4,5]]<br>输出：[[1,5]]<br>解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。
- </p>
-<p>提示：</p>
-<p>1 &lt;= intervals.length &lt;= 104<br>intervals[i].length == 2<br>0 &lt;= starti &lt;= endi &lt;= 104</p>
-<blockquote>
-<p>来源：<a href="!https://leetcode.cn/problems/merge-intervals">力扣（LeetCode）</a></p>
-</blockquote>
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>做阅文的笔试时遇到了这题，但是写了半天也没写出来，最后无奈交卷，一结束就去看了力扣的题解，还是自己刷的题不够多呀，不过大致的思路还是差不多的。</p>
-<p>大概流程就是<br>1.先对给定的二维数组按照左边界升序的规则进行排序（sort方法还能这么用）<br>2.遍历这个排序好的数组，选取一个基准出来，再将这个基准之后的区间进行判断比较合并，直到遇到的下一个区间的左边界比当前合并好的右边界要大，说明这趟合并已经结束，添加进结果集合<br>3.选取下一个区间，也就是那个让我们退出第二步中循环的那个区间</p>
-<p>就像这样：</p>
-<p><img src="https://s2.loli.net/2022/11/01/seNl4mGViJ7nqDZ.png" alt="image.png"></p>
-<p>代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static int[][] merge (int[][] intervals) &#123;</span><br><span class="line">       List&lt;int[]&gt; res = new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">       if (intervals.length == 0 || intervals == null)</span><br><span class="line">           return res.toArray(new int[0][]);</span><br><span class="line">       // 对起点进行排序</span><br><span class="line">       Arrays.sort(intervals, (a, b) -&gt; a[0] - b[0]);</span><br><span class="line"></span><br><span class="line">       int i = 0;</span><br><span class="line">       while (i &lt; intervals.length) &#123;</span><br><span class="line">           int left = intervals[i][0];</span><br><span class="line">           int right = intervals[i][1];</span><br><span class="line">           // 如果有重叠，循环判断哪个起点满足条件</span><br><span class="line">           while (i &lt; intervals.length - 1 &amp;&amp; intervals[i + 1][0] &lt;= right) &#123;</span><br><span class="line">               i++;</span><br><span class="line">               right = Math.max(right, intervals[i][1]);</span><br><span class="line">           &#125;</span><br><span class="line">           // 将现在的区间放进res里面</span><br><span class="line">           res.add(new int[]&#123;left, right&#125;);</span><br><span class="line">           // 接着判断下一个区间</span><br><span class="line">           i++;</span><br><span class="line">       &#125;</span><br><span class="line">       return res.toArray(new int[0][]);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/11/01/LeetCode/%E5%90%88%E5%B9%B6%E9%87%8D%E5%A4%8D%E5%8C%BA%E9%97%B4/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/">Next&gt;&gt;</a>
@@ -1692,6 +1685,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">反射</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">缓存雪崩</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">缓存击穿</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">缓存穿透</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">RSA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DH</a>
               </li>
             
             <div class="clearfix"></div>
