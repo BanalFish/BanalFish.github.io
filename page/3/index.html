@@ -154,6 +154,373 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-LeetCode/只出现一次的数字" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/11/LeetCode/%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97/">只出现一次的数字</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/11/LeetCode/%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97/" class="archive-article-date">
+  	<time datetime="2022-10-11T01:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个整数数组 nums ，除某个元素仅出现 一次 外，其余每个元素都恰出现 三次 。请你找出并返回那个只出现了一次的元素。</p>
+<p> </p>
+<p>示例 1：<br>输入：nums = [2,2,3,2]<br>输出：3</p>
+<p>示例 2：<br>输入：nums = [0,1,0,1,0,1,100]<br>输出：100</p>
+<p>来源：<a href="!https://leetcode.cn/problems/WGki4K">力扣（LeetCode）</a></p>
+<h3 id="我的题解"><a href="#我的题解" class="headerlink" title="我的题解"></a>我的题解</h3><p>首先对数组排序，然后当前和后面第二个比较即可，如果一样表示当前为三个相同数字组的其中一个，如果不一样表示当前为答案，在此过程中始终保证下标的合法性。</p>
+<p>代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">       Arrays.sort(nums);</span><br><span class="line">       int res=0;</span><br><span class="line"></span><br><span class="line">       for(int i=0;i&lt;nums.length;)&#123;</span><br><span class="line">           if(i+2&gt;=nums.length||nums[i]!=nums[i+2])&#123;</span><br><span class="line">               res=nums[i];</span><br><span class="line">               break;</span><br><span class="line">           &#125;</span><br><span class="line">           i+=3;</span><br><span class="line">       &#125;</span><br><span class="line">       return res;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="计算结果的二进制位"><a href="#计算结果的二进制位" class="headerlink" title="计算结果的二进制位"></a>计算结果的二进制位</h3><p>前提条件：数组中的元素都在int范围内。</p>
+<p><img src="https://s2.loli.net/2022/10/11/d5eIzH8UPVlK2vj.png" alt="image.png"></p>
+<p>如图，需要求的结果的每个二进制位可以由在这个数组中，每个数字的这个二进制位的数字的和、取余后得到，<br>数字计算后，就是移位，如此反复经过32次后（int有32位），最终得到结果。</p>
+<p>代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">       int ans = 0;</span><br><span class="line">       for (int i = 0; i &lt; 32; ++i) &#123;</span><br><span class="line">           int total = 0;</span><br><span class="line">           for (int num: nums) &#123;</span><br><span class="line">               total += ((num &gt;&gt; i) &amp; 1);</span><br><span class="line">           &#125;</span><br><span class="line">           if (total % 3 != 0) &#123;</span><br><span class="line">               ans |= (1 &lt;&lt; i);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return ans;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如果没有那个只出现1次的数字，那么整个数字都是成三出现的数字，所以易得它们的和一定可以被3整除，更进一步的，它们每个对应的二进制位相加后也一定可以被3整除。</p>
+<p>现在多了一个异类，要想把这个数找出来，就是上面的思路，把每个数对应二进制位的数相加，如果相加和不能被3整除，就表示其中混入了异类的二进制位，就把它还原出来即可。</p>
+<p>代码中的num移位后和1做与操作，就是<strong>取这个数的最低位二进制</strong>数是多少；<br>ans做或操作，就相当于ans和移位后的1<strong>相加</strong>。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><blockquote>
+<p><a href="!https://leetcode.cn/problems/WGki4K/solution/zhi-chu-xian-yi-ci-de-shu-zi-by-leetcode-0vrt/">只出现一次的数字</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">位运算</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/10/11/LeetCode/%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/最长有效括号长度" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/10/LeetCode/%E6%9C%80%E9%95%BF%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7%E9%95%BF%E5%BA%A6/">最长有效括号长度</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/10/LeetCode/%E6%9C%80%E9%95%BF%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7%E9%95%BF%E5%BA%A6/" class="archive-article-date">
+  	<time datetime="2022-10-10T11:25:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个只包含 ‘(‘ 和 ‘)’ 的字符串，找出最长有效（格式正确且连续）括号子串的长度。</p>
+<p>示例 1：<br>输入：s = “(()”<br>输出：2<br>解释：最长有效括号子串是 “()”</p>
+<p>示例 2：<br>输入：s = “)()())”<br>输出：4<br>解释：最长有效括号子串是 “()()”</p>
+<p>示例 3：<br>输入：s = “”<br>输出：0</p>
+<blockquote>
+<p>来源：<a href="!https://leetcode.cn/problems/longest-valid-parentheses">力扣（LeetCode）</a></p>
+</blockquote>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><h4 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h4><p>题目需要求最长的有效括号长度，也就是截取这个字符串的某个区间，这个区间内的字符串满足：<br>1.括号个数为偶数<br>2.以嵌套（如“(())”）、连续（如“()(())()”）的方式出现</p>
+<p>现设置动态数组dp[i]，其值表示截止到下标i对应的字符时，出现的<strong>最长区间长度</strong>。</p>
+<p>P.S.如果字符串长度为1，那么结果一定为0。所以下面所说的i基本是在大于0的情况下讨论。</p>
+<p>对于第i个字符，可能为“(”或者“)”，而如果以“(”结尾的字符串一定不会是我们需要的结果，所以“(”在dp数组对应的值应该为0，而整形数组默认值为0，即不需要对这种情况做出特殊判断，让我们把注意力放到“)”。</p>
+<p>对于“)”，它的前一位可能是“(” 和 “)”。</p>
+<p><strong>1.“(”的情况</strong></p>
+<p>那么对于前一位是“(”的情况，此时“)”在dp数组对应的数值应该在原有基础上加2，<br>那么这里的原有基础指什么？容易推出为：离这对括号最近的那个字符对应的值的情况，在此基础上再加2，如图：</p>
+<p><img src="https://s2.loli.net/2022/10/10/IpqxsCyMKJ17rld.png" alt="image.png"></p>
+<p>则此时 dp[i] = dp[i-2] + 2。<br>这里有个问题，如果i-2 &lt; 0 怎么办，有两种解决思路：<br>1.i-2&lt;0的情况只有在i=1的时候会出现，首先最开始的时候就判断i=1的情况<br>2.每次都令当前为 dp[i]=2 ，然后再判断 i-2 &gt;=0 是否成立，是则加2</p>
+<p><strong>2.“)”的情况</strong></p>
+<p>2.1</p>
+<p>如果前一位为“)”，对前一位的“)”，也分为dp[i-1]是不是大于0的情况：<br>1.如果为0，则当前的“)”没有意义<br>2.大于0，此时前一位“)”已经有了对应的“(”，那么当前的“)”呢？它的对应情况又当如何？</p>
+<p>2.2</p>
+<p>想知道它的对应情况很简单，反正有dp数组在，我们只需获得需要判断的那位的下标即可；这里有个便捷公式是（x-dp[x]），它的含义是：</p>
+<blockquote>
+<p>当前下标减去当前下标对应最长有效括号长度，也就是当前索引下的对应最长有效括号的前一个下标。</p>
+<p>来自<a href="!https://leetcode.cn/problems/longest-valid-parentheses/solution/dong-tai-gui-hua-si-lu-xiang-jie-c-by-zhanganan042/">题解热评一的回复</a></p>
+</blockquote>
+<p>所以要求的下标为： (i-1)-dp[i-1] 。</p>
+<p>如果它对应的是 “(” ，则皆大欢喜，dp[i] = dp[i-1] +2 。</p>
+<p>2.2.1</p>
+<p>等等，这还没完，如果它的前一位，即 (i-1)-dp[i-1]-1 在dp对应的值<strong>大于0</strong>，即前面还有有效的括号区间，此时的式子并不完全，这种情况下 dp[i] = dp[(i-1)-dp[i-1]-1] + dp[i] ，注意此时的dp[i]已经被赋值到了 dp[i-1] +2 。如图：</p>
+<p><img src="https://s2.loli.net/2022/10/10/o8LhDgOTCENI35X.png" alt="image.png"></p>
+<p>P.S.在以上过程中保证下标都得大于等于0</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static int longestValidParentheses(String s) &#123;</span><br><span class="line">       int[] dp=new int[s.length()];</span><br><span class="line">       int res=0;</span><br><span class="line"></span><br><span class="line">       if(s.length()==0||s.length()==1)</span><br><span class="line">           return 0;</span><br><span class="line"></span><br><span class="line">       for (int i = 1; i &lt; s.length(); i++) &#123;</span><br><span class="line">           char c=s.charAt(i);</span><br><span class="line"></span><br><span class="line">           if(c==&#x27;)&#x27;)&#123;</span><br><span class="line">               if(s.charAt(i-1)==&#x27;(&#x27;)&#123;</span><br><span class="line">                   dp[i]=2;</span><br><span class="line">                   if(i-2&gt;=0)&#123;</span><br><span class="line">                       dp[i]=dp[i-2]+2;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">               //注意这里不是判断是不是“）”，而是进一步地判断是不是大于0</span><br><span class="line">               //要是等于0，此时的&quot;)“也没有意义了</span><br><span class="line">               else if (dp[i-1]&gt;0)&#123;</span><br><span class="line">                   if(i-1-dp[i-1]&gt;=0&amp;&amp;s.charAt(i-1-dp[i-1])==&#x27;(&#x27;) &#123;</span><br><span class="line">                       dp[i]=dp[i-1]+2;</span><br><span class="line">                       if(i-1-dp[i-1]-1&gt;=0)&#123;</span><br><span class="line">                           dp[i]=dp[i]+dp[i-1-dp[i-1]-1];</span><br><span class="line">                       &#125;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line"></span><br><span class="line">           &#125;</span><br><span class="line">           res=Math.max(res,dp[i]);</span><br><span class="line">           &#125;</span><br><span class="line">       return res;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Diff</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">动态规划</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/10/10/LeetCode/%E6%9C%80%E9%95%BF%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7%E9%95%BF%E5%BA%A6/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Idea/命令行运行报错" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/09/Idea/%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%90%E8%A1%8C%E6%8A%A5%E9%94%99/">Linux主机命令行运行jar包报错</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/09/Idea/%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%90%E8%A1%8C%E6%8A%A5%E9%94%99/" class="archive-article-date">
+  	<time datetime="2022-10-09T07:44:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h3><p>今天做实习答辩的PPT时想把以前程序的截图放上去，但是登上主机之后运行总是报错，最后发现是对命令行参数的不理解造成的，虽然错误简单，但也花费了一番功夫，特此记录。</p>
+<h3 id="问题解决过程"><a href="#问题解决过程" class="headerlink" title="问题解决过程"></a>问题解决过程</h3><p>1.输入</p>
+<blockquote>
+<p>java -jar xxx.jar</p>
+</blockquote>
+<p>程序抛出异常，原来是原来的程序需要输入系统参数，也就是查询的日期</p>
+<p>2.再次输入</p>
+<blockquote>
+<p>java -Ddate=2022-07-06 xxx.jar</p>
+</blockquote>
+<p>程序报错：找不到主类</p>
+<p>3.这次我用idea打开程序，在idea里面的终端测试下试试呢，进入target目录运行jar包。</p>
+<p><img src="https://s2.loli.net/2022/10/09/STvyP7XaDGtBxWf.png" alt="image.png"></p>
+<p>之后接着尝试（属于瞎探索小能手）</p>
+<p><img src="https://s2.loli.net/2022/10/09/jKE6tgyeAcwCurD.png" alt="image.png"></p>
+<p>这里报错是主类找不到，事实上如果当时细心一点就可以发现这两次的报错原因并不一致，但是我直接认定是主类找不到了，后面又乱尝试了一堆，比如：</p>
+<p><img src="https://s2.loli.net/2022/10/09/ql1LtWXu5moJrHG.png" alt="image.png"></p>
+<p>虽然这里报了很多错，但让我觉得有希望了，搜索后发现说是spring-boot-maven-plugin的插件有问题，它打成的jar包可以直接运行，但是不可以被依赖（这句又是在暗示），加上如图所示的代码后即可解决，我是心存怀疑的，因为原先linux主机上的原来确实正常启动并输出结果了，按理说应该不用改代码，但是没有办法我还是尝试在pom里加上了这句话，仍然出错。</p>
+<p><img src="https://s2.loli.net/2022/10/09/iEBPxR981y4vw6U.png" alt="image.png"></p>
+<p>这个时候我已经放弃了，开始在测试主机随便输入，突然想到会不会是没有加 -jar 的原因，联想到上面所说的“它打成的jar包可以直接运行，但是不可以被依赖”，而我前面的指令都好像是直接把jar包当成了类，所以最开始报的错是ClassNotFound，也就是类找不到！并不是主类找不到！（当时没想这么多，这是后来才意识到的，当时只是灵光一闪打上去按回车）</p>
+<p><strong>解决办法</strong></p>
+<p>输入</p>
+<blockquote>
+<p>java -Ddate=2022-07-03 -jar xxx.jar</p>
+</blockquote>
+<p>果然执行成功</p>
+<h3 id="参考网址"><a href="#参考网址" class="headerlink" title="参考网址"></a>参考网址</h3><blockquote>
+<p><a href="!https://blog.csdn.net/sinat_38570489/article/details/89504048">maven install时报错 程序包不存在以及找不到类的情况</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">命令行指令，jar包</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/IDEA//" class="article-tag-list-link color5">IDEA</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/10/09/Idea/%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%90%E8%A1%8C%E6%8A%A5%E9%94%99/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java/锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -929,387 +1296,9 @@
 
 
   
-    <article id="post-Spring/SpringAOP1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/23/Spring/SpringAOP1/">SpringAOP--个人笔记一</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/23/Spring/SpringAOP1/" class="archive-article-date">
-  	<time datetime="2022-08-23T13:20:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>写到这里的时候我才发现，前面所讲的IoC，不管是new一个实例，也就是@Bean，new自己，还是注入依赖，在自己里面new一个别的对象，其实都是在new。<br>我甚至开始想象Spring在最开始被构想的时候，设计人只想写一个可以帮助我们new的角色，然后又一想，那用的人得给我点信息吧，再一想，既然给了我信息，那我可不可以在new之前还对这些信息做一下包装呢…由此多出许多扩展的“功能”。</p>
-<p>话题回到AOP，它可以看做是与OOP在方向上互相垂直的另一种“OOP”；AOP被翻译为面向切面编程。</p>
-<h3 id="AOP的发展"><a href="#AOP的发展" class="headerlink" title="AOP的发展"></a>AOP的发展</h3><h4 id="第一代"><a href="#第一代" class="headerlink" title="第一代"></a>第一代</h4><p>第一代AOP即静态AOP，采用通过特殊的编译器，将横切逻辑编译并织入到系统的静态类。什么是横切逻辑？横切就是在原本好好的类的随便哪里（当然得根据需要！不是真的随便）砍一刀，逻辑就是那个刀。<br>静态AOP的好处是这个横切逻辑将以Java字节码的形式编译到Java类，JVM可以接着正常运行，缺点很显然就是不灵活啦。比如那个刀和你的肉相处得很愉快了，这下要换个地方可就有点切肤之痛了。</p>
-<hr>
-<h4 id="第二代"><a href="#第二代" class="headerlink" title="第二代"></a>第二代</h4><p>第二代AOP与第一代最大的不同就是AOP的织入过程在系统开始运行之后才开始。有以下四种实现方式：<br>1.动态代理<br>2.动态字节码增强<br>3.自定义类加载器<br>4.AOL扩展（语言扩展）</p>
-<p>Spring使用的是前两种。</p>
-<hr>
-<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>简单提一下涉及到的概念：</p>
-<ul>
-<li>JoinPoint：就是需要添加逻辑的地方，也叫作增强的地方，这些地方可以是方法（正常的或者构造方法）、字段（设置字段）、异常（处理抛出的异常）、类初始化（静态代码块）。</li>
-<li>PointCut：如果说JoinPoint是单个的地方，那PointCut就是对某些JoinPoint的抽象描述，比如小学、初中都叫学校，也是我们增强的地方。(～￣▽￣)～</li>
-<li>Advice：一般有之前（Before）、之后（After）、之前之后（Around），描述的是增强的时间，即什么时候执行横切逻辑</li>
-<li>Aspect：相当于“类”，是对横切逻辑的封装。class不也是一个类中有好多方法，Aspect就是class躺在地上了_(¦3」∠)_</li>
-<li>Weaver：织入器，也就是把Aspect在特定的时间（Advice）织入到某个地方（PointCut）啦</li>
-</ul>
-<hr>
-<h4 id="AOP的实现机制"><a href="#AOP的实现机制" class="headerlink" title="AOP的实现机制"></a>AOP的实现机制</h4><h5 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h5><p><img src="https://s2.loli.net/2022/08/24/sJe9NKh2gRlOFoV.png" alt="image.png"></p>
-<p>这是我画的一个简易图，ISubject是一个接口，SubjectImpl是它的一个实现类，也是我们将要代理的类，也就是说SubjectProxy将会持有这个SubjectImpl，并对其做出一些额外的修饰，使SubjectImpl的方法得到增强。<br>比如SubjectImpl有个需要增强的request方法，为了实现它的代理类，于是我们让它继承自ISubject接口（当然方法定义肯定在接口中预先定义好了，只是我想这个逻辑顺序应该是先有这个方法，再有利用接口把这个方法抽象出来），这个request呢就可以被定义到另一个实现了这个接口的类，让代理类去做这些额外的动作了。</p>
-<hr>
-<p>但是如果还有其他的类也需要增强request方法呢？为每一个类都创建接口和代理类吗？可以预想到的这么做的后果是代码冗余且设计不合理，这就是静态代理做的事情，灵活的动态代理我总结出可以这么表述：</p>
-<p>原来SubjectProxy的工作有两个：<br>1.拥有旧东西：即把SubjectImpl通过构造方法注入进来<br>2.增加新东西：实现ISubject中定义的方法，在其中进行逻辑增强<br>那么改进后的动态代理也是做这么两件事，只不过换了形式：<br>1.原来的旧东西统一就声明为Object，这样构造方法不再关注具体的类了<br>2.增加新东西之前统一都实现一个接口好了，这个接口叫InvocationHandler，那些个统一的方法也干脆统一名字，就叫invoke好了，实现的这个类也都叫Proxy完事</p>
-<h5 id="动态字节码增强"><a href="#动态字节码增强" class="headerlink" title="动态字节码增强"></a>动态字节码增强</h5><p>这个时候又有一个问题，如果这个类并没有实现这个叫什么，哦对，InvocationHandler接口呢？那么SpringAOP会尝试通过 CGLIB 这个开源的动态字节码库生成类库，为咱们的类生成代理实例，是不是很贴心呢~</p>
-<p>动态字节码生成的原理是：为我们的目标类生成子类，在子类中增强逻辑，要用的时候就用子类岂不也是美事一桩。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/23/Spring/SpringAOP1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/java双冒号" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/22/Java/java%E5%8F%8C%E5%86%92%E5%8F%B7/">Java双冒号(::)运算符的使用</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/22/Java/java%E5%8F%8C%E5%86%92%E5%8F%B7/" class="archive-article-date">
-  	<time datetime="2022-08-22T08:17:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>看见同事的代码用到了::，不太懂，于是搜索了一番。而且关于List的循环取值，我用的迭代器写法，他用的for增强循环，我一时没想到这个写法，遂去搜了下两者区别，总结一句话：for循环适合访问随机结构，iterator适合访问顺序结构。<br>用iterator的好处是即使后续类型改为Set，代码基本不会变；以现在的业务看应该是不会改类型了，所以他那种写法更好一些。</p>
-<h3 id="lambda表达式和Consumer接口"><a href="#lambda表达式和Consumer接口" class="headerlink" title="lambda表达式和Consumer接口"></a>lambda表达式和Consumer接口</h3><p>函数接口是对 <strong>方法作为参数</strong> 的优化，Java8以前需要通过匿名内部类来实现方法，再将此方法作为参数传给调用者，函数接口就是对匿名内部类的优化。函数接口的实现可以被转为lambda表达式。</p>
-<h5 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h5><p>Consumer是函数接口（因为其上有@FunctionalInterface，函数式接口指其中只定义了一个抽象方法的接口），拥有两个方法：<br>1.accept(T t)：消费一个指定类型的数据<br>2.deafault Consumer<T> andThen(Consumer&lt;? super T&gt; after)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@FunctionalInterface</span><br><span class="line">public interface Consumer&lt;T&gt; &#123;</span><br><span class="line">   	void accept(T t);</span><br><span class="line"></span><br><span class="line">   	default Consumer&lt;T&gt; andThen(Consumer&lt;? super T&gt; after) &#123;</span><br><span class="line">       	Objects.requireNonNull(after);</span><br><span class="line">       	return (T t) -&gt; &#123; accept(t); after.accept(t); &#125;;</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>这里涉及到一个java8新增的特性，即<strong>接口中可以定义一个默认的返回方法</strong>。通过观察方法的返回值和参数，发现它们一样，可以实现一个效果：消费数据的时候，首先做一个操作，然后再做一个操作，实现组合。</p>
-<hr>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line">public class Demo01Consumer &#123;</span><br><span class="line">   	public static void main(String[] args) &#123;</span><br><span class="line">       	consumerString(s -&gt; System.out.println(s));</span><br><span class="line">   	&#125;</span><br><span class="line"></span><br><span class="line">   	private static void consumerString(Consumer&lt;String&gt; function) &#123;</span><br><span class="line">       	function.accept(&quot;Hello&quot;);</span><br><span class="line">   	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>在上面的代码中，“consumerString(s -&gt; System.out.println(s));”这一句相当于有一个匿名内部类<strong>实现了Consumer</strong>接口（因为consumerString这个方法定义的参数类型就是Consumer这个函数接口）的accept方法，因为底下是个defalut已经定义，不实现accept的话就没有别的可以实现的了。</p>
-<p>然后这个匿名内部类叫function，它实现了accept方法，以一个“Hello”作为入参，然后消费“Hello”，消费的方法就是sout输出语句。</p>
-<hr>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line">public class Demo02Consumer &#123;</span><br><span class="line">   public static void main(String[] args) &#123;</span><br><span class="line">       consumerString(</span><br><span class="line">               // toUpperCase()方法，将字符串转换为大写</span><br><span class="line">               s -&gt; System.out.println(s.toUpperCase()),</span><br><span class="line">               // toLowerCase()方法，将字符串转换为小写</span><br><span class="line">               s -&gt; System.out.println(s.toLowerCase())</span><br><span class="line">       );</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   private static void consumerString(Consumer&lt;String&gt; one, Consumer&lt;String&gt; two) &#123;</span><br><span class="line">       one.andThen(two).accept(&quot;Hello&quot;);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>再看上面的代码，“one.andThen(two).accept(“Hello”);”意思就是以Hello为参数先执行one的动作，再执行two的动作。</p>
-<p>一步步看，one.andThen(two)返回的是Consumer接口，所以后面调用了这个返回接口的accept方法，而这个返回接口的accept方法呢，已经在andThen()中实现了，即：{ accept(t); after.accept(t); }，换算到这个例子，也就是{ one.accept(t); two.accept(t); }。</p>
-<p>下面是andThen方法源码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">void accept(T t);</span><br><span class="line"></span><br><span class="line">default Consumer&lt;T&gt; andThen(Consumer&lt;? super T&gt; after) &#123;</span><br><span class="line">       Objects.requireNonNull(after);</span><br><span class="line">       return (T t) -&gt; &#123; accept(t); after.accept(t); &#125;;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<p>这个andThen方法就是先做本接口的accept操作，再做传入的、也就是after的accept操作。</p>
-<p>且这个方法的返回类型是Consumer，最后的return语句以t为参数，并且在大括号中实现了accept方法，于是就可以看作是返回了这个Consumer类型。</p>
-<h3 id="双冒号（只是调用，没有别的实现）"><a href="#双冒号（只是调用，没有别的实现）" class="headerlink" title="双冒号（只是调用，没有别的实现）"></a>双冒号（只是调用，没有别的实现）</h3><blockquote>
-<p>java8允许我们使用lambda表达式创建匿名方法。</p>
-<p>但有时lambda表达式<strong>除了调用</strong>现有方法之外<strong>什么也不做</strong>。</p>
-<p>在这些情况下，通过<strong>名称引用</strong>现有的<strong>方法</strong>，通常能更直白的表现出方法的调用过程。对于已经存在的且具有方法名称的方法，它其实是简洁且易于读取的一种lambda表达式，或者说是对lambda表达式的一种进一步简化。</p>
-</blockquote>
-<blockquote>
-<p>来自<a href="!https://blog.csdn.net/aigoV/article/details/102586953">Java8新特性2：方法引用–深入理解双冒号::的使用</a></p>
-</blockquote>
-<p>这里的简化表现形式 在于对参数省略，着重表现出的是调用者和被调用的方法。有四种方法引用：<br>1.类名::方法名<br>2.实例名::方法名<br>3.特定类型::方法名(引用特定类型的任意对象的实例方法)<br>4.类名：new（构造函数的引用）</p>
-<p>对于3，结合这篇文章<a href="!https://blog.csdn.net/weixin_42740530/article/details/104655470">JAVA 8 ‘::’ 关键字，带你深入了解它！</a>的意思应该是调用这个方法的是参数。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>主要是理解方法作为参数、这种形式的简化表达的含义。</p>
-<p>（哈哈哈哈发现每次复制for循环那篇笔记都是在22号</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">lambda</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java8新特性//" class="article-tag-list-link color4">Java8新特性</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/22/Java/java%E5%8F%8C%E5%86%92%E5%8F%B7/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring/SpringIoC_BeanFactory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/21/Spring/SpringIoC_BeanFactory/">SpringIoC--BeanFactory</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/21/Spring/SpringIoC_BeanFactory/" class="archive-article-date">
-  	<time datetime="2022-08-21T10:47:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前面大致理清了IOC容器的职责和如何使用xml配置后，接下来是原理部分。</p>
-<h3 id="BeanFactory综述"><a href="#BeanFactory综述" class="headerlink" title="BeanFactory综述"></a>BeanFactory综述</h3><p>BeanFactory大体来说可以分为 <strong>容器启动阶段</strong> 和 <strong>Bean实例化阶段</strong>。</p>
-<p>容器启动阶段又可以按顺序如下排列：<br>1.加载配置<br>2.分析配置信息<br>3.装配到BeanDefinition<br>4.其他后操作</p>
-<p><strong>启动阶段就是把Bean的配置信息从xml文件中读取、分析出来再包装成BeanDefinition的过程</strong>，前期工作准备好后，就可以开始实例化：<br>1.实例化对象<br>2.装配依赖<br>3.生命周期回调<br>4.对象其他处理<br>5.注册回调接口</p>
-<hr>
-<h4 id="启动阶段"><a href="#启动阶段" class="headerlink" title="启动阶段"></a>启动阶段</h4><p>如果想在容器实例化对象之前做出修改应该怎么办？Spring提供了一个接口：<strong>BeanFactoryPostProcessor</strong>，允许在实例化之前，对BeanDefinition做出最后的修改，它的实现类有：<br>1.PropertyPlaceholderConfigurer<br>2.PropertyOverrideConfigurer</p>
-<p>看第一个的名字就可以猜到是通过占位的方式完成，在xml中使用如${}的方式占位，第一阶段加载完所有配置信息时还只是以占位符的形式存在；之后它被应用的时候，才去properties里面加载信息替换原来占位符的值。同时它还可以检查Java的System类中的properties，如果在properties文件中找不到相应配置项，那么它就会去System的Properties中查找。</p>
-<p>PropertyOverrideConfigurer看名字猜到应该是重写了什么，实际上也就是覆盖了原来xml中bean定义的property信息。</p>
-<p>除了对xml中配置信息的修改，也就是说除了本身定义这些Bean需要的东西以外，还有 字符串到Java对象转换规则的信息 也需要注册到容器。Xml中都是配置的字符串，从字符串到Java对象的这种<strong>转换工作</strong>就是由<strong>PropertyEditer</strong>来做，将PropertyEditer<strong>注册</strong>到容器的工作就是CustomerEditConfigurer的工作。</p>
-<hr>
-<p>1.PropertyPlaceholderConfigurer（通过占位符提前占领位置，而后从properties文件中读取真正的值）<br>2.PropertyOverrideConfigurer（properties文件的值替换掉xml的值）<br>3.CustomerEditConfigurer（将具有转换职能的类注册到容器）</p>
-<ul>
-<li>启动阶段做的就是加载配置-&gt;分析配置信息-&gt;包装成BeanDefinition-&gt;修改值</li>
-</ul>
-<hr>
-<h4 id="实例化阶段"><a href="#实例化阶段" class="headerlink" title="实例化阶段"></a>实例化阶段</h4><p>分为以下几个步骤：<br>1.实例化Bean对象<br>2.设置对象属性<br>3.检查Aware相关接口并设置响应的依赖</p>
-<p>4.BeanPostProcessor前置处理<br>5.检查是否是InitializingBean以决定是否调用afterPropertieSet方法<br>6.检查是否配置有自定义的init-method<br>7.BeanPostProcessor后置处理</p>
-<p>8.注册必要的Destruction相关的回调接口<br>9.使用ing<br>10.是否实现DisposableBean接口<br>11.是否配置自定义的destroy方法</p>
-<h5 id="Bean的实例化与BeanWrapper"><a href="#Bean的实例化与BeanWrapper" class="headerlink" title="Bean的实例化与BeanWrapper"></a>Bean的实例化与BeanWrapper</h5><p>（包含步骤1、2）</p>
-<ul>
-<li>实例化Bean的方式：<ul>
-<li>反射</li>
-<li>CGLIB动态字节码</li>
-</ul>
-</li>
-<li>如何决定：策略模式</li>
-<li>区别：反射不支持方法注入</li>
-</ul>
-<p>容器根据BeanDefinition取得实例化信息后不是直接返回实例化完成的对象实例，而是经过BeanWrapper包裹后的。<br>Spring根据对象为其构造一个BeanWrapperImpl实例，之前的被CustomerEditConfigurer注册到容器、用于转换工作的PropertyEditer，这个时候会被容器复制出一份给BeanWrapperImpl，这样BeanWrapperImpl就可以给实例转换类型、设置属性啦。</p>
-<h5 id="Aware接口"><a href="#Aware接口" class="headerlink" title="Aware接口"></a>Aware接口</h5><p>（包含步骤3）<br>当实例化完成并且相关的依赖设置好后，容器会检查该对象实例是否实现了一系列结尾以Aware命名的接口，如果实现了就会把相对应的依赖注入到实例中。<br>像之前在scope陷阱那里一样，当时为了通过BeanFactory每次返回不同的实例，有让那个类实现了BeanFactoryAware接口，从而容器可以将BeanFactory注入到那个类。</p>
-<h5 id="BeanPostProcessor"><a href="#BeanPostProcessor" class="headerlink" title="BeanPostProcessor"></a>BeanPostProcessor</h5><p>（包含步骤4、7）</p>
-<p>这里联想到另一个类：BeanFactoryPostProcessor，两者的区别在于，Factory那个存在于容器启动阶段，而现在这个存在于实例化Bean的阶段。</p>
-<p>Factory那个处理BeanDefinition，这个处理实例化后的对象实例。</p>
-<p>该接口声明了两个方法，第一个是在初始化之前处理，第二个是在初始化后处理，分别对应上述步骤的4和7.<br>接上面所说的Aware接口，在发现某些实例实现了结尾以Aware命名的接口后，会走到前置处理这一步，容器会检测到BeanPostProcessor的实现类，然后利用实现类为那个实现了接口的类注入相应的依赖。</p>
-<p>SpringAOP使用BeanPostProcessor的场景是为对象生成相应的代理对象。</p>
-<h5 id="InitializingBean和init-method"><a href="#InitializingBean和init-method" class="headerlink" title="InitializingBean和init-method"></a>InitializingBean和init-method</h5><p>（包含步骤5、6）<br>适用于一些对象实例化之后还不能马上使用的情况，后续处理可在InitializingBean接口定义中的afterPropertieSet方法中接着实现。<br>比起这种具有侵入性的实现接口的方式，init-method则通过配置在bean中的方式，使其减弱这种侵入感。</p>
-<h5 id="Disposable和destroy-method"><a href="#Disposable和destroy-method" class="headerlink" title="Disposable和destroy-method"></a>Disposable和destroy-method</h5><p>（包含步骤10、11）<br>同上面类似，应用与在销毁前还有一些动作需要执行</p>
-<hr>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>Q:BeanFactory如何创建出一个实例？</p>
-<ul>
-<li>容器启动（读取配置文件-&gt;分析信息-&gt;装配到Definition（此时可以对值做出最后的修改））</li>
-<li>Bean实例化<ul>
-<li>创建对象实例-&gt;设置值-&gt;绑定相关依赖</li>
-<li>检查Aware接口并注入相应依赖-&gt;添加初始化前的动作-&gt;初始化-&gt;初始化后的动作</li>
-<li>使用中</li>
-<li>销毁前的动作-&gt;销毁</li>
-</ul>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOC</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/08/21/Spring/SpringIoC_BeanFactory/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/">Next&gt;&gt;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/4/">Next&gt;&gt;</a>
     </nav>
   
 
@@ -1725,6 +1714,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">DH</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">复盘</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
             
             <div class="clearfix"></div>

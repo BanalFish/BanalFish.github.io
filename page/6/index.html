@@ -154,6 +154,312 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-LeetCode/zigzag-conversion" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/18/LeetCode/zigzag-conversion/">Z字形变换</a>
+    </h1>
+  
+
+        
+        <a href="/2022/05/18/LeetCode/zigzag-conversion/" class="archive-article-date">
+  	<time datetime="2022-05-18T09:18:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>将一个给定字符串 s 根据给定的行数 numRows ，以从上往下、从左到右进行 Z 字形排列。</p>
+<p>比如输入字符串为 “PAYPALISHIRING” 行数为 3 时，排列如下：</p>
+<p>P   A   H   N<br>A P L S I I G<br>Y   I   R<br>之后，你的输出需要从左往右逐行读取，产生出一个新的字符串，比如：”PAHNAPLSIIGYIR”。</p>
+<blockquote>
+<p>题目来自<a href="!https://leetcode.cn/problems/zigzag-conversion">力扣</a></p>
+</blockquote>
+<h3 id="思考题解"><a href="#思考题解" class="headerlink" title="思考题解"></a>思考题解</h3><p>本来是说弄个二维数组写，太困了没写出来结果。</p>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>由于输出的是一个字符串，也就是说那些空格格最后会没有用，不用管中间的字母在第几列，只用关心行数即可：<br><strong>从顶端开始一直向下走，直到遇到规定的numRows，然后转向，如此往复</strong>。</p>
+<p>代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public String convert(String s, int numRows) &#123;</span><br><span class="line">       if (numRows &lt; 2)</span><br><span class="line">           return s;</span><br><span class="line"></span><br><span class="line">       //频繁改变字符串时用StringBuilder</span><br><span class="line">       List&lt;StringBuilder&gt; rows = new ArrayList&lt;StringBuilder&gt;();</span><br><span class="line">       for (int i = 0; i &lt; numRows; i++)</span><br><span class="line">           rows.add(new StringBuilder());</span><br><span class="line"></span><br><span class="line">       int i = 0, flag = -1;//flag是转向标志</span><br><span class="line">       for (char c : s.toCharArray()) &#123;</span><br><span class="line">           rows.get(i).append(c);</span><br><span class="line">           if (i == 0 || i == numRows - 1)//该转向了</span><br><span class="line">               flag = -flag;</span><br><span class="line">           i += flag;//行数增加或减少</span><br><span class="line">       &#125;</span><br><span class="line">       StringBuilder res = new StringBuilder();</span><br><span class="line">       for (StringBuilder row : rows)</span><br><span class="line">           res.append(row);</span><br><span class="line"></span><br><span class="line">       return res.toString();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>不得不说i+=flag这句简直写得太好了！</p>
+<p>上次面试官说看了我博客后，不很敢在博客里面加入太多个人心理活动了555原来真的会去看啊…</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/18/LeetCode/zigzag-conversion/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/swap-nodes-in-pairs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/13/LeetCode/swap-nodes-in-pairs/">两两交换链表中的节点</a>
+    </h1>
+  
+
+        
+        <a href="/2022/05/13/LeetCode/swap-nodes-in-pairs/" class="archive-article-date">
+  	<time datetime="2022-05-13T07:10:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这也能用递归吗！</p>
+<h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。</p>
+<p><img src="https://s2.loli.net/2022/05/13/oxt23MRnayFZmVj.png" alt="image.png"></p>
+<blockquote>
+<p>题目链接来自<a href="!https://leetcode.cn/problems/swap-nodes-in-pairs/">力扣-两两交换链表中的节点</a></p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/13/LeetCode/swap-nodes-in-pairs/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/generate-parentheses" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/05/12/LeetCode/generate-parentheses/">括号生成</a>
+    </h1>
+  
+
+        
+        <a href="/2022/05/12/LeetCode/generate-parentheses/" class="archive-article-date">
+  	<time datetime="2022-05-12T09:49:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。</p>
+<p>示例 1：</p>
+<p>输入：n = 3<br>输出：[“((()))”,”(()())”,”(())()”,”()(())”,”()()()”]</p>
+<p>示例 2：</p>
+<p>输入：n = 1<br>输出：[“()”]
+ </p>
+<p>提示：</p>
+<p>1 &lt;= n &lt;= 8</p>
+<blockquote>
+<p>题目来自<a href="!https://leetcode.cn/problems/generate-parentheses">力扣-括号生成</a></p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/05/12/LeetCode/generate-parentheses/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-LeetCode/divide-two-integers" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -882,317 +1188,9 @@
 
 
   
-    <article id="post-LeetCode/maxPublicPrefix" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/25/LeetCode/maxPublicPrefix/">最长公共前缀</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/25/LeetCode/maxPublicPrefix/" class="archive-article-date">
-  	<time datetime="2022-04-25T03:10:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>编写一个函数来查找字符串数组中的最长公共前缀。</p>
-<p>如果不存在公共前缀，返回空字符串 “”。</p>
-<p>示例 1：</p>
-<p>输入：strs = [“flower”,”flow”,”flight”]<br>输出：”fl”</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/25/LeetCode/maxPublicPrefix/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-LeetCode/isPalindrome" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/24/LeetCode/isPalindrome/">判断回文数</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/24/LeetCode/isPalindrome/" class="archive-article-date">
-  	<time datetime="2022-04-24T02:35:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个整数 x ，如果 x 是一个回文整数，返回 true ；否则，返回 false 。</p>
-<p>回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。</p>
-<blockquote>
-<p><a href="!https://leetcode-cn.com/problems/palindrome-number">题目链接</a></p>
-</blockquote>
-<h3 id="思考解法"><a href="#思考解法" class="headerlink" title="思考解法"></a>思考解法</h3><p>首先想到的还是将数字转为字符串，就在美滋滋写完准备提交时，看见题目底下一行字：<br>进阶：你能不将整数转为字符串来解决这个问题吗？</p>
-<p>我：啊？被你预判到了吗力扣？</p>
-<p>虽然最后还是按字符串解法提交通过了</p>
-<h3 id="反转一半数字"><a href="#反转一半数字" class="headerlink" title="反转一半数字"></a>反转一半数字</h3><p>由于回文串的特性，所以只需将数字的后半段反转与前半段比较是否相等即可。问题变为如何得到后半段的反转数字。</p>
-<p>自然想到余数*10、原数/10等操作：</p>
-<p>1.将原数%10得到余数<br>2.余数*10+原数/10得到后半段反转的数</p>
-<p>如何判断已经反转到一半了：<br>看每次新得到的数和原数的大小即可，如果新数哪次大于等于=原数，说明已经反转一半了。</p>
-<p>最后返回新数是否与原数相等的布尔值就是最终答案。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/24/LeetCode/isPalindrome/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/for" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/22/Java/for/">for循环三语句执行顺序</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/22/Java/for/" class="archive-article-date">
-  	<time datetime="2022-04-22T10:12:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p>假设 a 是一个由线程 1 和线程 2 共享的初始值为 0 的全局变量，则线程 1 和线程 2 同时执行下面的代码，最终 a 的结果不可能是()</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">boolean isOdd = false;</span><br><span class="line">for(int i=1;i&lt;=2;++i)&#123;</span><br><span class="line">   	if(i%2==1)</span><br><span class="line">		isOdd = true;</span><br><span class="line">   	else </span><br><span class="line">		isOdd = false;</span><br><span class="line">   	</span><br><span class="line">	a+=i*(isOdd?1:-1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><a href="!https://www.nowcoder.com/test/question/done?tid=55673140&qid=55070#summary">题目链接</a></p>
-</blockquote>
-<h3 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h3><ol>
-<li>线程1、2不并发，顺序执行，则1线程执行后a=-1，2线程会使用a=-1，最后两者执行过程a=1-&gt;-1-&gt;0-&gt;-2</li>
-<li>线程1、2并发，此时读写完全冲突，类似一个线程起了作用，最后a=-1</li>
-<li>线程1、2部分并发，假设线程1执行完第一次循环，此时a=1；这个时候线程2加入进来，线程1已经不起作用（被线程2覆盖），最后线程2执行两次循环，a=-&gt;2-&gt;0</li>
-</ol>
-<h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p>题目与for循环关系不大，奈何本人写的时候，看到++i 以为是先做了加i操作，再进入的循环体，一直以为整个循环只会执行一次操作，后搜索，for循环三条语句执行顺序如下：</p>
-<ol>
-<li>初始化第一条语句</li>
-<li>判断是否符合第二条的条件</li>
-<li>执行循环体</li>
-<li>执行第三条语句</li>
-<li>判断是否符合第二条的条件</li>
-</ol>
-<p>直到循环结束。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">循环</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java细节//" class="article-tag-list-link color2">Java细节</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2022/04/22/Java/for/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/7/">Next&gt;&gt;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&lt;&lt;Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/7/">Next&gt;&gt;</a>
     </nav>
   
 
@@ -1608,6 +1606,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">DH</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">复盘</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
             
             <div class="clearfix"></div>

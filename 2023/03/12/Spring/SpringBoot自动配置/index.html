@@ -14,15 +14,15 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>SpringBoot自动配置 | BanalFish游向银河</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言一直不懂SpringBoot为什么相比SSM多了一个启动类，原来这和SpringBoot的优点有关，也就是开箱即用、简化了许多配置，而做法就离不开启动类上的注解——@SpringBootApplication。 @SpringBootApplication这个注解可以看作是 @Configuration 、@ComponentScan 、@EnableAutoConfiguration 三者的">
+  <meta name="description" content="前言一直不懂SpringBoot为什么相比SSM多了一个启动类，原来这和SpringBoot的优点有关，也就是开箱即用、简化了许多配置，而做法就离不开启动类上的注解——@SpringBootApplication。 @SpringBootApplication@SpringBootApplication中包含@SpringBootConfiguration、@EnableAutoConfigura">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringBoot自动配置">
 <meta property="og:url" content="http://example.com/2023/03/12/Spring/SpringBoot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE/index.html">
 <meta property="og:site_name" content="BanalFish游向银河">
-<meta property="og:description" content="前言一直不懂SpringBoot为什么相比SSM多了一个启动类，原来这和SpringBoot的优点有关，也就是开箱即用、简化了许多配置，而做法就离不开启动类上的注解——@SpringBootApplication。 @SpringBootApplication这个注解可以看作是 @Configuration 、@ComponentScan 、@EnableAutoConfiguration 三者的">
+<meta property="og:description" content="前言一直不懂SpringBoot为什么相比SSM多了一个启动类，原来这和SpringBoot的优点有关，也就是开箱即用、简化了许多配置，而做法就离不开启动类上的注解——@SpringBootApplication。 @SpringBootApplication@SpringBootApplication中包含@SpringBootConfiguration、@EnableAutoConfigura">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-03-12T06:50:15.000Z">
-<meta property="article:modified_time" content="2023-03-12T07:21:07.167Z">
+<meta property="article:modified_time" content="2023-03-29T03:10:45.367Z">
 <meta property="article:author" content="BanalFish">
 <meta property="article:tag" content="SpringBoot">
 <meta property="article:tag" content="自动配置">
@@ -176,14 +176,25 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>一直不懂SpringBoot为什么相比SSM多了一个启动类，原来这和SpringBoot的优点有关，也就是开箱即用、简化了许多配置，而做法就离不开启动类上的注解——@SpringBootApplication。</p>
-<h3 id="SpringBootApplication"><a href="#SpringBootApplication" class="headerlink" title="@SpringBootApplication"></a>@SpringBootApplication</h3><p>这个注解可以看作是 @Configuration 、@ComponentScan 、@EnableAutoConfiguration 三者的结合。</p>
+<h3 id="SpringBootApplication"><a href="#SpringBootApplication" class="headerlink" title="@SpringBootApplication"></a>@SpringBootApplication</h3><p>@SpringBootApplication中包含@SpringBootConfiguration、@EnableAutoConfiguration和@ComponentScan三个注解。</p>
+<p>因此这个注解可以看作是 @Configuration 、@ComponentScan 、@EnableAutoConfiguration 三者的结合。</p>
 <p>@Configuration表明它是一个源配置类，允许类中注册或导入额外的配置类；<br>@ComponentScan说明需要容器扫描其包下所有的类，可以自定义哪些不扫描（原来这就是之前碰到“找不到类”时让把启动类放在高一级目录的原因）；<br>@EnableAutoConfiguration是启动自动配置机制。</p>
 <p>显然@EnableAutoConfiguration是重中之重。</p>
-<h3 id="EnableAutoConfiguration"><a href="#EnableAutoConfiguration" class="headerlink" title="@EnableAutoConfiguration"></a>@EnableAutoConfiguration</h3><p>拥有这个注解也就相当于间接拥有了 @Import 注解。@Import 提供一种显式的方式从其它地方（第三方jar包）加载配置类的方式，它在SpringBoot这里导入的是 接口ImportSelector 的实现类，这个接口中有一个方法叫 selectImports，用来返回配置类全限定名数组。<br>这个实现类就叫 AutoConfigurationImportSelector ，它实现了selectImports方法，这个方法的实现逻辑是：<br>1.加载配置文件spring.factories<br>2.找出所有配置类并排除指定不需要的类<br>3.筛选不符合条件的类</p>
+<h3 id="EnableAutoConfiguration"><a href="#EnableAutoConfiguration" class="headerlink" title="@EnableAutoConfiguration"></a>@EnableAutoConfiguration</h3><p>拥有这个注解也就相当于间接拥有了 @Import 注解。@Import 提供一种显式的方式从其它地方（第三方jar包）加载配置类的方式，它在SpringBoot这里导入的是 接口ImportSelector 的实现类，这个接口中有一个方法叫 selectImports，用来返回配置类全限定名数组。<br>这个实现类就叫 AutoConfigurationImportSelector ，它实现了selectImports方法，这个方法（getAutoConfigurationEntry）的实现逻辑是：<br>1.加载配置文件spring.factories<br>2.找出所有配置类并排除指定不需要的类<br>3.筛选不符合条件的类</p>
 <p>这样找到所有需要的配置类（xxxAutoConfiguration）后，只需把其中需要注册到容器中的加载注册进去即可。</p>
 <p>· 那么如何找到这个配置文件spring.factories的呢？<br>这里应该是SpringBoot的“约定大于配置”概念，各个服务实现者都默认和SpringBoot约好放到了 META-INF 文件夹下，只要根据这个路径去找就可以找到。</p>
 <p>· 我一直在写接口向别人提供服务，这里怎么感觉是我在用别人的服务？<br>没错，我愿称之为“服务-调用”关系的倒置。这里我们作为调用方，不再关心服务具体如何实现，而只需要引入提供的jar包、再根据和别人约好的路径找到配置文件、将所需类注册到容器中即可。那这种倒置关系就是 SPI（Service Provider Interface）的思想。</p>
 <p>·什么叫又“排除了指定不需要的类”，还要“筛选不符合条件的类”？<br>前者说的是排除我们通过exclude属性指定不需要的类，而后者是服务实现者通过 @Conditional 注解，根据环境排除一些特定的类，如Redis服务中有个@ConditionalOnMissingBean(RedisTemplate.class)，被修饰到了注入RedisTemplate的方法上，也就是只有当容器里没有RedisTemplate时才会注入RedisTemplate。</p>
+<h3 id="总述"><a href="#总述" class="headerlink" title="总述"></a>总述</h3><p><strong>SpringBoot的启动流程</strong>：<br>1.创建IoC容器<br>2.主类注册进IoC<br>3.递归并加载所有配置类<br>4.实例化所有Bean，依赖注入<br>5.启动Web服务器</p>
+<p>在第三步中，其中的过程又可以看作是包含如下几个步骤：</p>
+<p>1.从容器中取出源配置类<br>2.创建一个源配置类解析器，递归加载并处理所有配置类<br>3.向IoC容器中注册@Bean对应的BeanDefinition<br>4.向IoC中注册ImportBeanDefinitionRegistrar导入的BeanDefinition</p>
+<p>在第二步中，其中的过程又可以看作是包含如下几个步骤：</p>
+<p>1.处理@ComponentScan，发现新的配置类，再递归<br>2.处理@Import，得到被导入的配置类，递归处理<br>3.处理@Bean方法<br>4.处理@Import导入的ImportBeanDefinitionRegistrar<br>5.加入到一个全局的配置类集合</p>
+<p>@Import：提供一种显式的方式从其它地方（第三方jar包）加载配置类的方式。一般有三种导入方式：普通类，选择器（一个ImportSelector接口的实现类，返回一个将被导入的配置类的全限定名数组），注册器。<br>在SpringBoot中使用选择器导入相关配置类，核心逻辑是：</p>
+<p>从classpath中读取所有jar包中的配置文件：META/Spring.factories，从指定key解析value。</p>
+<p>这个ImportSelector实现类返回配置类全限定名数组后，再根据@Configuration修饰的类中找到@Bean、@Conditional修饰的方法，并从中根据条件找到合适的Bean注册到Ioc容器。</p>
+<hr>
+<p>总的来说，就是从源头开始，一遍遍递归，找到本项目内部配置类，然后根据配置文件找第三方提供的外部配置类，最后都注册到容器里。</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><blockquote>
 <p><a href="!https://www.bilibili.com/video/BV1NY411P7VX/?spm_id_from=333.788&vd_source=57d830f6e821a67f2043e6492c9c9a35">B站目前讲的最透彻的SpringBoot自动配置</a><br><a href="!https://javaguide.cn/system-design/framework/spring/spring-boot-auto-assembly-principles.html#autoconfigurationimportselector-%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E7%B1%BB">SpringBoot自动装配原理详解</a></p>
 </blockquote>
@@ -323,7 +334,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SpringBootApplication"><span class="toc-number">2.</span> <span class="toc-text">@SpringBootApplication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EnableAutoConfiguration"><span class="toc-number">3.</span> <span class="toc-text">@EnableAutoConfiguration</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SpringBootApplication"><span class="toc-number">2.</span> <span class="toc-text">@SpringBootApplication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EnableAutoConfiguration"><span class="toc-number">3.</span> <span class="toc-text">@EnableAutoConfiguration</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%BF%B0"><span class="toc-number">4.</span> <span class="toc-text">总述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -756,6 +767,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">DH</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">复盘</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
             
             <div class="clearfix"></div>
