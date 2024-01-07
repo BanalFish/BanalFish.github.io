@@ -154,6 +154,829 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-DailyProblem/RPC简述" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/12/29/DailyProblem/RPC%E7%AE%80%E8%BF%B0/">RPC简述</a>
+    </h1>
+  
+
+        
+        <a href="/2023/12/29/DailyProblem/RPC%E7%AE%80%E8%BF%B0/" class="archive-article-date">
+  	<time datetime="2023-12-29T06:10:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-12-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>爱写一些唠叨的前言作为引子的我本人：(￣ェ￣;)</p>
+<p>为什么会想到去了解RPC呢？是因为在看DDD的时候，某篇博客里提到了：</p>
+<blockquote>
+<p>接口定义 - xfg-frame-api：因为微服务中引用的 RPC 需要对外提供接口的描述信息，也就是调用方在使用的时候，需要引入 Jar 包，让调用方好能依赖接口的定义做代理。</p>
+</blockquote>
+<p>我：⊙(・◇・)？let me search search</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">微服务</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">RPC</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/日常问题//" class="article-tag-list-link color5">日常问题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/12/29/DailyProblem/RPC%E7%AE%80%E8%BF%B0/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-DailyProblem/DDD" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/12/26/DailyProblem/DDD/">DDD简述</a>
+    </h1>
+  
+
+        
+        <a href="/2023/12/26/DailyProblem/DDD/" class="archive-article-date">
+  	<time datetime="2023-12-26T06:10:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-12-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>领域驱动设计（DDD）是一种通过深入理解业务，将业务概念直接映射到代码中，以更好地组织和解决复杂问题的软件开发方法。</p>
+<p>这句话的重点是：“将业务概念直接映射到代码中”，伴随着项目系统的进行过程，开发人员不会是永远一成不变，那对于后来人员如何快速理解前人留下的代码，如果之前就采用DDD模式则会对此有帮助。<br>那么为什么会有帮助？原因在于DDD在代码架构上以业务为中心，而不像MVC更关注分离用户界面和业务逻辑，当业务需求越来越多时，将不利于后来的开发人员理解业务。所以也可以说DDD将重心放在业务，</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">DDD</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">软件开发</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/日常问题//" class="article-tag-list-link color5">日常问题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/12/26/DailyProblem/DDD/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/234回文链表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/12/01/LeetCode/234%E5%9B%9E%E6%96%87%E9%93%BE%E8%A1%A8/">回文链表</a>
+    </h1>
+  
+
+        
+        <a href="/2023/12/01/LeetCode/234%E5%9B%9E%E6%96%87%E9%93%BE%E8%A1%A8/" class="archive-article-date">
+  	<time datetime="2023-12-01T01:48:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-12-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。</p>
+<p>提示：</p>
+<ul>
+<li>链表中节点数目在范围[1, 105] 内</li>
+<li>0 &lt;= Node.val &lt;= 9</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">递归</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/12/01/LeetCode/234%E5%9B%9E%E6%96%87%E9%93%BE%E8%A1%A8/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/283移动零" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/11/30/LeetCode/283%E7%A7%BB%E5%8A%A8%E9%9B%B6/">移动零</a>
+    </h1>
+  
+
+        
+        <a href="/2023/11/30/LeetCode/283%E7%A7%BB%E5%8A%A8%E9%9B%B6/" class="archive-article-date">
+  	<time datetime="2023-11-30T00:48:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。</p>
+<p>请注意 ，必须在不复制数组的情况下原地对数组进行操作。</p>
+<p>示例 1:</p>
+<p>输入: nums = [0,1,0,3,12]<br>输出: [1,3,12,0,0]<br>示例 2:</p>
+<p>输入: nums = [0]<br>输出: [0]</p>
+<p>提示:</p>
+<p>1 &lt;= nums.length &lt;= 104<br>-231 &lt;= nums[i] &lt;= 231 - 1</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Easy</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">双指针</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/11/30/LeetCode/283%E7%A7%BB%E5%8A%A8%E9%9B%B6/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-DailyProblem/分区表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/11/10/DailyProblem/%E5%88%86%E5%8C%BA%E8%A1%A8/">分区表</a>
+    </h1>
+  
+
+        
+        <a href="/2023/11/10/DailyProblem/%E5%88%86%E5%8C%BA%E8%A1%A8/" class="archive-article-date">
+  	<time datetime="2023-11-10T02:06:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-11-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>对存储海量数据的数据库做DML操作或者全表扫描时，为了提高效率，对表和索引进行分区的技术，把表和索引分割成更小的单位，分别存放在一个个单独的段中，用户对表的访问转化为对较小段的访问。</p>
+<blockquote>
+<p>DML是Data Manipulation Language的缩写，意思是数据操纵语言，是指在SQL语言中，负责对数据库对象运行数据访问工作的指令集，以INSERT、UPDATE、DELETE三种指令为核心</p>
+</blockquote>
+<p>由此得出分区的定义，它是指将表、索引划分为较小的可管理片段的技术，每一个片段称为分区子表或分区索引。一个表被分区后，对表的查询操作可以局限于某个分区进行，而不是整张表，提高查询效率。</p>
+<p>表进行分区后，逻辑上表仍然是一张完整的表，只是将表中的数据在物理上存放到多个 “表空间”(物理文件上)，这样查询数据时，不至于每次都扫描整张表，而只是从当前的分区查到所要的数据，大大提高了数据查询的速度。</p>
+<h4 id="分区表和分表分库的区别"><a href="#分区表和分表分库的区别" class="headerlink" title="分区表和分表分库的区别"></a>分区表和分表分库的区别</h4><p>分区表和分表分库在用途上不一样，分表分库是为了承接超大规模的表，单机放不下那种。分区表的话则一般都是放在单机里的，用的比较多的是时间范围分区，方便归档。</p>
+<h4 id="分区表的优缺点"><a href="#分区表的优缺点" class="headerlink" title="分区表的优缺点"></a>分区表的优缺点</h4><p>优点：分区表通过将表分区，可以大大提高检索效率，减少数据损坏的可能，增强可用性，维护起来也方便。同时可以把不同的分区映射到磁盘以平衡I/O，改善整个系统性能。</p>
+<p>缺点：已经存在的表没有方法可以直接转化为分区表。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分区表</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/日常问题//" class="article-tag-list-link color5">日常问题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/11/10/DailyProblem/%E5%88%86%E5%8C%BA%E8%A1%A8/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-LeetCode/739每日温度" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/11/02/LeetCode/739%E6%AF%8F%E6%97%A5%E6%B8%A9%E5%BA%A6/">每日温度</a>
+    </h1>
+  
+
+        
+        <a href="/2023/11/02/LeetCode/739%E6%AF%8F%E6%97%A5%E6%B8%A9%E5%BA%A6/" class="archive-article-date">
+  	<time datetime="2023-11-02T10:17:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-11-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定一个整数数组 temperatures ，表示每天的温度，返回一个数组 answer ，其中 answer[i] 是指对于第 i 天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用 0 来代替。</p>
+<p>示例 1:</p>
+<p>输入: temperatures = [73,74,75,71,69,72,76,73]<br>输出: [1,1,4,2,1,1,0,0]<br>示例 2:</p>
+<p>输入: temperatures = [30,40,50,60]<br>输出: [1,1,1,0]<br>示例 3:</p>
+<p>输入: temperatures = [30,60,90]<br>输出: [1,1,0]</p>
+<p>提示：</p>
+<p>1 &lt;= temperatures.length &lt;= 105<br>30 &lt;= temperatures[i] &lt;= 100</p>
+<h3 id="题解-暴力法"><a href="#题解-暴力法" class="headerlink" title="题解-暴力法"></a>题解-暴力法</h3><p>最容易想到的就是暴力法，对于某一天的温度 ，往后遍历直到碰到第一次比它高的那天，记录这两天下标之差到结果数组；遍历每一天即可。</p>
+<h3 id="题解-单调栈"><a href="#题解-单调栈" class="headerlink" title="题解-单调栈"></a>题解-单调栈</h3><p>考虑到暴力法的时间复杂度[O(n^2)]，采取单调栈解法。<br>维护一个从栈底到栈顶下标对应值依次递减的单调栈，只要某下标在栈中，则代表目前还未找到比该下标对应温度还要大的那天。</p>
+<p>遍历temperatures数组，对于下标i对应的温度，如果栈为空或者栈顶元素对应的温度比它大，则入栈；如果是栈顶元素对应温度小的情况，则说明栈顶元素终于第一次找到了比它当天温度要大的值，这时记录两数下标之差到结果数组，并将栈顶元素出栈（它本身要找的第一次比它温度高的那天已找到，且由于是栈顶，之前栈的元素对应的温度都比它大，对这部分元素来说栈顶元素已经没有价值）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">    public int[] dailyTemperatures(int[] temperatures) &#123;</span><br><span class="line">        int len=temperatures.length;</span><br><span class="line">        int[] res=new int[len];</span><br><span class="line">        Stack&lt;Integer&gt; stack=new Stack&lt;&gt;();</span><br><span class="line">        </span><br><span class="line">        for(int i=0;i&lt;len;i++)&#123;</span><br><span class="line">           int t=temperatures[i] ;</span><br><span class="line">           </span><br><span class="line">           while(!stack.isEmpty()&amp;&amp;t&gt;temperatures[stack.peek()])&#123;</span><br><span class="line">                int p=stack.peek();</span><br><span class="line">                res[p]=i-p;</span><br><span class="line">                stack.pop();</span><br><span class="line">           &#125;</span><br><span class="line">           stack.push(i);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><blockquote>
+<p><a href="!https://leetcode.cn/problems/daily-temperatures/solutions/71433/leetcode-tu-jie-739mei-ri-wen-du-by-misterbooo/">LeetCode 图解|739.每日温度</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mid</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">单调栈</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/算法练题//" class="article-tag-list-link color5">算法练题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/11/02/LeetCode/739%E6%AF%8F%E6%97%A5%E6%B8%A9%E5%BA%A6/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-DailyProblem/qiankun" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/10/19/DailyProblem/qiankun/">由微前端引发的知识杂糅</a>
+    </h1>
+  
+
+        
+        <a href="/2023/10/19/DailyProblem/qiankun/" class="archive-article-date">
+  	<time datetime="2023-10-19T08:36:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-10-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id=""><a href="#" class="headerlink" title=""></a></h3><h4 id="webpack"><a href="#webpack" class="headerlink" title="webpack"></a>webpack</h4><h5 id="（一）概述"><a href="#（一）概述" class="headerlink" title="（一）概述"></a>（一）概述</h5><p>JavaScript应用程序的打包工具，只能识别JavaScript语言，其它语言需要对应的loader。<br>webpack通过使用nodejs提供的API来操作待打包项目的源文件，将这些文件整合压缩后，输出到一个特定的目录下（通常是dist）,处理过的dist一般会被直接上传到静态资源服务器使用（静态服务器一般存放不轻易发生变动的资源）。 </p>
+<h5 id="（二）选择webpack的理由"><a href="#（二）选择webpack的理由" class="headerlink" title="（二）选择webpack的理由"></a>（二）选择webpack的理由</h5><ol>
+<li><strong>减小包的体积</strong>。Webpack打包中的tree shaking指的是通过静态分析代码引用关系,在构建时仅打包项目中实际使用到的代码,从而将未使用过的代码排除在构建产物之外,减小项目体积。</li>
+<li>浏览器不支持任何模块系统，而JavaScript开发离不开模块系统，webpack帮助将由模块系统编写的项目代码，转为浏览器所能识别的代码。</li>
+<li><strong>提升系统安全性</strong>。webpack可以重组和混淆源代码，增加黑客阅读困难。</li>
+<li>实现前后端分离。通过命令行启动webpack提供的dev-server时，webpack会在本地启动一个node服务，将打包后的前端文件注入该服务，这样就可以在不依赖后台的情况下开发前端。</li>
+</ol>
+<h5 id="（三）如何使用webpack"><a href="#（三）如何使用webpack" class="headerlink" title="（三）如何使用webpack"></a>（三）如何使用webpack</h5><p>首先安装必要的环境，在项目中使用的<strong>核心是编写配置文件</strong>，该文件通常命名为 webpack.config.js，该文件暴露出一个js对象，也就是我们说的webpack的配置对象，它包含四个核心参数：入口，出口，加载器，插件。</p>
+<ol>
+<li>入口（entry）。它定义了webpack的打包入口，也就是应该从哪个js开始打包；一个程序可以有一个或多个入口，由entry属性定义。</li>
+<li>出口（output）。一个程序只能有一个出口（但是打包出的文件可以有多个），其包含两个属性：filename和path，定义打包结果的文件名和输出位置。</li>
+<li>加载器（loader）。本质上讲loader就是将一个特定的字符串转化成JavaScript代码的函数，上面提到webpack只能识别js，因此当js内部依赖了其它语言的模块时，需要一个工具来帮助webpack识别，并将这个语言模块添加到打包中输出。</li>
+<li>插件（plugin）。插件就是在原有基础上进行功能扩展，当我们想要在任何一个过程中添加某些特定的功能，就需要借助插件来实现。</li>
+</ol>
+<h5 id="（四）热更新原理"><a href="#（四）热更新原理" class="headerlink" title="（四）热更新原理"></a>（四）热更新原理</h5><p>前面提到：dev-server就是启动一个本地的nodejs服务，将打包结果作为静态资源使用，当我们访问服务时，它就把需要的静态资源返回给浏览器。<br>nodejs使用了一个清单文件来记录所有的资源文件，这个清单文件就是热更新模块的监测对象。<br>一旦修改了代码，webpack就会重新打包，给文件名添加新的hash值，同时更新清单文件。<br>热更新模块监测到清单文件发生改动后，会通过websocket将这个新的文件发送给浏览器，浏览器重新执行该文件，完成局部更新。</p>
+<blockquote>
+<p>参考<a href="!https://blog.csdn.net/qq_41694291/article/details/104029636">webpack概念简介</a></p>
+</blockquote>
+<h4 id="Single-SPA"><a href="#Single-SPA" class="headerlink" title="Single SPA"></a>Single SPA</h4><h5 id="（一）概念"><a href="#（一）概念" class="headerlink" title="（一）概念"></a>（一）概念</h5><p>Single SPA是一个JavaScript微前端框架，将多个单页面应用整合为一个整体应用。</p>
+<h5 id="（二）架构"><a href="#（二）架构" class="headerlink" title="（二）架构"></a>（二）架构</h5><p>它参考了组件生命周期的思想，为应用设置了针对路由的生命周期，不同的生命阶段进行不同的行为。如当路由处于active激活状态时，应用会把自身的内容挂载到页面上；反之则卸载。</p>
+<p>一个典型的Single SPA应用包含：html页面、微应用、注册脚本和应用脚本，</p>
+<p>注册脚本包含：微应用名称，加载应用程序的代码，确定应用程序何时处于active/非active状态的函数，自定义props属性。</p>
+<p>应用脚本的生命周期：</p>
+<ul>
+<li>load ：一种状态，当应用匹配路由时就会加载脚本</li>
+<li>bootstrap：引导函数，对接html，应用内容首次挂载到页面<strong>前</strong>调用</li>
+<li>mount：挂载函数</li>
+<li>unmount：卸载函数</li>
+<li>unload：unload之后会重新启动bootstrap流程，借助unload可实现热更新</li>
+</ul>
+<p>微前端生命周期流程：</p>
+<p>加载页面的整体基座-&gt;注册应用进来-&gt;开始-&gt;Single SPA路由-&gt;加载-&gt;引导-&gt;挂载函数-&gt;卸载-&gt;引导-&gt;…</p>
+<blockquote>
+<p>参考<a href="!https://youngjuning.js.org/89f69cf72fa9/">single-spa原理解析</a></p>
+</blockquote>
+<h4 id="qiankun"><a href="#qiankun" class="headerlink" title="qiankun"></a>qiankun</h4><p>qiankun 是蚂蚁金服基于 Single SPA 开发的一个微前端实现库，简化了微应用的注册方式，增加了微应用的沙箱管理(js、css隔离)与全局状态共享机制，并且 qiankun 内部实现了一个解析 html 字符串获取静态资源地址的解析库 import-html-entry，方便微应用接入与资源预加载。</p>
+<p>虽然两者推荐的项目构建方式有些许区别，但是核心逻辑其实都是在主应用中通过引入 js 的方式来加载微应用。只是使用 Single SPA 来进行项目改造时，不仅需要在每个应用入口文件里面导出声明周期，还需要修改各自的路由配置、webpack打包配置等等；并且 Single SPA 也没有实现应用隔离、数据通信等功能，所以建议还是使用 qiankun 作为微前端框架选型。</p>
+<blockquote>
+<p><a href="!https://developer.aliyun.com/article/1116714">微前端之qiankun介绍</a></p>
+</blockquote>
+<h4 id="CDN"><a href="#CDN" class="headerlink" title="CDN"></a>CDN</h4><p>全称是Content Delivery Network，即内容分发网络。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">微前端</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/日常问题//" class="article-tag-list-link color5">日常问题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/10/19/DailyProblem/qiankun/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-DailyProblem/镜像" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/10/13/DailyProblem/%E9%95%9C%E5%83%8F/">容器及打包工具演变</a>
+    </h1>
+  
+
+        
+        <a href="/2023/10/13/DailyProblem/%E9%95%9C%E5%83%8F/" class="archive-article-date">
+  	<time datetime="2023-10-13T03:57:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-10-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="容器有关"><a href="#容器有关" class="headerlink" title="容器有关"></a>容器有关</h3><h4 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h4><p>它是一个分层的文件系统，分为视图层、读写层、底层。用户可见的是视图层；底层可以有多个，当某文件需要修改时，会复制该文件逻辑上成为新的一层，在新层上做文件修改（新层加文件不会增加新的层数）。<br>当动态运行容器（根据镜像的文件创建，镜像中包含启动、运行容器等需要的文件）时，会动态生成读写层，用于修改底层的文件，也是复制一份到读写层。</p>
+<h4 id="仓库"><a href="#仓库" class="headerlink" title="仓库"></a>仓库</h4><p>存放镜像的地方，一个仓库可以有多个镜像。</p>
+<h4 id="注册服务器"><a href="#注册服务器" class="headerlink" title="注册服务器"></a>注册服务器</h4><p>管理仓库，一个注册服务器可以有多个仓库。</p>
+<blockquote>
+<p><a href="!https://zhuanlan.zhihu.com/p/421762089">参考链接–深入剖析Docker镜像</a></p>
+</blockquote>
+<p>将应用程序打包成容器发布到仓库</p>
+<h4 id="BBC模式"><a href="#BBC模式" class="headerlink" title="BBC模式"></a>BBC模式</h4><p>BBC通常是指企业通过电商平台或其他渠道，向其他企业进行销售，这些企业再将商品或服务转售给最终的消费者。BBC模式通常涉及多级供应链，包括生产商、批发商、零售商等环节。</p>
+<h4 id="POD"><a href="#POD" class="headerlink" title="POD"></a>POD</h4><p>是k8s管理的最小单元，意为容器组。包含一个或多个应用程序容器、存储资源、一个唯一的网络ip地址、确定容器该如何运行的选项。</p>
+<h4 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h4><p>Docker是被广泛使用的容器引擎。容器引擎就是一种工具，提供了容器运行所需资源，管理容器的生命周期；除此之外，提供了镜像与容器的用户界面，还可以从远程仓库拉取镜像，并将其解压到本地磁盘。</p>
+<h3 id="构建工具的演变"><a href="#构建工具的演变" class="headerlink" title="构建工具的演变"></a>构建工具的演变</h3><h4 id="Ant"><a href="#Ant" class="headerlink" title="Ant"></a>Ant</h4><p>打包一个程序有编译、测试、打包的先后步骤。假设定义一个任务名称叫“test”，并且规定了这个任务依赖上个任务（如“compile”）的完成，那么对于用户来说，只需要执行test，它将会追本溯源自动执行前面的步骤。<br>Ant就是这样的思想，它将定义任务及一些属性信息封装到了build.xml这样一个文件里。但是Ant没办法管理依赖，于是Maven出世。</p>
+<h4 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h4><p>在Maven的pom.xml里，开发者定义需要的包的名称及版本号等属性，Maven会自动把包导入进项目，如果本地没有，Maven会从远程仓库下载，当然远程仓库地址可以自己指定。<br>Maven在约定大于配置的路上越走越远，使得用户不能灵活地自定义任务，而且pom文件语法不简洁，某些地方十分冗杂。</p>
+<h4 id="Gradle"><a href="#Gradle" class="headerlink" title="Gradle"></a>Gradle</h4><p>Gradle：拥有Ant和Maven的优点，不仅继承了Maven中仓库、坐标、<strong>依赖</strong>的核心概念，而且可以像Ant一样<strong>灵活自定义</strong>任务了。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">容器</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">打包工具</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/日常问题//" class="article-tag-list-link color5">日常问题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/10/13/DailyProblem/%E9%95%9C%E5%83%8F/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-DailyProblem/加速器和梯子区别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -178,43 +1001,9 @@
 <p><strong>1.如何做到的</strong></p>
 <p>A：通过<strong>建立</strong>加密的<strong>代理连接</strong>，隐藏用户的真实IP地址和网络流量，从而绕过网络过滤和审查机制。<br>对于客户端来说，后续发送和接收的数据都由代理服务器进行传达，利用这个原理可以实现访问谷歌等国外网站的操作。</p>
 <p>主要的核心技术是基于代理协议。</p>
-<h3 id="加速器"><a href="#加速器" class="headerlink" title="加速器"></a>加速器</h3><p>####1.是什么</p>
-<p>  加速器是一种网络工具，旨在提供更快速和稳定的网络连接。它通过优化网络路径、缓解网络拥塞和降低延迟等方式，加快用户与网络资源之间的数据传输速度。加速器通常会使用一些技术手段，例如负载均衡、数据压缩和缓存等，以提高网络连接的效率和性能。</p>
+<h3 id="加速器"><a href="#加速器" class="headerlink" title="加速器"></a>加速器</h3><h4 id="1-是什么"><a href="#1-是什么" class="headerlink" title="1.是什么"></a>1.是什么</h4><p>  加速器是一种网络工具，旨在提供更快速和稳定的网络连接。它通过优化网络路径、缓解网络拥塞和降低延迟等方式，加快用户与网络资源之间的数据传输速度。加速器通常会使用一些技术手段，例如负载均衡、数据压缩和缓存等，以提高网络连接的效率和性能。</p>
 <p>  在加速器中，一种常见的技术是代理技术，其中用户的网络请求通过加速器服务器进行转发和处理。加速器服务器位于用户和目标服务器之间，充当一个中间节点，优化数据传输并提供更快速的响应。通过使用加速器，用户可以更快地访问国际资源，减少网络延迟和不稳定性带来的影响。</p>
-<p>####2.实现技术</p>
-<p>目前主流的加速技术可以采用两种方式来实现：“代理服务器方式”和“VPN方式”。</p>
-<blockquote>
-<p>代理服务器方式通过部署<strong>SOCKS5</strong>代理服务器作为加速节点，加速客户端自动选择最快的代理服务器作为当前的转发节点。在客户端主要采用LSP技术，在用户的主机安装分层协议，在游戏客户端调用connect函数（或WSAConnect函数）试图连接游戏服务器时，将连接重定向到代理服务器，并采用SOCKS5协议规范与代理服务器进行数据协商，由代理服务器来连接真正的游戏服务器，并将游戏服务器的数据原封不动转发给用户、将用户的数据原封不动转发给游戏服务器。</p>
-</blockquote>
-<p><strong>SOCKS5</strong></p>
-<p>  SOCKS5是一种作用于会话层的网络协议，会话层位于应用层与传输层之间。</p>
-<ul>
-<li>网络协议，也叫作计算机协议，是通信计算机双方必须共同遵从的一组约定。为了<strong>使数据在网络上从源到达目的</strong>，网络通信的参与方必须遵循相同的规则，这套规则称为协议，它最终体现为在网络上传输的<strong>数据包的格式</strong>。</li>
-<li>也就是说，协议是通信双方为了达到某种<strong>目的</strong>进行<strong>数据</strong>传输时，对“数据”格式的规范约定。在计算机网络的每一层，拥有不同的数据格式，但是这些数据格式的目的可以都抽象为这一层想要达到的总目的。在每一层中又有不同的目标（为了从具体例子上不和前面的“<strong>目的</strong>”混淆，但其实都是“目的”的范畴），根据不同的目标又有不同的协议。而且对于不同层来说，数据要想能够层层传递，每层的协议应该自底向上有一个支持的作用，不能这层将数据包装成某格式后，到下一个层的时候解不了。</li>
-<li>要搞清楚一个网络协议，先知道它作用于哪一层，再了解自身的特性目的，与同层的协议加以区分。</li>
-</ul>
-<p><strong>SOCKS的出现</strong></p>
-<p>SOCKS5是SOCKS协议版本为5的协议。</p>
-<p>在SOCKS出现之前，内网和代理服务器之间没有专门的协议来定义两者之间的数据传输格式（接上文，这里隐含的“目的”：为了连接客户端和代理服务器）。</p>
-<blockquote>
-<p>通常在组织内部会有自己专用的网络, 该网络与公共网络 (如 Internet) 是隔离的, 而代理服务器可以创建一个从内网到外网的通道, 用于组织内的主机与组织外的主机进行通信, 同时组织管理者可以在代理服务器上配置相应的权限管控和监控, 以约束和审查组织内外主机的通信行为。</p>
-<p>这里, 代理服务器实际上相当于一个应用层<strong>网关</strong>, 在 Socks 协议之前没有一套通用的标准来约束组织内主机与代理服务器的交互方式, 这需要工程师自行实现相应的<strong>数据转发</strong>, 而且对于应用层协议往往是不<strong>透明</strong>的 (例如可能需要根据实际需求实现多种应用层协议的网关, 如 HTTP 代理, FTP 代理, SSH 代理等等)。</p>
-</blockquote>
-<ul>
-<li>网关：这里想表达的网关的意思应该是指：将两个使用不同协议的网络段连接在一起的设备，对两个网络段中的使用不同传输协议的数据进行互相的翻译转换。但是我认为<a href="!https://zhidao.baidu.com/question/1441453.html?sort=11&rn=5&pn=0#wgt-answers">百度回答-什么是网关？</a>中 wfchenjin用户 的回答提到的管道网关的概念更恰当，即：“通过不兼容的网络区域时传输数据的比较通用的技术”。</li>
-<li>需要工程师自行实现相应数据的转发:由于客户端和代理服务器之间没有约定好的协议，也就没有约定好的数据格式，因此在开发时都需要开发者自己定义数据格式，从而接着实现转发。</li>
-<li>透明：计网中的透明性指：从某个角度看不到的特性，则称该特性是透明的。简单来说，透明就是黑盒，不用关注内部结构，只应用其提供的外部接口。</li>
-<li>（以下是个人理解）所以这里说“对于应用层协议往往是<strong>不透明</strong>的”，翻译一下，就是应用层<strong>需要</strong>知道客户端与代理服务器之间使用了哪种数据传输格式。紧接着后面的一句话：“根据实际需求实现多种应用层协议的网关”的意思是，代理服务器和客户端传输时将数据封装成了某种特殊格式，而这种格式服务器并不知道。<blockquote>
-<p>Socks 5 协议工作在传输层 (Transport Layer) 与应用层 (Application Layer) 的中间, 提供了一种对应用层协议透明的代理服务, 当组织内主机与代理服务器完成 Socks 握手之后, 应用层对代理服务器是无感知的。例如地址分别为 A、 B 的分布在组织内外的两个进程进行 HTTP 通信, 其中 C 为代理服务器, 实际的数据链路为 A → C → B, 但在引入 Socks 协议之后, 从应用层的视角来看, 整个通信过程仍然是 A → B 的模式。</p>
-</blockquote>
-</li>
-</ul>
-<p>####3.加速器的具体实现步骤</p>
-<p>step1.“网络加速器”厂商通过搭建多个高带宽的双线机房(或通过租用双线VPS主机），并在这些机房的两大线路中架设多个节点服务器;</p>
-<p>step2.然后为其编写“网络加速器客户端”，通过客户端判断用户的网络线路类型，并将用户应用客户端的网络数据转发到指定的节点服务器;</p>
-<p>step3.由节点服务器转发给用户应用客户端请求的真正服务器。“网络加速器客户端”通过自动选择速度最快的节点服务器进行数据转发，以达到数据加速作用。<br>优秀的网络加速器可以有效减少网络丢包和网络延迟。</p>
-<h3 id="两者联系"><a href="#两者联系" class="headerlink" title="两者联系"></a>两者联系</h3><p>加速器和梯子虽然原理都是通过使用代理服务器帮助用户达到某种目的，也都对用户数据进行了加密处理，但是两者最主要的差别还是，加速器看重数据包传输的稳定性以及低延迟，梯子不保证数据包不丢失，这有点像TCP和UDP。</p>
-
+        
       
 
       
@@ -368,965 +1157,9 @@
 
 
   
-    <article id="post-Interview/昏睡面试" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/03/29/Interview/%E6%98%8F%E7%9D%A1%E9%9D%A2%E8%AF%95/">昏睡中的面试</a>
-    </h1>
-  
-
-        
-        <a href="/2023/03/29/Interview/%E6%98%8F%E7%9D%A1%E9%9D%A2%E8%AF%95/" class="archive-article-date">
-  	<time datetime="2023-03-29T08:47:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>实习</p>
-<ol>
-<li>项目中遇到的困难</li>
-</ol>
-<p>Java</p>
-<ol>
-<li>基本数据类型</li>
-<li>String是不是基本数据类型</li>
-<li>ArrayList用过哪些方法</li>
-<li>ArrayList和LinkedList区别</li>
-<li>删除元素ArrayList速度如何</li>
-<li>ArrayList中已经有数据的对象，如何进行排序</li>
-<li>IO流？字节流？字符流？</li>
-<li>HashMap遍历，有哪些方法</li>
-<li>JMM</li>
-<li>什么情况下需要防止指令重排</li>
-<li>代码中如何体现</li>
-<li>创建线程的方式</li>
-<li>.start()和.run()方法的区别</li>
-</ol>
-<p>HTTP</p>
-<ol>
-<li>简单说一下</li>
-<li>请求头的了解</li>
-</ol>
-<p>Spring</p>
-<ol>
-<li>常用的注解</li>
-<li>RequestBody</li>
-</ol>
-<p>SpringBoot</p>
-<ol>
-<li>常用的组件</li>
-<li>了解多少</li>
-</ol>
-<p>MyBatis</p>
-<ol>
-<li>一级缓存和二级缓存</li>
-<li>如何使用MyBatis的</li>
-<li>id区不区分大小写</li>
-</ol>
-<p>数据库</p>
-<ol>
-<li>left join 和 right join 有什么区别</li>
-<li>一条SQL语句如何优化</li>
-<li>在没有索引的情况下又如何呢</li>
-<li>MySQL事务了解多少</li>
-<li>没有事务会带来的问题</li>
-<li>Redis的基本类型</li>
-<li>和MySQL的区别</li>
-</ol>
-<p>其它</p>
-<ol>
-<li>对SpringCloud的了解</li>
-<li>常用的Linux指令</li>
-<li>学过VUE吗</li>
-</ol>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>应该是吃了药的原因，整个过程好困好困…结束后赶紧回图书馆趴着了。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">复盘</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/面试//" class="article-tag-list-link color3">面试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/03/29/Interview/%E6%98%8F%E7%9D%A1%E9%9D%A2%E8%AF%95/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Interview/面试复盘" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/03/15/Interview/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/">下午的面试复盘</a>
-    </h1>
-  
-
-        
-        <a href="/2023/03/15/Interview/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/" class="archive-article-date">
-  	<time datetime="2023-03-15T07:34:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>之前总是把复盘作为面经发到牛客上，今天突然想起来博客里之前写过类似的文章，而春招形势紧张，再发到牛客上不免又要应对网友“盘问”，遂即打开文件夹，准备整理在此，发现上次的面试复盘更新时间还在去年五月份…</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">复盘</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/面试//" class="article-tag-list-link color3">面试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/03/15/Interview/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-learn/雪崩_击穿_穿透" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/03/14/learn/%E9%9B%AA%E5%B4%A9_%E5%87%BB%E7%A9%BF_%E7%A9%BF%E9%80%8F/">关于缓存雪崩、击穿和穿透</a>
-    </h1>
-  
-
-        
-        <a href="/2023/03/14/learn/%E9%9B%AA%E5%B4%A9_%E5%87%BB%E7%A9%BF_%E7%A9%BF%E9%80%8F/" class="archive-article-date">
-  	<time datetime="2023-03-14T07:43:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="为什么要有缓存"><a href="#为什么要有缓存" class="headerlink" title="为什么要有缓存"></a>为什么要有缓存</h3><p>当用户发起请求时，程序如果从数据库磁盘读取数据，少量请求还好说，等到请求数一高，势必会影响响应性能。将数据预先放在内存中，等到请求来临时直接返回是个好办法。</p>
-<h2 id="缓存带来的问题"><a href="#缓存带来的问题" class="headerlink" title="缓存带来的问题"></a>缓存带来的问题</h2><p>A coin has two sides，缓存虽然提高了响应速度，但同时也会带来某些问题。</p>
-<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>雪崩是指大量的雪快速从斜坡上滚动下来，那缓存雪崩，就是面对大雪的不是人类，而是数据库。</p>
-<p><strong>产生原因</strong></p>
-<ol>
-<li>大量key值同时失效</li>
-<li>Redis服务宕机</li>
-</ol>
-<h4 id="大量key同时失效"><a href="#大量key同时失效" class="headerlink" title="大量key同时失效"></a>大量key同时失效</h4><p>当这么多键值都没用时，那么客户的请求将会被直接交由数据库处理，请求一多，数据库就又顶不住了。</p>
-<p><strong>解决办法</strong><br>针对这种情况，有如下几种做法：</p>
-<ol>
-<li><p>设置均匀分散的过期时间<br>不是说同一时间失效的么，那我就不同一时间失效呗。</p>
-</li>
-<li><p>设置两套key<br>什么？主key失效了？那没关系，还有备份key返回数据。</p>
-</li>
-<li><p>互斥锁<br>第一个到的请求：欸？缓存没有数据？那我就去数据库找到了再搬回来给后面来的同志用吧！不过为了防止大家发现缓存没有数据，从而也去千里迢迢之外的数据库做无用功，我还是给缓存上把锁吧。</p>
-</li>
-</ol>
-<p>后面到的请求：怎么回事？缓存被锁上了？哦，不过门上有写：“我去数据库搬数据啦！by NO.1”。既然如此，那再等等吧。</p>
-<p>许久之后，NO.1迟迟未归。</p>
-<p>众请求：怎么回事这是？用户那边急得要跳墙了。<br>姗姗来迟的NO.1：私密马赛！我迷路了！<br>众请求：。。。下次你要是超过xx时间没有回来，我们就派个人再去数据库了。</p>
-<p>所以，实现互斥锁的时候，最好设置<strong>超时时间</strong>。</p>
-<ol start="3">
-<li>定时更新key<br>防患于未然，我另外弄个后台任务线程定时检查看有没有过期，有就更新。万一这个后台线程迟迟没有检查到过期数据，而此期间又有用户发来请求怎么办？</li>
-</ol>
-<p>后台线程1：巡视A区中…<br>后台线程2：巡视B区中…<br>业务线程：（什么时候才能检查到我要的Z区资源QAQ）</p>
-<p>后台线程1：A区域，key值都有，没有缺少的…<br>后台线程2：B区域，key值都有，没有缺少的…<br>业务线程群发消息：Z区域key为xx的数据没有，在线等，急！<br>后台线程1：好的，核实后马上就去数据库搬来。<br>（发现后台线程2已经搬了，则不去搬，继续巡查；如果没搬，则1去搬）</p>
-<p>所以第二种情景就是，业务线程发现缓存数据失效后，通过<strong>消息队列</strong>发送一条消息通知给后台线程来更新缓存。</p>
-<h4 id="Redis服务宕机"><a href="#Redis服务宕机" class="headerlink" title="Redis服务宕机"></a>Redis服务宕机</h4><p>Redis服务宕机意味着如果不加干预手段，所有的请求都将由数据库处理承担。</p>
-<p><strong>解决办法</strong></p>
-<p>1.服务熔断或请求限流机制</p>
-<p>广播：FBI WARNING！Redis挂了！请求们哪来回哪去，修复Redis将消耗一定时间！<br>众请求：（躁动不安，小声咒骂）<br>广播（见状不对）：好消息好消息！虽然Redis没修好，但是我们可以让编号为质数的请求进入数据库直接访问！</p>
-<p>服务熔断就是指暂停业务应用对缓存服务的访问，直接返回错误，保证数据库的正常运行。<br>请求限流机制是指只将少部分请求发给数据库，再多的就在入口处直接拒绝服务。</p>
-<p>2.构建Redis缓存高可靠集群</p>
-<p>Redis0：众请求…我…挂了…出师未捷身先死，我还有太多太多抱负未能施展…<br>众请求：（冷漠脸）就你戏多。<br>Redis1：虽然0号机挂了！<br>Redis2：但是还有千千万万的0号！<br>此次事件又叫九子夺0.（不是）</p>
-<p>服务熔断或请求限流机制是已经宕机后的应对措施，但是我们要有风险意识，在没发生前就预先想到这种情况。所以建立高可靠集群是预防措施，主节点挂了由从节点顶上。</p>
-<h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><p>与大部分key同时失效而引发大量请求直达数据库的场景不同，缓存击穿描述的是少部分key失效且仍然有大量请求来到数据库的情形。<br>而这少部分key具有以下两种特性：</p>
-<ol>
-<li><strong>高并发访问</strong></li>
-<li><strong>缓存重建业务复杂</strong><br>本来失效的数量就少，还很容易重建，那还击穿个啥。</li>
-</ol>
-<p><strong>解决办法</strong></p>
-<ol>
-<li>互斥锁</li>
-<li>后台同步更新</li>
-</ol>
-<h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p>前面所说都是数据库有数据，从而能够正确构建新缓存的情况，那如果缓存没有、数据库也没有数据呢？这种情况就是缓存穿透。</p>
-<p>产生原因：</p>
-<ol>
-<li>业务误操作，缓存和数据库的数据被删除了</li>
-<li>黑客攻击，故意大量访问不存在的数据</li>
-</ol>
-<p><strong>解决办法</strong>：</p>
-<ol>
-<li>限制非法请求</li>
-</ol>
-<p>黑客并不知道数据库的字段有哪些，数据类型又是怎样，所以可以预先就把非法字段和非法字段类型的请求给过滤到，避免访问到缓存和数据库。</p>
-<ol start="2">
-<li>缓存空值和默认值</li>
-</ol>
-<p>某请求：（发生缓存穿透后）上穷碧落下黄泉，两处茫茫皆不见！也罢也罢，我就在缓存里<strong>放一个空值或者默认值</strong>，也让后来的请求有个东西可以带走吧，不至于像我一样，一番努力皆是打水空。</p>
-<p>为了纪念这种行为，后人在此刻碑题字，上个月的时候被风吹倒了。</p>
-<ol start="3">
-<li>布隆过滤器</li>
-</ol>
-<p>既然到了缓存都没有了，那为了避免再去数据库查找有没有相应数据，只需在数据进入到数据库前都做个标记即可。</p>
-<p>有一个默认值都是0、长度为len的数组，数据data要进入数据库前，经过三个哈希函数的计算以及对 len 取模后，得到1、4、6三个值，则在数组对应下标的地方标为1.<br>等下次请求发现缓存没有数据时，先去对data做相同的运算，如果1、4、6值仍为1，则data可能在数据库；如果有一个为0，则肯定不在。</p>
-<blockquote>
-<p>参考<a href="!https://xiaolincoding.com/redis/cluster/cache_problem.html#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F">什么是缓存雪崩、击穿、穿透？</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">学习</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">缓存雪崩</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">缓存击穿</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">缓存穿透</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/03/14/learn/%E9%9B%AA%E5%B4%A9_%E5%87%BB%E7%A9%BF_%E7%A9%BF%E9%80%8F/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-net/RSA和DH理解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/03/13/net/RSA%E5%92%8CDH%E7%90%86%E8%A7%A3/">对RSA和DH的理解</a>
-    </h1>
-  
-
-        
-        <a href="/2023/03/13/net/RSA%E5%92%8CDH%E7%90%86%E8%A7%A3/" class="archive-article-date">
-  	<time datetime="2023-03-13T12:30:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="RSA是什么"><a href="#RSA是什么" class="headerlink" title="RSA是什么"></a>RSA是什么</h3><p>根据阮雪峰的<a href="%EF%BC%81https://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html">这篇文章</a>，可知RSA在DH之后出现，并且是因为受到了DH的启发，所以暂时先看DH是什么吧。</p>
-<h3 id="DH是什么"><a href="#DH是什么" class="headerlink" title="DH是什么"></a>DH是什么</h3><p>1976年，两位美国计算机学家Whitfield Diffie 和 Martin Hellman，提出了一种崭新构思：可以在不直接传递密钥的情况下，完成解密。<br>在此之前，所有的加密模式都是对称加密，即加密解密都是一种加密规则，于是保存和传递密钥。。。什么是密钥？<br>密钥就是破解密文的钥匙。如果密文是潘多拉魔盒，只要知道了钥匙，就可以知道盒子里到底装的是什么。</p>
-<p>A：我用的xx牌钥匙给盒子上的锁哦！<br>B：瓦嘎里吗洗打！（B用xx牌钥匙打开了盒子）</p>
-<p>接着上面，于是保存和传递密钥成了很重要的问题。想象一下，如果A不想让C打开，那她就不能直接大声地说“xx牌”。（C:I’m listening）</p>
-<p>有什么办法解决呢？过路的俩歪果仁说：要不你们想个暗号呗。<br>暗号暗号，什么是暗号？接头双方根据对方说的常人不能直接明白的话，以及自己的已知条件，从而推断出某东西，这个不能直接明白的话就是暗号。</p>
-<p>下面举个不太恰当的例子：</p>
-<p>A：目前可以公开的信息：乞讨<br>B：收到。目前我可以公开的信息：打工</p>
-<p>C仅凭这两个词是无法得知xx牌的xx是什么的。</p>
-<p>A：我已知：郭芙蓉，结合“打工”，可知xx指“同福客栈”<br>B：我已知：小米，结合“乞讨”，可知xx指“同福客栈”</p>
-<p>于是A、B两人没有通过明说，但是都知道了钥匙的牌子，真是可喜可贺！</p>
-<p>TO DO前向保密，中间人攻击</p>
-<h3 id="RSA是什么-1"><a href="#RSA是什么-1" class="headerlink" title="RSA是什么"></a>RSA是什么</h3><p>DH算法启发了其余的科学家。人们认识到，加密和解密可以使用不同的规则，只要这两种规则之间存在某种对应关系即可，这样就避免了直接传递密钥。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">计算机网络</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">RSA</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">DH</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/个人理解//" class="article-tag-list-link color5">个人理解</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/03/13/net/RSA%E5%92%8CDH%E7%90%86%E8%A7%A3/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring/SpringBoot自动配置" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/03/12/Spring/SpringBoot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE/">SpringBoot自动配置</a>
-    </h1>
-  
-
-        
-        <a href="/2023/03/12/Spring/SpringBoot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE/" class="archive-article-date">
-  	<time datetime="2023-03-12T06:50:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>一直不懂SpringBoot为什么相比SSM多了一个启动类，原来这和SpringBoot的优点有关，也就是开箱即用、简化了许多配置，而做法就离不开启动类上的注解——@SpringBootApplication。</p>
-<h3 id="SpringBootApplication"><a href="#SpringBootApplication" class="headerlink" title="@SpringBootApplication"></a>@SpringBootApplication</h3><p>@SpringBootApplication中包含@SpringBootConfiguration、@EnableAutoConfiguration和@ComponentScan三个注解。</p>
-<p>因此这个注解可以看作是 @Configuration 、@ComponentScan 、@EnableAutoConfiguration 三者的结合。</p>
-<p>@Configuration表明它是一个源配置类，允许类中注册或导入额外的配置类；<br>@ComponentScan说明需要容器扫描其包下所有的类，可以自定义哪些不扫描（原来这就是之前碰到“找不到类”时让把启动类放在高一级目录的原因）；<br>@EnableAutoConfiguration是启动自动配置机制。</p>
-<p>显然@EnableAutoConfiguration是重中之重。</p>
-<h3 id="EnableAutoConfiguration"><a href="#EnableAutoConfiguration" class="headerlink" title="@EnableAutoConfiguration"></a>@EnableAutoConfiguration</h3><p>拥有这个注解也就相当于间接拥有了 @Import 注解。@Import 提供一种显式的方式从其它地方（第三方jar包）加载配置类的方式，它在SpringBoot这里导入的是 接口ImportSelector 的实现类，这个接口中有一个方法叫 selectImports，用来返回配置类全限定名数组。<br>这个实现类就叫 AutoConfigurationImportSelector ，它实现了selectImports方法，这个方法（getAutoConfigurationEntry）的实现逻辑是：<br>1.加载配置文件spring.factories<br>2.找出所有配置类并排除指定不需要的类<br>3.筛选不符合条件的类</p>
-<p>这样找到所有需要的配置类（xxxAutoConfiguration）后，只需把其中需要注册到容器中的加载注册进去即可。</p>
-<p>· 那么如何找到这个配置文件spring.factories的呢？<br>这里应该是SpringBoot的“约定大于配置”概念，各个服务实现者都默认和SpringBoot约好放到了 META-INF 文件夹下，只要根据这个路径去找就可以找到。</p>
-<p>· 我一直在写接口向别人提供服务，这里怎么感觉是我在用别人的服务？<br>没错，我愿称之为“服务-调用”关系的倒置。这里我们作为调用方，不再关心服务具体如何实现，而只需要引入提供的jar包、再根据和别人约好的路径找到配置文件、将所需类注册到容器中即可。那这种倒置关系就是 SPI（Service Provider Interface）的思想。</p>
-<p>·什么叫又“排除了指定不需要的类”，还要“筛选不符合条件的类”？<br>前者说的是排除我们通过exclude属性指定不需要的类，而后者是服务实现者通过 @Conditional 注解，根据环境排除一些特定的类，如Redis服务中有个@ConditionalOnMissingBean(RedisTemplate.class)，被修饰到了注入RedisTemplate的方法上，也就是只有当容器里没有RedisTemplate时才会注入RedisTemplate。</p>
-<h3 id="总述"><a href="#总述" class="headerlink" title="总述"></a>总述</h3><p><strong>SpringBoot的启动流程</strong>：<br>1.创建IoC容器<br>2.主类注册进IoC<br>3.递归并加载所有配置类<br>4.实例化所有Bean，依赖注入<br>5.启动Web服务器</p>
-<p>在第三步中，其中的过程又可以看作是包含如下几个步骤：</p>
-<p>1.从容器中取出源配置类<br>2.创建一个源配置类解析器，递归加载并处理所有配置类<br>3.向IoC容器中注册@Bean对应的BeanDefinition<br>4.向IoC中注册ImportBeanDefinitionRegistrar导入的BeanDefinition</p>
-<p>在第二步中，其中的过程又可以看作是包含如下几个步骤：</p>
-<p>1.处理@ComponentScan，发现新的配置类，再递归<br>2.处理@Import，得到被导入的配置类，递归处理<br>3.处理@Bean方法<br>4.处理@Import导入的ImportBeanDefinitionRegistrar<br>5.加入到一个全局的配置类集合</p>
-<p>@Import：提供一种显式的方式从其它地方（第三方jar包）加载配置类的方式。一般有三种导入方式：普通类，选择器（一个ImportSelector接口的实现类，返回一个将被导入的配置类的全限定名数组），注册器。<br>在SpringBoot中使用选择器导入相关配置类，核心逻辑是：</p>
-<p>从classpath中读取所有jar包中的配置文件：META/Spring.factories，从指定key解析value。</p>
-<p>这个ImportSelector实现类返回配置类全限定名数组后，再根据@Configuration修饰的类中找到@Bean、@Conditional修饰的方法，并从中根据条件找到合适的Bean注册到Ioc容器。</p>
-<hr>
-<p>总的来说，就是从源头开始，一遍遍递归，找到本项目内部配置类，然后根据配置文件找第三方提供的外部配置类，最后都注册到容器里。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><blockquote>
-<p><a href="!https://www.bilibili.com/video/BV1NY411P7VX/?spm_id_from=333.788&vd_source=57d830f6e821a67f2043e6492c9c9a35">B站目前讲的最透彻的SpringBoot自动配置</a><br><a href="!https://javaguide.cn/system-design/framework/spring/spring-boot-auto-assembly-principles.html#autoconfigurationimportselector-%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E7%B1%BB">SpringBoot自动装配原理详解</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">自动配置</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/SpringBoot//" class="article-tag-list-link color1">SpringBoot</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/03/12/Spring/SpringBoot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/反射" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/03/11/Java/%E5%8F%8D%E5%B0%84/">关于反射的理解</a>
-    </h1>
-  
-
-        
-        <a href="/2023/03/11/Java/%E5%8F%8D%E5%B0%84/" class="archive-article-date">
-  	<time datetime="2023-03-11T08:36:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="反射是什么"><a href="#反射是什么" class="headerlink" title="反射是什么"></a>反射是什么</h3><p>反射是在运行时才知道运行的是什么类，并且提供了获取该类属性和方法、运行类中方法的途径。</p>
-<h3 id="如何使用反射"><a href="#如何使用反射" class="headerlink" title="如何使用反射"></a>如何使用反射</h3><p>要想使用反射，就要了解反射为何能够获得类属性及方法，也就是反射通过获取类信息来了解该类拥有何种属性及方法。在Java代码里类信息的体现就是Class对象了，jdk提供了以下几种方法：</p>
-<p>1.Class clazz=String.class;<br>2.Class.forName(“cn.xxx.xxx”);<br>3.实例.getClass();</p>
-<p>通过Class来创建对象：</p>
-<p>1.类型 变量名=(类型)clazz.newInstance();<br>2.Constructor constructor = clz.getConstructor();<br>  类型 变量名 = (类型)constructor.newInstance();<br>使用构造器支持有参构造，newInstance只支持无参。</p>
-<p><strong>正式使用</strong></p>
-<p>Method methodName = clazz.getMethod(“methodName”, 返回类型.class);<br>methodName.invoke(实例，参数);</p>
-<h3 id="反射在jdk内部的原理"><a href="#反射在jdk内部的原理" class="headerlink" title="反射在jdk内部的原理"></a>反射在jdk内部的原理</h3><p>一路跟踪invoke方法</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public Object invoke(Object obj, Object... args)</span><br><span class="line">       throws IllegalAccessException, IllegalArgumentException,</span><br><span class="line">          InvocationTargetException</span><br><span class="line">   &#123;</span><br><span class="line">       if (!override) &#123;</span><br><span class="line">           if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) &#123;</span><br><span class="line">               Class&lt;?&gt; caller = Reflection.getCallerClass();</span><br><span class="line">               checkAccess(caller, clazz, obj, modifiers);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       MethodAccessor ma = methodAccessor;  // read volatile</span><br><span class="line">       if (ma == null) &#123;</span><br><span class="line">           ma = acquireMethodAccessor();</span><br><span class="line">       &#125;</span><br><span class="line">       return ma.invoke(obj, args);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>看最后return调用的是ma的invoke，那么ma是什么？看它的类是MethodAccessor：</p>
-<p><img src="https://s2.loli.net/2023/03/11/9IYhRxKDTJ1fk7O.png" alt="image.png"></p>
-<p>有三个实现子类，MethodAccessorImpl、DelegatingMethodAccessorImpl和NativeMethodAccessorImpl，那么ma是哪一个？进入acquireMethodAccessor()方法看看。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">private MethodAccessor acquireMethodAccessor() &#123;</span><br><span class="line">       // First check to see if one has been created yet, and take it</span><br><span class="line">       // if so</span><br><span class="line">       MethodAccessor tmp = null;</span><br><span class="line">       if (root != null) tmp = root.getMethodAccessor();</span><br><span class="line">       if (tmp != null) &#123;</span><br><span class="line">           methodAccessor = tmp;</span><br><span class="line">       &#125; else &#123;</span><br><span class="line">           // Otherwise fabricate one and propagate it up to the root</span><br><span class="line">           tmp = reflectionFactory.newMethodAccessor(this);</span><br><span class="line">           setMethodAccessor(tmp);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       return tmp;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>首先判断是否存在对应的MethodAccessor，如果存在就复用之前的，不存在则接着进入reflectionFactory的newMethodAccessor(this)：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public MethodAccessor newMethodAccessor(Method method) &#123;</span><br><span class="line">       checkInitted();</span><br><span class="line"></span><br><span class="line">       if (noInflation &amp;&amp; !ReflectUtil.isVMAnonymousClass(method.getDeclaringClass())) &#123;</span><br><span class="line">           return new MethodAccessorGenerator().</span><br><span class="line">               generateMethod(method.getDeclaringClass(),</span><br><span class="line">                              method.getName(),</span><br><span class="line">                              method.getParameterTypes(),</span><br><span class="line">                              method.getReturnType(),</span><br><span class="line">                              method.getExceptionTypes(),</span><br><span class="line">                              method.getModifiers());</span><br><span class="line">       &#125; else &#123;</span><br><span class="line">           NativeMethodAccessorImpl acc =</span><br><span class="line">               new NativeMethodAccessorImpl(method);</span><br><span class="line">           DelegatingMethodAccessorImpl res =</span><br><span class="line">               new DelegatingMethodAccessorImpl(acc);</span><br><span class="line">           acc.setParent(res);</span><br><span class="line">           return res;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>首先是生成了一个 NativeMethodAccessorImpl 对象，再这个对象作为参数传入 DelegatingMethodAccessorImpl 类的构造方法。<br>这里的实现是使用了代理模式，将 NativeMethodAccessorImpl 对象交给 DelegatingMethodAccessorImpl 对象代理。<br>所以最终会返回 DelegatingMethodAccessorImpl，之前invoke方法进入的也是DelegatingMethodAccessorImpl的invoke。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class DelegatingMethodAccessorImpl extends MethodAccessorImpl &#123;</span><br><span class="line">    private MethodAccessorImpl delegate;</span><br><span class="line"></span><br><span class="line">    DelegatingMethodAccessorImpl(MethodAccessorImpl delegate) &#123;</span><br><span class="line">        setDelegate(delegate);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Object invoke(Object obj, Object[] args)</span><br><span class="line">        throws IllegalArgumentException, InvocationTargetException</span><br><span class="line">    &#123;</span><br><span class="line">		//这里！</span><br><span class="line">        return delegate.invoke(obj, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void setDelegate(MethodAccessorImpl delegate) &#123;</span><br><span class="line">        this.delegate = delegate;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>进入 DelegatingMethodAccessorImpl 类的 invoke 方法后，这里调用了 delegate 属性的 invoke 方法，它又有两个实现类，分别是：DelegatingMethodAccessorImpl 和 NativeMethodAccessorImpl。按照我们前面说到的，这里的 delegate 其实是一个 NativeMethodAccessorImpl 对象，所以这里会进入 NativeMethodAccessorImpl 的 invoke 方法。</p>
-<p>而在 NativeMethodAccessorImpl 的 invoke 方法里，其会判断调用次数是否超过阀值（numInvocations）。如果超过该阀值，那么就会生成另一个 MethodAccessor 对象，并将原来 DelegatingMethodAccessorImpl 对象中的 delegate 属性指向最新的 MethodAccessor 对象。</p>
-<p>到这里，其实我们可以知道 MethodAccessor 对象其实就是具体去生成反射类的入口。</p>
-<ol>
-<li>获取类的Class对象</li>
-<li>通过Class获取Constructor</li>
-<li>使用Constructor的newInstance获取实例对象</li>
-<li>通过Class对象的getMethod获取Method</li>
-<li>调用Method的invoke方法传入实例对象和参数</li>
-</ol>
-<p>invoke过程</p>
-<ol>
-<li>创建一个 <strong>MethodAccessor</strong> 接口类型的实现对象</li>
-<li>如果有存在的就复用，没有就生成</li>
-<li>先生成 NativeMethodAccessorImpl，交给DelegatingMethodAccessorImpl 代理</li>
-<li>最后还是调用 NativeMethodAccessorImpl的invoke</li>
-<li>invoke里判断调用次数有没有<strong>超过阈值</strong>，超过则生成新的MethodAccessor，并将原来的被代理对象指向新的</li>
-</ol>
-<p>Native 版本一开始启动快，但是随着运行时间边长，速度变慢。<br>Java 版本一开始加载慢，但是随着运行时间边长，速度变快。<br>正是因为两种存在这些问题，所以第一次加载的时候我们会发现使用的是 NativeMethodAccessorImpl 的实现，而当反射调用次数超过 15 次之后，则使用 MethodAccessorGenerator 生成的 Java版本的 MethodAccessorImpl 对象去实现反射。</p>
-<p><strong>性能问题</strong>：</p>
-<p>1.Method 的 invoke 方法会对参数做封装和解封操作。也即invoke方法里的参数是Object[]类型，需要将其它类型的参数进行封装；然后真正执行的时候又要解封、进行参数校验。<br>2.需要检查方法可见性。每次调用都必须检查方法的可见性。<br>3.需要校验参数。<br>4.反射方法难以内联。（所谓内联函数就是指函数在被调用的地方直接展开，编译器在调用时不用像一般函数那样，参数压栈，返回时参数出栈以及资源释放等，这样提高了程序执行速度）<br>5.JIT 无法优化<br>6.请求jvm去查找其方法区中的方法定义，需要使用jni、开销相对比较大。</p>
-<p>###参考</p>
-<blockquote>
-<p><a href="!https://www.cnblogs.com/chanshuyi/p/head_first_of_reflection.html">大白话说 Java 反射：入门、使用、原理</a><br><a href="!https://juejin.cn/post/7075691875402792990">为什么总说Java的反射效率低？</a><br><a href="!https://juejin.cn/post/6844903965725818887">大家都说 Java 反射效率低，你知道原因在哪里么</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">反射</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/03/11/Java/%E5%8F%8D%E5%B0%84/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java/try_catch_finally字节码角度" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/03/11/Java/try_catch_finally%E5%AD%97%E8%8A%82%E7%A0%81%E8%A7%92%E5%BA%A6/">从字节码的角度看try-catch-finally</a>
-    </h1>
-  
-
-        
-        <a href="/2023/03/11/Java/try_catch_finally%E5%AD%97%E8%8A%82%E7%A0%81%E8%A7%92%E5%BA%A6/" class="archive-article-date">
-  	<time datetime="2023-03-11T06:50:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>看这样一段代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static int test1() &#123;</span><br><span class="line">    int x = 1;</span><br><span class="line">    try &#123;</span><br><span class="line">        return x;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        x = 2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>结果是1不是2.</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">TCF</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java细节//" class="article-tag-list-link color2">Java细节</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/03/11/Java/try_catch_finally%E5%AD%97%E8%8A%82%E7%A0%81%E8%A7%92%E5%BA%A6/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring/SpringIoC感想" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/03/10/Spring/SpringIoC%E6%84%9F%E6%83%B3/">关于IoC的感想</a>
-    </h1>
-  
-
-        
-        <a href="/2023/03/10/Spring/SpringIoC%E6%84%9F%E6%83%B3/" class="archive-article-date">
-  	<time datetime="2023-03-10T12:09:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>今天机缘巧合之下又看了一遍之前看过的一篇知乎回答，对于本以为再熟悉不过的IoC又多了一点新的想法。</p>
-<blockquote>
-<p>链接在这<a href="!https://www.zhihu.com/question/23277575/answer/169698662">SpringIoC有什么好处呢</a></p>
-</blockquote>
-<h3 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h3><p>之前外国的那谁说，IoC控制反转或许叫作DI（Dependency Injection）更合适，现在结合这篇回答，深感有理。</p>
-<p><strong>什么是依赖倒置？</strong></p>
-<p>那么现在可以顺便复习一下软件设计模式的六个原则：</p>
-<ol>
-<li>开闭原则</li>
-<li>接口隔离原则</li>
-<li>依赖倒置原则</li>
-<li>单一原则</li>
-<li>里氏替换原则</li>
-<li>迪米特法则</li>
-</ol>
-<p>我简记为：开口赖，一里米。</p>
-<p>依赖倒置也就是要依赖于抽象，而不依赖于具体实现，也即底层建筑依赖高层，而不是高层依赖底层，这样的话即使修改具体，也不至于牵一发动全身。</p>
-<p>那么IoC就是DI的一种代码设计思路，具体采用的方法就是DI——依赖注入。如何注入呢？又回到了之前博客里提到的几种方法：构造方法注入，setter注入，接口注入。</p>
-<p><strong>IoC好处</strong></p>
-<ol>
-<li>简化初始化的代码。</li>
-<li>创建实例不用了解细节，增加了项目的可维护性，降低了开发难度。</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOC</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a hvr-shutter-in-horizontal" href="/2023/03/10/Spring/SpringIoC%E6%84%9F%E6%83%B3/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/2/">Next&gt;&gt;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/2/">Next&gt;&gt;</a>
     </nav>
   
 
@@ -1338,7 +1171,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2023 BanalFish
+    		&copy; 2024 BanalFish
     	</div>
 
     </div>
@@ -1417,14 +1250,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">加速器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">梯子</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
@@ -1441,23 +1266,51 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">DDD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">软件开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">微服务</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">RPC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">加速器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">梯子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">前端</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">微前端</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分区表</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">容器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">打包工具</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">idea</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">vscode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ruoyi</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ssm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">testsys</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1477,15 +1330,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">vscode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">ruoyi</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ssm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">testsys</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">shiro</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">swagger</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">基本类型</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1505,11 +1370,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">循环</a>
+                <a href="javascript:void(0)" class="js-tag color5">基本类型</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">String Pool</a>
+                <a href="javascript:void(0)" class="js-tag color3">循环</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1517,15 +1382,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ConcurrentHashMap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单例模式</a>
+                <a href="javascript:void(0)" class="js-tag color2">String Pool</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1541,6 +1398,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ConcurrentHashMap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">String，类型转换</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单例模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">自动拆箱</a>
               </li>
              
@@ -1553,7 +1426,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">String，类型转换</a>
+                <a href="javascript:void(0)" class="js-tag color3">面试</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1561,11 +1434,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">索引</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">锁</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">面试</a>
+                <a href="javascript:void(0)" class="js-tag color3">复盘</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Easy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">双指针</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">递归</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Navicat</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1577,71 +1474,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Navicat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">复盘</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">索引</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">自动配置</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">SpringMVC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Mid</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">双指针</a>
+                <a href="javascript:void(0)" class="js-tag color4">单调栈</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Diff</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">yilia</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Easy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1665,10 +1506,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">滑动窗口</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">动态规划</a>
               </li>
              
@@ -1681,6 +1518,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">滑动窗口</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">前缀和</a>
               </li>
              
@@ -1689,15 +1530,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">单调栈</a>
+                <a href="javascript:void(0)" class="js-tag color3">笔试</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">背包问题</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">学习</a>
+                <a href="javascript:void(0)" class="js-tag color3">阿里</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1705,11 +1542,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔试</a>
+                <a href="javascript:void(0)" class="js-tag color3">美团</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">阿里</a>
+                <a href="javascript:void(0)" class="js-tag color3">腾讯</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">自动配置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">SpringMVC</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1725,15 +1586,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">美团</a>
+                <a href="javascript:void(0)" class="js-tag color3">学习</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">腾讯</a>
+                <a href="javascript:void(0)" class="js-tag color5">背包问题</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color1">yilia</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1741,11 +1610,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">体系结构</a>
+                <a href="javascript:void(0)" class="js-tag color4">物理层</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">物理层</a>
+                <a href="javascript:void(0)" class="js-tag color5">体系结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1758,6 +1627,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">DH</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
             
             <div class="clearfix"></div>
